@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informações dos Locais - Casamento de [Noivo] & [Noiva]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/convidado-style.css">
+    <style>
+        /* Estilos específicos da página de Locais */
+        .location-card { /* Usado em vez de .guest-page-section para cada local */
+            background-color: var(--guest-card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px var(--guest-shadow-color);
+            margin-bottom: 30px;
+        }
+        .location-card h3 { /* Título de cada local (Cerimônia/Recepção) */
+            font-family: var(--guest-font-family-headings);
+            font-size: 1.8em;
+            color: var(--guest-primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex; /* Para alinhar ícone com texto */
+            align-items: center;
+        }
+        .location-card h3 .location-icon {
+            margin-right: 12px;
+            font-size: 1.1em; /* Relativo ao h3 */
+        }
+
+        .location-details-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Começa com uma coluna */
+            gap: 25px;
+        }
+        @media (min-width: 768px) { /* Duas colunas em telas maiores */
+            .location-details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .location-info p {
+            margin-bottom: 12px;
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: var(--guest-text-color-medium);
+        }
+        .location-info p strong {
+            color: var(--guest-text-color-dark);
+            font-weight: 600;
+        }
+        .location-info .info-label { /* Para destacar o label da informação */
+            display: inline-block;
+            min-width: 90px; /* Alinha os valores */
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 350px;
+            background-color: #e9ecef; /* Cor de fundo do mapa */
+            border-radius: 8px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            border: 1px solid var(--guest-border-color);
+            color: var(--guest-text-color-light);
+            font-style: italic;
+            font-size: 0.95em;
+        }
+        .map-placeholder iframe {
+            border:0;
+            width:100%;
+            height:100%;
+            border-radius:8px;
+        }
+        .directions-button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="guest-app-container">
+        <header class="guest-header">
+            <div class="header-content">
+                <div class="couple-names" id="header-couple-names"><h1>Ana & Bruno</h1></div>
+                 <nav class="guest-nav">
+                    <ul>
+                        <li><a href="home-convidado.html"><span class="nav-icon"><i class="fas fa-home"></i></span>Início</a></li>
+                        <li><a href="rsvp.html"><span class="nav-icon"><i class="fas fa-check-circle"></i></span>Confirmar Presença</a></li>
+                        <li><a href="informacoes-locais.html" class="active"><span class="nav-icon"><i class="fas fa-map-marker-alt"></i></span>Locais</a></li>
+                        <li><a href="passagens-hospedagem-convidado.html"><span class="nav-icon"><i class="fas fa-plane"></i></span>Viagem/Hosp.</a></li>
+                        <li><a href="cardapio-programacao.html"><span class="nav-icon"><i class="fas fa-utensils"></i></span>Detalhes</a></li>
+                        <li><a href="lista-presentes-convidado.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Presentes</a></li>
+                        <li><a href="pos-evento-convidado.html"><span class="nav-icon"><i class="fas fa-camera"></i></span>Fotos</a></li>
+                        <li><a href="#" id="logout-convidado-btn" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="guest-main-content" id="informacoes-locais-page">
+            <div class="guest-section-header">
+                 <h2>Locais da Celebração</h2>
+                 <p class="subtitle">Confira os detalhes de onde nossa história ganhará um novo capítulo!</p>
+            </div>
+
+            <section class="location-card" id="ceremony-location-details">
+                <h3><span class="location-icon"><i class="fas fa-church"></i></span>Cerimônia</h3>
+                <div class="location-details-grid">
+                    <div class="location-info">
+                        <p><strong><span class="info-label">Local:</span></strong> <span id="ceremony-name">Igreja Matriz de Santa Felicidade</span></p>
+                        <p><strong><span class="info-label">Endereço:</span></strong> <span id="ceremony-address">Av. Manoel Ribas, 5400 - Santa Felicidade, Curitiba - PR, 82020-000</span></p>
+                        <p><strong><span class="info-label">Data:</span></strong> <span id="ceremony-date">Sábado, 25 de Dezembro de 2024</span></p>
+                        <p><strong><span class="info-label">Horário:</span></strong> <span id="ceremony-time">17:00</span></p>
+                        <p><strong><span class="info-label">Obs:</span></strong> <span id="ceremony-notes">Estacionamento amplo no local. Recomendamos chegar com 15 minutos de antecedência.</span></p>
+                        <div class="directions-button-container">
+                            <a href="#" id="ceremony-directions-link" class="btn-guest" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-map-signs"></i> Ver no Mapa / Obter Rotas
+                            </a>
+                        </div>
+                    </div>
+                    <div class="map-placeholder" id="ceremony-map">
+                        <!-- Substituir pelo iframe do Google Maps -->
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3603.017853681919!2d-49.33660068549677!3d-25.43796798378504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce172c718473d%3A0x5945b7a8b89b6093!2sIgreja%20Matriz%20de%20Santa%20Felicidade!5e0!3m2!1spt-BR!2sbr!4v1678886400000" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <section class="location-card" id="reception-location-details">
+                <h3><span class="location-icon"><i class="fas fa-glass-cheers"></i></span>Recepção</h3>
+                 <div class="location-details-grid">
+                    <div class="location-info">
+                        <p><strong><span class="info-label">Local:</span></strong> <span id="reception-name">Salão de Festas Bellagio</span></p>
+                        <p><strong><span class="info-label">Endereço:</span></strong> <span id="reception-address">R. Via Veneto, 1590 - Santa Felicidade, Curitiba - PR, 82410-000</span></p>
+                        <p><strong><span class="info-label">Horário:</span></strong> <span id="reception-time">A partir das 19:00 (logo após a cerimônia)</span></p>
+                        <p><strong><span class="info-label">Obs:</span></strong> <span id="reception-notes">Valet service disponível na entrada principal. Preparem-se para uma noite de muita alegria e celebração!</span></p>
+                        <div class="directions-button-container">
+                             <a href="#" id="reception-directions-link" class="btn-guest" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-map-signs"></i> Ver no Mapa / Obter Rotas
+                            </a>
+                        </div>
+                    </div>
+                    <div class="map-placeholder" id="reception-map">
+                         <!-- Substituir pelo iframe do Google Maps -->
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3603.017853681919!2d-49.33660068549677!3d-25.43796798378504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce172c718473d%3A0x5945b7a8b89b6093!2sIgreja%20Matriz%20de%20Santa%20Felicidade!5e0!3m2!1spt-BR!2sbr!4v1678886400000" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa Recepção (Exemplo)"></iframe>
+                        <!-- <p>Mapa da Recepção (Google Maps Embed)</p> -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="guest-footer">
+            <p><span class="couple-names-footer" id="footer-couple-names-display">Ana & Bruno</span></p>
+            <p>Celebração em <span id="wedding-date-footer-display">[Data do Casamento]</span></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulação de carregamento de dados
+            const coupleNames = "Ana & Bruno";
+            const weddingDateStr = "2024-12-25T17:00:00";
+
+            // Dados da Cerimônia (Exemplo - Viriam do Firebase)
+            const ceremonyData = {
+                name: "Igreja Matriz de Santa Felicidade",
+                address: "Av. Manoel Ribas, 5400 - Santa Felicidade, Curitiba - PR, 82020-000",
+                date: new Date(weddingDateStr).toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+                time: "17:00",
+                notes: "Estacionamento amplo no local. Recomendamos chegar com 15 minutos de antecedência.",
+                mapLink: "https://www.google.com/maps/place/Igreja+Matriz+de+Santa+Felicidade/@-25.4379679,-49.3366007,17z",
+                mapEmbed: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3603.017853681919!2d-49.33660068549677!3d-25.43796798378504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce172c718473d%3A0x5945b7a8b89b6093!2sIgreja%20Matriz%20de%20Santa%20Felicidade!5e0!3m2!1spt-BR!2sbr!4v1678886400000" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
+            };
+
+            // Dados da Recepção (Exemplo - Viriam do Firebase)
+            const receptionData = {
+                name: "Salão de Festas Bellagio",
+                address: "R. Via Veneto, 1590 - Santa Felicidade, Curitiba - PR, 82410-000",
+                time: "A partir das 19:00 (logo após a cerimônia)",
+                notes: "Valet service disponível na entrada principal. Preparem-se para uma noite de muita alegria e celebração!",
+                mapLink: "https://www.google.com/maps/place/Sal%C3%A3o+de+Festas+Bellagio/@-25.4379679,-49.3366007,17z", // Exemplo de link
+                mapEmbed: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3603.017853681919!2d-49.33660068549677!3d-25.43796798378504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce172c718473d%3A0x5945b7a8b89b6093!2sIgreja%20Matriz%20de%20Santa%20Felicidade!5e0!3m2!1spt-BR!2sbr!4v1678886400000" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa Recepção (Exemplo)"></iframe>'
+            };
+
+            document.getElementById('header-couple-names').innerHTML = `<h1>${coupleNames}</h1>`;
+            document.getElementById('footer-couple-names-display').textContent = coupleNames;
+            document.getElementById('wedding-date-footer-display').textContent = new Date(weddingDateStr).toLocaleDateString('pt-BR', {year: 'numeric', month: 'long', day: 'numeric'});
+            
+            // Preencher dados da Cerimônia
+            document.getElementById('ceremony-name').textContent = ceremonyData.name;
+            document.getElementById('ceremony-address').textContent = ceremonyData.address;
+            document.getElementById('ceremony-date').textContent = ceremonyData.date;
+            document.getElementById('ceremony-time').textContent = ceremonyData.time;
+            document.getElementById('ceremony-notes').textContent = ceremonyData.notes;
+            document.getElementById('ceremony-directions-link').href = ceremonyData.mapLink;
+            document.getElementById('ceremony-map').innerHTML = ceremonyData.mapEmbed || '<p>Mapa indisponível.</p>';
+
+            // Preencher dados da Recepção
+            document.getElementById('reception-name').textContent = receptionData.name;
+            document.getElementById('reception-address').textContent = receptionData.address;
+            document.getElementById('reception-time').textContent = receptionData.time;
+            document.getElementById('reception-notes').textContent = receptionData.notes;
+            document.getElementById('reception-directions-link').href = receptionData.mapLink;
+            document.getElementById('reception-map').innerHTML = receptionData.mapEmbed || '<p>Mapa indisponível.</p>';
+
+             // Logout (simulação)
+            const logoutBtn = document.getElementById('logout-convidado-btn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Logout realizado (simulação).');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

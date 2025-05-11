@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Adicione Font Awesome (Exemplo via CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css"> <!-- Link para o novo CSS -->
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <!-- <img src="../assets/images/logo-placeholder-light.png" alt="NuptialLink Logo"> ou -->
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html" class="active"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div> <!-- Placeholder para avatar ou iniciais -->
+                    <span id="userName">Olá, Noiva(o)!</span>
+                    <a href="#" id="logout-btn-header" class="logout-link" style="display: none;">Sair</a> <!-- Oculto por padrão, pode ser usado com dropdown -->
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="dashboard-page">
+                <section class="countdown-simple" id="countdown-display">
+                    <!-- Conteúdo será gerado por JS -->
+                    <span class="days">-- dias</span>
+                    <span class="time">--:--:--</span>
+                    para o grande dia!
+                    <!-- Se não houver data:
+                    <p style="margin-top: 10px; font-size: 1rem;">Ainda não definiu a data do seu casamento?</p>
+                    <a href="linha-do-tempo.html" class="btn-set-date">Definir Data Agora</a>
+                    -->
+                </section>
+
+                <section class="management-cards-container">
+                    <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/finance.svg" alt="Ícone Finanças"></div>
+                            <h3>Gerenciamento Financeiro</h3>
+                        </div>
+                        <p>Controle despesas, pagamentos e orçamentos para não estourar o limite.</p>
+                        <a href="financeiro.html" class="btn">Acessar Finanças</a>
+                    </div>
+                    <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/guests.svg" alt="Ícone Convidados"></div>
+                            <h3>Gestão de Convidados</h3>
+                        </div>
+                        <p>Cadastre, importe, organize sua lista e acompanhe confirmações (RSVP).</p>
+                        <a href="convidados.html" class="btn">Gerenciar Convidados</a>
+                    </div>
+                    <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/savethedate.svg" alt="Ícone Save the Date"></div>
+                            <h3>Pré Wedding/Save The Date</h3>
+                        </div>
+                        <p>Crie e envie o Save The Date para seus convidados e acompanhe as respostas.</p>
+                        <a href="pre-wedding.html" class="btn">Ver Save The Date</a>
+                    </div>
+                    <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/invitation.svg" alt="Ícone Convites"></div>
+                            <h3>Convites/Check-In</h3>
+                        </div>
+                        <p>Gerencie o envio de convites digitais e facilite o check-in no dia do evento.</p>
+                        <a href="convites-checkin.html" class="btn">Gerenciar Convites</a>
+                    </div>
+                    <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/roles.svg" alt="Ícone Papéis"></div>
+                            <h3>Divisão de Papéis</h3>
+                        </div>
+                        <p>Defina padrinhos, madrinhas, daminhas, pajens e suas funções especiais.</p>
+                        <a href="divisao-papeis.html" class="btn">Definir Papéis</a>
+                    </div>
+                    <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/tables.svg" alt="Ícone Mesas"></div>
+                            <h3>Organização de Mesas</h3>
+                        </div>
+                        <p>Planeje a disposição dos seus convidados nas mesas de forma intuitiva.</p>
+                        <a href="organizacao-mesas.html" class="btn">Organizar Mesas</a>
+                    </div>
+                     <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/gifts.svg" alt="Ícone Presentes"></div>
+                            <h3>Lista de Presentes</h3>
+                        </div>
+                        <p>Crie e personalize sua lista de presentes online ou adicione cotas para lua de mel.</p>
+                        <a href="lista-presentes-noivos.html" class="btn">Ver Lista de Presentes</a>
+                    </div>
+                    <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/messages.svg" alt="Ícone Mensagens"></div>
+                            <h3>Mensagens dos Convidados</h3>
+                        </div>
+                        <p>Leia as mensagens carinhosas e os votos de felicidade dos seus convidados.</p>
+                        <a href="mensagens-noivos.html" class="btn">Ver Mensagens</a>
+                    </div>
+                    <!-- Adicione os outros cards seguindo o mesmo padrão -->
+                     <div class="management-card">
+                        <div class="card-header">
+                            <div class="card-icon"><img src="../assets/icons/timeline.svg" alt="Ícone Linha do Tempo"></div>
+                            <h3>Linha do Tempo</h3>
+                        </div>
+                        <p>Crie marcos, defina a data do casamento e acompanhe o progresso.</p>
+                        <a href="linha-do-tempo.html" class="btn">Ver Linha do Tempo</a>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const contentWrapper = document.querySelector('.noivos-content-wrapper');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            // Alternar ícone do menu
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+                mobileMenuToggle.setAttribute('aria-label', 'Fechar menu');
+                mobileMenuToggle.setAttribute('aria-expanded', 'true');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+                mobileMenuToggle.setAttribute('aria-label', 'Abrir menu');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar); // Fecha ao clicar no overlay
+        }
+
+        // Exemplo de como carregar dados do usuário (simulado)
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        // No seu app real, você pegaria isso do Firebase Auth
+        const currentUser = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+
+        // Exemplo de contagem regressiva (simulado)
+        const countdownDisplay = document.getElementById('countdown-display');
+        function updateCountdown(weddingDateStr) {
+            if (!countdownDisplay) return;
+
+            if (!weddingDateStr) {
+                 countdownDisplay.innerHTML = `
+                    <p style="font-size: 1.1rem; margin-bottom:10px;">Ainda não definiu a data do seu casamento?</p>
+                    <a href="linha-do-tempo.html" class="btn-set-date">Definir Data Agora</a>
+                `;
+                return;
+            }
+
+            const weddingDate = new Date(weddingDateStr).getTime();
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            if (distance < 0) {
+                countdownDisplay.innerHTML = `<span class="days" style="font-size: 1.5rem;">O grande dia já passou! Parabéns!</span>`;
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownDisplay.innerHTML = `
+                <span class="days">${days} dia${days !== 1 ? 's' : ''}</span>
+                <span class="time">${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}</span>
+                para o grande dia!
+            `;
+        }
+
+        // Simule a data do casamento (você pegaria isso do Firebase)
+        // const userWeddingDate = "2024-12-25T17:00:00"; // Exemplo com data
+        const userWeddingDate = null; // Exemplo sem data
+        
+        if(userWeddingDate) {
+            updateCountdown(userWeddingDate);
+            setInterval(() => updateCountdown(userWeddingDate), 1000);
+        } else {
+            updateCountdown(null);
+        }
+
+
+        // Logout (exemplo básico)
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        // const logoutBtnHeader = document.getElementById('logout-btn-header'); // Se usar no header
+
+        function handleLogout() {
+            // Aqui você chamaria firebase.auth().signOut()
+            console.log("Usuário deslogado (simulação)");
+            alert("Você foi desconectado.");
+            window.location.href = '../index.html'; // Redireciona para a home, por exemplo
+        }
+
+        if (logoutBtnSidebar) {
+            logoutBtnSidebar.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleLogout();
+            });
+        }
+        // if (logoutBtnHeader) {
+        //     logoutBtnHeader.addEventListener('click', (e) => {
+        //         e.preventDefault();
+        //         handleLogout();
+        //     });
+        // }
+
+    </script>
+</body>
+</html>

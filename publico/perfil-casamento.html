@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casamento de [Nome do Noivo(a) 1] & [Nome do Noivo(a) 2]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/publico-style.css">
+    <!-- CSS para Dialogs/Lightbox (pode ser um arquivo separado ou embutido) -->
+    <link rel="stylesheet" href="../assets/css/convidado-dialog-lightbox-style.css"> <!-- Exemplo -->
+</head>
+<body>
+    <div class="public-profile-container">
+        <header class="public-profile-header" id="public-profile-header-bg">
+            <!-- Imagem de fundo será definida via JS/CSS com base nas configs dos noivos -->
+            <div class="header-content-wrapper">
+                <div class="couple-names-display" id="public-couple-names-header">[Ana] <span style="font-size: 0.8em; vertical-align: middle;">&</span> [Bruno]</div>
+                <div class="wedding-date-display-text" id="public-wedding-date-header">25 de Dezembro de 2024</div>
+            </div>
+        </header>
+
+        <nav class="public-profile-nav">
+            <ul>
+                <li><a href="#section-home" class="active">Início</a></li>
+                <li><a href="#section-our-story">Nossa História</a></li>
+                <li id="nav-public-gift-list" style="display:none;"><a href="#section-gift-list">Lista de Presentes</a></li>
+                <li id="nav-public-messages" style="display:none;"><a href="#section-guest-messages">Deixe sua Mensagem</a></li>
+                <li id="nav-public-gallery" style="display:none;"><a href="#section-wedding-gallery">Fotos do Casamento</a></li>
+            </ul>
+        </nav>
+
+        <main class="public-profile-main-content">
+            <section id="section-home" class="public-page-section" style="padding-top: 20px; padding-bottom: 20px;"> <!-- Sem título h2 aqui -->
+                <div class="public-countdown-section" id="public-countdown-wrapper">
+                    <p class="countdown-intro-text">Contagem regressiva para o nosso grande dia!</p>
+                    <div class="time-segments-wrapper">
+                        <div class="time-segment-item"><span class="value-display" id="public-days-value">00</span><span class="label-text">Dias</span></div>
+                        <div class="time-segment-item"><span class="value-display" id="public-hours-value">00</span><span class="label-text">Horas</span></div>
+                        <div class="time-segment-item"><span class="value-display" id="public-minutes-value">00</span><span class="label-text">Minutos</span></div>
+                        <div class="time-segment-item"><span class="value-display" id="public-seconds-value">00</span><span class="label-text">Segundos</span></div>
+                    </div>
+                </div>
+                <div class="public-couple-photo-wrapper">
+                    <img src="https://via.placeholder.com/450x350/AA336A/FFFFFF?text=Foto+do+Casal" alt="Foto do Casal" id="public-couple-photo-display">
+                </div>
+                <p style="text-align:center; font-size:1.2em; color: var(--public-text-color-dark);" id="public-welcome-message">
+                    Sejam bem-vindos ao nosso cantinho especial! Estamos muito felizes em compartilhar este momento único com todos vocês.
+                    Navegue pelo site para encontrar todas as informações sobre o nosso casamento.
+                </p>
+            </section>
+
+            <section id="section-our-story" class="public-page-section">
+                <h2 class="public-section-title">Nossa História</h2>
+                <div class="public-couple-story-text-content">
+                    <p id="public-story-text-content" style="white-space: pre-line;">
+                        Era uma vez, em um dia ensolarado de primavera, nossos caminhos se cruzaram de uma forma que mudaria nossas vidas para sempre. [Nome do Noivo(a) 1] estava [fazendo algo], enquanto [Nome do Noivo(a) 2] estava [fazendo outra coisa]. Um olhar, um sorriso, uma conversa despretensiosa... e o resto, como dizem, é história.
+                        <br><br>
+                        Desde então, colecionamos momentos inesquecíveis, superamos desafios juntos e construímos uma base sólida de amor, cumplicidade e respeito mútuo. Adoramos [hobby em comum 1], [hobby em comum 2] e sonhamos em [sonho futuro do casal].
+                        <br><br>
+                        Este casamento é a celebração do nosso amor e o início de um novo capítulo maravilhoso. Mal podemos esperar para comemorar com vocês!
+                        <br><br>
+                        Com carinho,<br>
+                        <span id="public-story-signature-names">[Ana & Bruno]</span>
+                    </p>
+                </div>
+            </section>
+
+            <section id="section-gift-list" class="public-page-section" style="display:none;">
+                <h2 class="public-section-title">Lista de Presentes</h2>
+                <p class="public-section-subtitle" id="public-gift-list-message">Sua presença é o nosso maior presente! Mas, se desejar nos presentear de alguma forma, ficaremos muito felizes. Criamos algumas sugestões com carinho.</p>
+                <div class="public-gift-grid" id="public-gift-items-list">
+                    <!-- Exemplo de item (JS irá popular) -->
+                    <div class="gift-item-card-guest" data-gift-id="pub_gift1_ex">
+                        <div class="gift-image-wrapper"><img src="https://via.placeholder.com/300x230/AA336A/FFFFFF?text=Presente+1" alt="Item 1"></div>
+                        <div class="gift-info-content">
+                            <div>
+                                <h3>Item de Exemplo Um</h3>
+                                <p class="gift-description-text">Uma breve e charmosa descrição deste item maravilhoso que os noivos adorariam ganhar.</p>
+                                <p class="gift-price-display">R$ 120,00</p>
+                            </div>
+                            <button class="btn-guest btn-give-gift-action" onclick="openPublicGiftDialog('pub_gift1_ex', 'Item de Exemplo Um', '120.00', 'pix.dos.noivos@email.com')">
+                                <i class="fas fa-gift"></i> Presentear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gift-item-card-guest" data-gift-id="pub_gift2_ex_purchased">
+                        <div class="gift-image-wrapper"><img src="https://via.placeholder.com/300x230/8c2b57/FFFFFF?text=Presente+2" alt="Item 2"></div>
+                        <div class="gift-info-content">
+                            <div>
+                                <h3>Item de Exemplo Dois (Já Escolhido)</h3>
+                                <p class="gift-description-text">Este item especial já foi carinhosamente escolhido por um de nossos convidados.</p>
+                                <p class="gift-price-display">R$ 280,00</p>
+                            </div>
+                            <button class="btn-guest btn-give-gift-action disabled" disabled><i class="fas fa-check"></i> Já Presenteado</button>
+                            <p class="gift-purchased-info">Presenteado por: Amigo Querido</p>
+                        </div>
+                    </div>
+                    <!-- Fim do Exemplo -->
+                </div>
+                <p id="no-public-gifts-message" class="no-items-message" style="text-align:center; display:none; margin-top: 20px;">A lista de presentes ainda não foi divulgada ou todos os itens já foram escolhidos. Obrigado pelo seu carinho!</p>
+            </section>
+
+            <section id="section-guest-messages" class="public-page-section" style="display:none;">
+                <h2 class="public-section-title">Deixe sua Mensagem</h2>
+                <p class="public-section-subtitle">Adoraríamos receber seus votos de felicidade! Sua mensagem será um tesouro para nós.</p>
+                <form id="public-guest-message-form" class="guest-form" style="max-width: 650px; margin: 0 auto 30px auto;">
+                    <div class="form-group">
+                        <label for="public-msg-sender-name">Seu Nome:</label>
+                        <input type="text" id="public-msg-sender-name" name="public-msg-sender-name" required placeholder="Como você gostaria de ser identificado?">
+                    </div>
+                    <div class="form-group">
+                        <label for="public-msg-text-content">Sua Mensagem Carinhosa:</label>
+                        <textarea id="public-msg-text-content" name="public-msg-text-content" rows="5" required placeholder="Escreva aqui seus votos e felicitações..."></textarea>
+                    </div>
+                    <div style="text-align:center;">
+                        <button type="submit" class="btn-guest"><i class="fas fa-paper-plane"></i> Enviar Mensagem</button>
+                    </div>
+                    <p id="public-msg-confirmation" class="rsvp-confirmation-message success" style="margin-top:15px; display:none;">Sua mensagem foi enviada! Muito obrigado pelo carinho.</p>
+                </form>
+
+                <h3 class="public-section-title" style="font-size: 1.8em; margin-top:50px; margin-bottom:25px;">Mural de Recados</h3>
+                <div class="public-messages-list" id="public-messages-display-list">
+                    <!-- Exemplo de mensagem (JS irá popular) -->
+                    <div class="message-item-public">
+                        <p><strong class="message-sender-name">Tia Maria Silva</strong> <span style="font-size:0.85em; color: var(--public-text-color-light);">- 20 de Julho de 2024</span></p>
+                        <p>Queridos Ana e Bruno, que a união de vocês seja repleta de amor, cumplicidade e muitas alegrias! Estamos muito felizes por fazer parte deste momento. Beijos!</p>
+                    </div>
+                    <div class="message-item-public">
+                        <p><strong class="message-sender-name">Carlos Alberto (Amigo)</strong> <span style="font-size:0.85em; color: var(--public-text-color-light);">- 18 de Julho de 2024</span></p>
+                        <p>Parabéns, casal! Que esta nova jornada seja incrível. Contem sempre comigo! Abraços!</p>
+                    </div>
+                    <!-- Fim do Exemplo -->
+                </div>
+                <p id="no-public-messages-available" class="no-items-message" style="text-align:center; display:none; margin-top: 20px;">Nenhuma mensagem pública ainda. Seja o primeiro a deixar seus votos!</p>
+            </section>
+
+            <section id="section-wedding-gallery" class="public-page-section" style="display:none;">
+                <h2 class="public-section-title">Fotos do Casamento</h2>
+                <p class="public-section-subtitle">Reviva conosco os momentos mágicos do nosso grande dia!</p>
+                <div class="media-gallery-grid-guest" id="public-wedding-gallery-items">
+                    <!-- Exemplo (JS irá popular) -->
+                    <div class="media-item-card-guest" onclick="openPublicMediaLightbox('https://via.placeholder.com/800x600/AA336A/FFFFFF?text=Foto+Pública+1', 'photo', 'Legenda da foto 1')">
+                        <div class="media-content-wrapper"><img src="https://via.placeholder.com/300x220/AA336A/FFFFFF?text=Foto+Pública+1" alt="Foto 1"></div>
+                        <p class="media-caption-text">Legenda da foto 1</p>
+                    </div>
+                     <!-- Fim do Exemplo -->
+                </div>
+                <p id="no-public-gallery-items" class="no-items-message" style="text-align:center; display:none; margin-top: 20px;">As fotos e vídeos oficiais ainda não foram publicados. Volte em breve!</p>
+            </section>
+        </main>
+
+        <footer class="public-profile-footer">
+            <p><span class="footer-couple-names-text" id="public-footer-couple-names">[Ana & Bruno]</span></p>
+            <p>Site de casamento criado com <i class="fas fa-heart" style="color: var(--public-primary-color);"></i> por <a href="[LINK_PARA_SEU_SITE_NUPTIALLINK]" target="_blank" rel="noopener noreferrer">NuptialLink</a>.</p>
+            <p>© <span id="public-current-year">2024</span>. Todos os direitos reservados aos noivos.</p>
+        </footer>
+    </div>
+
+    <!-- Dialog para Presentear (Público) - Reutiliza estrutura do convidado-style.css ou noivos-dashboard.css -->
+    <div id="public-give-gift-dialog-overlay" class="dialog-overlay"> <!-- ID específico -->
+        <div class="dialog-content" id="public-give-gift-dialog-content"> <!-- ID específico -->
+            <h3 id="public-gift-dialog-title-text" class="dialog-title-guest">Presentear com: [Nome do Presente]</h3>
+            <p>Que alegria saber que você escolheu presentear os noivos com <strong id="public-gift-dialog-item-name-text">este item</strong>!</p>
+            
+            <div id="public-pix-instructions-area">
+                <p id="public-gift-dialog-item-value-text"><strong>Valor do item:</strong> R$ <span id="public-gift-dialog-item-value-content">0,00</span></p>
+                <p>Para confirmar sua intenção, você pode realizar um PIX para a chave abaixo. Assim que fizer, por favor, preencha os campos mais abaixo para nos avisar!</p>
+                <p id="public-pix-key-display-text" style="font-weight:bold; font-size:1.1em; color:var(--public-text-color-dark); text-align:center; padding:12px; background-color:var(--public-primary-color-light); border-radius:6px; margin: 10px 0; border: 1px dashed var(--public-primary-color); word-break: break-all;">[CHAVE PIX AQUI]</p>
+                <div style="text-align:center;">
+                    <button class="btn-guest btn-guest-secondary" id="public-copy-pix-key-action-btn" style="font-size:0.9em; padding:8px 15px;"><i class="fas fa-copy"></i> Copiar Chave PIX</button>
+                </div>
+            </div>
+
+             <div id="public-monetary-contribution-area" style="display:none;" class="guest-form">
+                <div class="form-group">
+                    <label for="public-contribution-amount-input">Qual valor você gostaria de contribuir (R$)?</label>
+                    <input type="number" id="public-contribution-amount-input" name="public-contribution-amount-input" step="0.01" min="1" placeholder="Ex: 50.00">
+                </div>
+            </div>
+            <hr style="margin: 20px 0;">
+            <p>Após realizar o PIX (ou decidir contribuir), por favor, preencha os campos abaixo para que possamos agradecer e registrar seu carinho (mesmo que seja anônimo, só nos avise!):</p>
+            <form id="public-gift-confirmation-details-form" class="guest-form">
+                <input type="hidden" id="public-confirm-gift-id-field" name="public-confirm-gift-id-field">
+                <div class="form-group">
+                    <label for="public-gifter-name-input">Seu Nome (para identificarmos o presente):</label>
+                    <input type="text" id="public-gifter-name-input" name="public-gifter-name-input" required placeholder="Seu nome ou "Presente Anônimo"">
+                </div>
+                <div class="form-group">
+                    <label for="public-gifter-message-input">Deixe uma mensagem junto com o presente (opcional):</label>
+                    <textarea id="public-gifter-message-input" name="public-gifter-message-input" rows="3" placeholder="Sua mensagem especial..."></textarea>
+                </div>
+                <div class="dialog-actions-guest"> <!-- Reutiliza classe do convidado -->
+                    <button type="button" class="btn-guest btn-guest-secondary" id="public-cancel-give-gift-action-btn">Cancelar</button>
+                    <button type="submit" class="btn-guest"><i class="fas fa-check-circle"></i> Confirmei o Presente!</button>
+                </div>
+            </form>
+            <p id="public-gift-dialog-confirmation-msg" class="rsvp-confirmation-message success" style="margin-top:15px;"></p>
+        </div>
+    </div>
+
+    <!-- Lightbox para Galeria Pública - Reutiliza estrutura do convidado-style.css ou noivos-dashboard.css -->
+    <div id="public-media-lightbox-overlay" class="dialog-overlay"> <!-- ID específico -->
+        <div id="public-media-lightbox-content" class="lightbox-content"> <!-- ID específico -->
+            <img id="public-lightbox-image-display" src="#" alt="Mídia em tela cheia" style="display:none;">
+            <video id="public-lightbox-video-display" controls style="display:none;"></video>
+            <button id="public-close-lightbox-action-btn" class="close-lightbox-btn"><i class="fas fa-times"></i></button> <!-- Reutiliza classe do noivos -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DADOS GLOBAIS DO CASAMENTO (VIRIAM DO FIREBASE PELO SLUG DA URL) ---
+            const weddingData = {
+                coupleNames: "Ana & Bruno",
+                weddingDate: "2024-12-25T17:00:00Z",
+                headerImageUrl: "https://via.placeholder.com/1500x500/AA336A/FFFFFF?text=Nosso+Casamento", // Exemplo
+                couplePhotoUrl: "https://via.placeholder.com/450x350/8c2b57/FFFFFF?text=Ana+%26+Bruno",
+                story: "Nossa história começou em um café charmoso, entre risadas e um café compartilhado. Desde então, cada dia tem sido uma nova página de amor, cumplicidade e sonhos construídos a dois. Adoramos viajar, experimentar novas culinárias e passar tempo com nossos amigos e familiares. Este casamento é a celebração da nossa união e o começo de uma vida inteira de aventuras juntos.",
+                giftListMessage: "Sua presença é o nosso maior presente! Mas, se desejar nos presentear, criamos algumas sugestões com carinho para nosso novo lar ou para nossa lua de mel.",
+                showGiftList: true,
+                allowPublicMessages: true,
+                showPostEventGallery: false, // Ex: ainda não aconteceu ou não liberaram
+                themeColor: "#AA336A", // Cor primária do casamento
+                fontFamily: "'Playfair Display', serif" // Fonte para títulos
+                // ... outros dados como locais, cardápio, etc., se forem públicos
+            };
+
+            // --- APLICAR CONFIGURAÇÕES GLOBAIS ---
+            document.title = `Casamento de ${weddingData.coupleNames}`;
+            document.documentElement.style.setProperty('--public-primary-color', weddingData.themeColor);
+            document.documentElement.style.setProperty('--public-primary-color-dark',shadeColor(weddingData.themeColor, -20));
+            document.documentElement.style.setProperty('--public-primary-color-light',shadeColor(weddingData.themeColor, 80));
+            document.documentElement.style.setProperty('--public-font-headings', weddingData.fontFamily);
+
+            // Header
+            const headerCoupleNamesEl = document.getElementById('public-couple-names-header');
+            if(headerCoupleNamesEl) headerCoupleNamesEl.textContent = weddingData.coupleNames.replace(" & ", " & "); // Formatação
+            
+            const headerWeddingDateEl = document.getElementById('public-wedding-date-header');
+            if(headerWeddingDateEl && weddingData.weddingDate) {
+                headerWeddingDateEl.textContent = new Date(weddingData.weddingDate).toLocaleDateString('pt-BR', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+            }
+            const headerBgEl = document.getElementById('public-profile-header-bg');
+            if(headerBgEl && weddingData.headerImageUrl) {
+                headerBgEl.style.backgroundImage = `url('${weddingData.headerImageUrl}')`;
+            }
+
+            // Foto do Casal
+            const couplePhotoEl = document.getElementById('public-couple-photo-display');
+            if(couplePhotoEl) couplePhotoEl.src = weddingData.couplePhotoUrl;
+
+            // Nossa História
+            const storyTextEl = document.getElementById('public-story-text-content');
+            if(storyTextEl) storyTextEl.textContent = weddingData.story;
+            const storySignatureEl = document.getElementById('public-story-signature-names');
+            if(storySignatureEl) storySignatureEl.textContent = weddingData.coupleNames;
+
+            // Footer
+            const footerCoupleNamesEl = document.getElementById('public-footer-couple-names');
+            if(footerCoupleNamesEl) footerCoupleNamesEl.textContent = weddingData.coupleNames;
+            document.getElementById('public-current-year').textContent = new Date().getFullYear();
+
+
+            // --- COUNTDOWN ---
+            const countdownWrapper = document.getElementById('public-countdown-wrapper');
+            if(weddingData.weddingDate && countdownWrapper) {
+                const targetDate = new Date(weddingData.weddingDate).getTime();
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    const distance = targetDate - now;
+
+                    if (distance < 0) {
+                        countdownWrapper.innerHTML = "<p style='font-size:1.5em; padding:10px; color: var(--public-primary-color);'>O grande dia já aconteceu! Celebramos nosso amor!</p>";
+                        return;
+                    }
+                    document.getElementById('public-days-value').textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+                    document.getElementById('public-hours-value').textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                    document.getElementById('public-minutes-value').textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                    document.getElementById('public-seconds-value').textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+                }
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            } else if (countdownWrapper) {
+                countdownWrapper.style.display = 'none';
+            }
+
+            // --- CONTROLE DE VISIBILIDADE DAS SEÇÕES ---
+            if (weddingData.showGiftList) {
+                document.getElementById('section-gift-list').style.display = 'block';
+                document.getElementById('nav-public-gift-list').style.display = 'inline-block';
+                document.getElementById('public-gift-list-message').textContent = weddingData.giftListMessage;
+                // TODO: Carregar itens da lista de presentes aqui
+            }
+            if (weddingData.allowPublicMessages) {
+                document.getElementById('section-guest-messages').style.display = 'block';
+                document.getElementById('nav-public-messages').style.display = 'inline-block';
+                // TODO: Carregar mensagens públicas aqui
+            }
+            if (weddingData.showPostEventGallery) {
+                document.getElementById('section-wedding-gallery').style.display = 'block';
+                document.getElementById('nav-public-gallery').style.display = 'inline-block';
+                // TODO: Carregar fotos da galeria aqui
+            }
+            
+            // --- NAVEGAÇÃO SUAVE E ATIVAÇÃO DE LINK ---
+            document.querySelectorAll('.public-profile-nav a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetSection = document.querySelector(this.getAttribute('href'));
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        document.querySelectorAll('.public-profile-nav a').forEach(navA => navA.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+            // Ativar link da nav com base no scroll (opcional, mais complexo)
+            // ...
+
+            // --- DIALOG DE PRESENTEAR (PÚBLICO) ---
+            const publicGiftDialogOverlay = document.getElementById('public-give-gift-dialog-overlay');
+            const cancelPublicGiftActionBtn = document.getElementById('public-cancel-give-gift-action-btn');
+            const copyPublicPixActionBtn = document.getElementById('public-copy-pix-key-action-btn');
+            const publicGiftConfirmForm = document.getElementById('public-gift-confirmation-details-form');
+            const publicGiftConfirmMsg = document.getElementById('public-gift-dialog-confirmation-msg');
+
+            if (cancelPublicGiftActionBtn) cancelPublicGiftActionBtn.addEventListener('click', () => publicGiftDialogOverlay.classList.remove('active'));
+            if (publicGiftDialogOverlay) publicGiftDialogOverlay.addEventListener('click', (e) => { 
+                if(e.target === publicGiftDialogOverlay) publicGiftDialogOverlay.classList.remove('active'); 
+            });
+
+            window.openPublicGiftDialog = function(giftId, giftName, giftValue, pixKey, isMonetary = false) {
+                document.getElementById('public-gift-dialog-title-text').textContent = `Presentear com: ${giftName}`;
+                document.getElementById('public-gift-dialog-item-name-text').textContent = giftName;
+                document.getElementById('public-gift-dialog-item-value-content').textContent = parseFloat(giftValue).toFixed(2);
+                document.getElementById('public-pix-key-display-text').textContent = pixKey || "[Chave PIX dos Noivos]";
+                document.getElementById('public-confirm-gift-id-field').value = giftId;
+                publicGiftConfirmForm.reset();
+                publicGiftConfirmMsg.style.display = 'none';
+                publicGiftConfirmMsg.className = 'rsvp-confirmation-message success'; // Reset class
+
+                const monetaryArea = document.getElementById('public-monetary-contribution-area');
+                const valueDisplayArea = document.getElementById('public-gift-dialog-item-value-text');
+
+                if (isMonetary) {
+                    monetaryArea.style.display = 'block';
+                    document.getElementById('public-contribution-amount-input').value = parseFloat(giftValue).toFixed(2);
+                    if(valueDisplayArea) valueDisplayArea.style.display = 'none';
+                } else {
+                    monetaryArea.style.display = 'none';
+                    if(valueDisplayArea) valueDisplayArea.style.display = 'block';
+                }
+                publicGiftDialogOverlay.classList.add('active');
+            }
+            if(copyPublicPixActionBtn) { 
+                copyPublicPixActionBtn.addEventListener('click', () => {
+                    const pixKeyText = document.getElementById('public-pix-key-display-text').textContent;
+                    navigator.clipboard.writeText(pixKeyText).then(() => {
+                        alert('Chave PIX copiada!');
+                    }).catch(err => console.error('Erro ao copiar PIX: ', err));
+                });
+            }
+            if(publicGiftConfirmForm) {
+                publicGiftConfirmForm.addEventListener('submit', function(e){
+                    e.preventDefault();
+                    // TODO: Enviar dados para Firebase
+                    publicGiftConfirmMsg.textContent = "Obrigado por presentear! Sua confirmação foi registrada.";
+                    publicGiftConfirmMsg.style.display = 'block';
+                    // setTimeout(() => { publicGiftDialogOverlay.classList.remove('active'); }, 3000);
+                });
+            }
+
+            // --- LIGHTBOX DA GALERIA PÚBLICA ---
+            const publicLightboxOverlayEl = document.getElementById('public-media-lightbox-overlay');
+            const publicLightboxImageEl = document.getElementById('public-lightbox-image-display');
+            const publicLightboxVideoEl = document.getElementById('public-lightbox-video-display');
+            const publicCloseLightboxActionBtn = document.getElementById('public-close-lightbox-action-btn');
+
+            window.openPublicMediaLightbox = function(mediaUrl, mediaType, caption) {
+                if (mediaType === 'image' || mediaType === 'photo') {
+                    publicLightboxImageEl.src = mediaUrl;
+                    publicLightboxImageEl.alt = caption || "Imagem do casamento";
+                    publicLightboxImageEl.style.display = 'block';
+                    publicLightboxVideoEl.style.display = 'none';
+                    publicLightboxVideoEl.pause(); publicLightboxVideoEl.currentTime = 0;
+                } else if (mediaType === 'video') {
+                    publicLightboxVideoEl.src = mediaUrl;
+                    publicLightboxVideoEl.style.display = 'block';
+                    publicLightboxImageEl.style.display = 'none';
+                    publicLightboxVideoEl.play();
+                }
+                publicLightboxOverlayEl.classList.add('active');
+            }
+            if(publicCloseLightboxActionBtn) publicCloseLightboxActionBtn.addEventListener('click', () => {
+                publicLightboxOverlayEl.classList.remove('active');
+                publicLightboxImageEl.src = '#'; publicLightboxVideoEl.src = '';
+                publicLightboxVideoEl.pause(); publicLightboxVideoEl.currentTime = 0;
+            });
+             if(publicLightboxOverlayEl) publicLightboxOverlayEl.addEventListener('click', (e) => { 
+                if(e.target === publicLightboxOverlayEl) publicCloseLightboxActionBtn.click(); 
+            });
+
+            // --- FORMULÁRIO DE MENSAGEM PÚBLICA ---
+            const publicMsgForm = document.getElementById('public-guest-message-form');
+            const publicMsgConfirm = document.getElementById('public-msg-confirmation');
+            if(publicMsgForm) {
+                publicMsgForm.addEventListener('submit', function(e){
+                    e.preventDefault();
+                    // TODO: Enviar mensagem para Firebase
+                    publicMsgConfirm.style.display = 'block';
+                    this.reset();
+                    setTimeout(() => { publicMsgConfirm.style.display = 'none'; }, 4000);
+                });
+            }
+
+            // Função para escurecer/clarear cores (para variações da cor primária)
+            function shadeColor(color, percent) {
+                let R = parseInt(color.substring(1,3),16);
+                let G = parseInt(color.substring(3,5),16);
+                let B = parseInt(color.substring(5,7),16);
+
+                R = parseInt(R * (100 + percent) / 100);
+                G = parseInt(G * (100 + percent) / 100);
+                B = parseInt(B * (100 + percent) / 100);
+
+                R = (R<255)?R:255;  
+                G = (G<255)?G:255;  
+                B = (B<255)?B:255;  
+
+                R = Math.round(R);
+                G = Math.round(G);
+                B = Math.round(B);
+
+                const RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+                const GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+                const BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+                return "#"+RR+GG+BB;
+            }
+
+            // TODO: Lógica para carregar todos os dados dinâmicos do casamento do Firebase
+            // com base no slug da URL (ex: /casamento/ana-e-bruno)
+            // Isso inclui: nomes, data, história, cor do tema, fonte, lista de presentes, mensagens, fotos, etc.
+        });
+    </script>
+</body>
+</html>

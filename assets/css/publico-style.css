@@ -1,0 +1,326 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap'); /* Fonte caligráfica */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap'); /* Fonte serifada elegante */
+
+:root {
+    /* Cores serão carregadas dinamicamente das configs dos noivos, mas definimos defaults */
+    --public-primary-color: #AA336A; /* Default, será sobrescrito */
+    --public-primary-color-dark: #8c2b57; /* Default */
+    --public-primary-color-light: #fdeef5; /* Default */
+    
+    --public-text-color-dark: #333333;
+    --public-text-color-medium: #585858;
+    --public-text-color-light: #7f8c8d;
+    
+    --public-bg-color: #fdfaf7; /* Um creme muito suave */
+    --public-card-bg: #ffffff;
+    --public-border-color: #e8e8e8;
+    --public-shadow-color: rgba(0, 0, 0, 0.07);
+
+    --public-font-body: 'Montserrat', sans-serif;
+    --public-font-headings: 'Playfair Display', serif; /* Fonte serifada para títulos */
+    --public-font-display: 'Great Vibes', cursive; /* Caligráfica para nomes */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--public-font-body);
+    background-color: var(--public-bg-color);
+    color: var(--public-text-color-medium);
+    line-height: 1.7;
+}
+
+.public-profile-container { /* Container principal da página */
+    width: 100%;
+}
+
+/* --- Header Público --- */
+.public-profile-header {
+    background-color: var(--public-primary-color); /* Cor primária default */
+    color: white;
+    padding: 60px 20px 70px; /* Padding generoso */
+    text-align: center;
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+    /* box-shadow: 0 3px 10px rgba(0,0,0,0.1); */
+}
+.public-profile-header::before { /* Overlay sutil se houver imagem de fundo */
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.15); /* Pode ajustar opacidade */
+    z-index: 1;
+}
+.public-profile-header .header-content-wrapper {
+    position: relative;
+    z-index: 2;
+}
+.public-profile-header .couple-names-display {
+    font-family: var(--public-font-display);
+    font-size: 4.5em; /* Bem grande */
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.25);
+    line-height: 1.1;
+}
+.public-profile-header .wedding-date-display-text { /* Renomeado para clareza */
+    font-family: var(--public-font-headings);
+    font-size: 1.6em; /* Maior */
+    opacity: 0.95;
+    letter-spacing: 1px;
+}
+
+/* --- Navegação Pública --- */
+.public-profile-nav {
+    background-color: var(--public-card-bg);
+    border-bottom: 1px solid var(--public-border-color);
+    padding: 12px 0;
+    margin-bottom: 40px; /* Espaço antes do conteúdo */
+    position: sticky;
+    top: 0;
+    z-index: 999; /* Abaixo do header, mas acima do conteúdo */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.public-profile-nav ul {
+    list-style-type: none;
+    text-align: center;
+}
+.public-profile-nav li {
+    display: inline-block;
+    margin: 0 18px; /* Espaçamento entre links */
+}
+.public-profile-nav a {
+    text-decoration: none;
+    color: var(--public-text-color-medium);
+    font-weight: 600; /* Mais forte */
+    padding: 10px 5px; /* Padding vertical e horizontal */
+    font-size: 1.05em;
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+    border-bottom: 3px solid transparent; /* Borda sutil para estado ativo/hover */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.public-profile-nav a:hover,
+.public-profile-nav a.active {
+    color: var(--public-primary-color);
+    border-bottom-color: var(--public-primary-color);
+}
+
+/* --- Conteúdo Principal Público --- */
+.public-profile-main-content {
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 0 20px; /* Padding lateral */
+}
+
+.public-page-section { /* Estilo para cada seção da página */
+    background-color: var(--public-card-bg);
+    padding: 40px 35px; /* Padding interno maior */
+    border-radius: 12px; /* Bordas mais arredondadas */
+    box-shadow: 0 6px 20px var(--public-shadow-color); /* Sombra mais pronunciada */
+    margin-bottom: 50px; /* Espaço maior entre seções */
+}
+.public-page-section:last-of-type {
+    margin-bottom: 20px; /* Menor margem para a última seção */
+}
+
+.public-section-title {
+    font-family: var(--public-font-headings);
+    font-size: 2.5em; /* Título de seção maior */
+    color: var(--public-primary-color);
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px; /* Mais espaço abaixo do título */
+    position: relative;
+    padding-bottom: 15px; /* Espaço para a linha decorativa */
+    font-weight: 600;
+}
+.public-section-title::after { /* Linha decorativa */
+    content: '';
+    display: block;
+    width: 80px; /* Linha maior */
+    height: 3px;
+    background-color: var(--public-primary-color);
+    opacity: 0.7;
+    margin: 15px auto 0; /* Espaço acima da linha */
+    border-radius: 2px;
+}
+.public-section-subtitle { /* Subtítulo opcional para seções */
+    text-align: center;
+    font-size: 1.1em;
+    color: var(--public-text-color-medium);
+    max-width: 700px;
+    margin: -20px auto 30px auto; /* Ajuste para ficar logo abaixo do título */
+    line-height: 1.6;
+}
+
+/* --- Estilos Comuns para Conteúdo das Seções --- */
+/* Countdown Público */
+.public-countdown-section {
+    text-align: center;
+    padding: 25px 0; /* Padding vertical */
+}
+.public-countdown-section .countdown-intro-text {
+    font-size: 1.2em;
+    color: var(--public-text-color-dark);
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+.public-countdown-section .time-segments-wrapper { /* Renomeado */
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Aumentado */
+    flex-wrap: wrap;
+}
+.public-countdown-section .time-segment-item { /* Renomeado */
+    background-color: var(--public-primary-color-light);
+    padding: 18px 22px; /* Padding maior */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    min-width: 90px; /* Mínimo para cada segmento */
+    border: 1px solid var(--public-primary-color);
+}
+.public-countdown-section .time-segment-item .value-display { /* Renomeado */
+    font-size: 2.8em; /* Valor maior */
+    font-weight: 700; /* Mais forte */
+    display: block;
+    color: var(--public-primary-color-dark);
+    line-height: 1;
+}
+.public-countdown-section .time-segment-item .label-text { /* Renomeado */
+    font-size: 0.8em;
+    text-transform: uppercase;
+    color: var(--public-primary-color);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+/* Foto e História do Casal */
+.public-couple-photo-wrapper img { /* Renomeado */
+    width: 100%;
+    max-width: 450px; /* Ajustado */
+    height: auto;
+    border-radius: 12px; /* Mais arredondado */
+    display: block;
+    margin: 0 auto 30px auto; /* Mais espaço abaixo */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    border: 5px solid white; /* Borda branca para destacar */
+}
+.public-couple-story-text-content p { /* Renomeado */
+    font-size: 1.1em;
+    text-align: justify;
+    white-space: pre-line;
+    color: var(--public-text-color-medium);
+    margin-bottom: 1em; /* Espaço entre parágrafos */
+}
+.public-couple-story-text-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Footer Público */
+.public-profile-footer {
+    text-align: center;
+    padding: 40px 20px; /* Padding maior */
+    margin-top: 50px; /* Espaço maior antes do footer */
+    background-color: #f0f2f5; /* Fundo do footer */
+    font-size: 0.95em;
+    color: var(--public-text-color-light);
+    border-top: 1px solid var(--public-border-color);
+}
+.public-profile-footer p {
+    margin-bottom: 8px;
+}
+.public-profile-footer .footer-couple-names-text { /* Renomeado */
+    font-family: var(--public-font-display);
+    font-size: 1.8em;
+    color: var(--public-primary-color);
+    display: block;
+    margin-bottom: 10px;
+}
+.public-profile-footer a {
+    color: var(--public-primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+.public-profile-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para lista de presentes, mensagens e galeria (herdados de convidado-style.css com prefixo 'public-') */
+/* Se precisar de ajustes finos, adicione aqui. Exemplo: */
+.public-gift-grid { /* Ajustes para a lista de presentes pública */
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 25px;
+}
+.public-gift-item-card .gift-info-content h3 { /* Nome do presente */
+    font-family: var(--public-font-headings);
+    font-size: 1.2em;
+    color: var(--public-text-color-dark);
+}
+
+.public-messages-list .message-item-public { /* Item de mensagem */
+    border-bottom: 1px dashed var(--public-border-color);
+    padding: 18px 0;
+}
+.public-messages-list .message-item-public:last-child { border-bottom: none; }
+.public-messages-list .message-sender-name { /* Nome de quem enviou */
+    font-weight: 600;
+    color: var(--public-primary-color);
+}
+
+.public-media-gallery .media-item-card-public { /* Card da galeria */
+    border-radius: 10px;
+}
+
+/* Responsividade para o Perfil Público */
+@media (max-width: 768px) {
+    .public-profile-header .couple-names-display {
+        font-size: 3.5em;
+    }
+    .public-profile-header .wedding-date-display-text {
+        font-size: 1.3em;
+    }
+    .public-profile-nav ul {
+        flex-direction: column; /* Empilha a navegação */
+    }
+    .public-profile-nav li {
+        margin: 5px 0;
+        width: 100%;
+    }
+    .public-profile-nav a {
+        display: block; /* Links ocupam toda a largura */
+        padding: 12px 0;
+    }
+    .public-section-title {
+        font-size: 2em;
+    }
+    .public-page-section {
+        padding: 30px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .public-profile-header .couple-names-display {
+        font-size: 2.8em;
+    }
+    .public-profile-header .wedding-date-display-text {
+        font-size: 1.1em;
+    }
+    .public-countdown-section .time-segment-item {
+        min-width: 75px;
+        padding: 12px 15px;
+    }
+    .public-countdown-section .time-segment-item .value-display {
+        font-size: 2.2em;
+    }
+}

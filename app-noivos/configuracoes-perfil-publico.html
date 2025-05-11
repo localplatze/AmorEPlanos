@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações do Perfil Público - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            vertical-align: middle; /* Melhora alinhamento com label */
+        }
+        .form-group .checkbox-label { /* Para estilizar o label do checkbox */
+            font-weight: normal;
+            display: inline;
+            vertical-align: middle;
+        }
+        .image-preview-container {
+            margin-top: 10px;
+            width: 100%;
+            max-width: 250px; /* Limita tamanho do preview */
+            height: auto;
+            border: 1px solid var(--border-color);
+            padding: 5px;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+        }
+        .image-preview-container img {
+            max-width: 100%;
+            height: auto;
+            display: none; /* Começa escondido */
+            border-radius: 4px;
+        }
+         .image-preview-container .preview-placeholder { /* Texto se não houver imagem */
+            color: var(--text-color-light);
+            font-style: italic;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .color-picker-wrapper input[type="color"] {
+            width: 50px; /* Tamanho do seletor de cor */
+            height: 40px;
+            padding: 2px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color); /* Borda sutil */
+            cursor: pointer;
+        }
+        .color-picker-wrapper input[type="text"] {
+            width: 120px !important; /* Sobrescreve o width: calc(100% - 22px) do CSS geral */
+        }
+        .save-profile-btn-container {
+            text-align: center;
+            margin-top:30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .slug-preview-container small {
+            display: block;
+            margin-top: 5px;
+            color: var(--text-color-medium);
+        }
+        .slug-preview-container #slug-preview-link {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html" class="active"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Configurações do Perfil Público</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="config-public-profile-page">
+                <form id="public-profile-settings-form">
+                    <section class="page-section general-settings">
+                        <div class="section-header">
+                            <h2><i class="fas fa-cogs" style="margin-right:10px; color: var(--primary-color);"></i>Configurações Gerais</h2>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="enable-public-profile" name="enable-public-profile" checked>
+                            <label for="enable-public-profile" class="checkbox-label">Ativar Perfil Público do Casamento</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="public-profile-slug">URL Personalizada (Slug):</label>
+                            <input type="text" id="public-profile-slug" name="public-profile-slug" placeholder="ex: ana-e-bruno-2024">
+                            <div class="slug-preview-container">
+                                <small>Seu perfil será acessível em: <a href="#" id="slug-preview-link" target="_blank" rel="noopener noreferrer">nuptial.link/casamento/<span id="slug-preview-text">ana-e-bruno-2024</span></a></small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="couple-names-display">Nomes do Casal (como aparecerá no perfil):</label>
+                            <input type="text" id="couple-names-display" name="couple-names-display" placeholder="Ex: Ana & Bruno">
+                        </div>
+                         <div class="form-group">
+                            <label for="public-wedding-date-display">Data do Casamento (texto para o perfil):</label>
+                            <input type="text" id="public-wedding-date-display" name="public-wedding-date-display" placeholder="Ex: 25 de Dezembro de 2024, às 17:00">
+                             <small class="form-text text-muted">Este texto será exibido publicamente. A data oficial é definida na Linha do Tempo.</small>
+                        </div>
+                    </section>
+
+                    <section class="page-section content-settings">
+                         <div class="section-header">
+                            <h2><i class="fas fa-file-alt" style="margin-right:10px; color: var(--primary-color);"></i>Conteúdo do Perfil</h2>
+                        </div>
+                        <div class="form-group">
+                            <label for="couple-photo">Foto Principal do Casal:</label>
+                            <input type="file" id="couple-photo" name="couple-photo" accept="image/*">
+                            <div class="image-preview-container">
+                                <img id="couple-photo-preview" src="#" alt="Preview Foto do Casal">
+                                <p class="preview-placeholder" id="couple-photo-placeholder">Nenhuma foto selecionada</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="couple-story">Nossa História (para o perfil público):</label>
+                            <textarea id="couple-story" name="couple-story" rows="6" placeholder="Compartilhe um pouco da sua história de amor..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="show-gift-list-public" name="show-gift-list-public" checked>
+                            <label for="show-gift-list-public" class="checkbox-label">Exibir Lista de Presentes no Perfil Público</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="allow-public-messages" name="allow-public-messages" checked>
+                            <label for="allow-public-messages" class="checkbox-label">Permitir que visitantes deixem mensagens (visíveis publicamente no perfil)</label>
+                        </div>
+                         <div class="form-group">
+                            <input type="checkbox" id="show-post-event-gallery-public" name="show-post-event-gallery-public">
+                            <label for="show-post-event-gallery-public" class="checkbox-label">Exibir Galeria Pós-Evento no Perfil Público (quando disponível)</label>
+                        </div>
+                    </section>
+
+                    <section class="page-section design-settings">
+                         <div class="section-header">
+                            <h2><i class="fas fa-palette" style="margin-right:10px; color: var(--primary-color);"></i>Design e Aparência</h2>
+                        </div>
+                         <div class="form-group">
+                            <label for="profile-theme-color">Cor Principal do Tema do Perfil:</label>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="profile-theme-color" name="profile-theme-color" value="#AA336A">
+                                <input type="text" id="profile-theme-color-hex" value="#AA336A" placeholder="#RRGGBB">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-font-family">Fonte Principal:</label>
+                            <select id="profile-font-family" name="profile-font-family">
+                                <option value="'Montserrat', sans-serif">Montserrat (Padrão do Sistema)</option>
+                                <option value="'Open Sans', sans-serif">Open Sans</option>
+                                <option value="'Lato', sans-serif">Lato</option>
+                                <option value="'Roboto', sans-serif">Roboto</option>
+                                <option value="'Great Vibes', cursive">Great Vibes (Cursiva Elegante)</option>
+                                <option value="'Dancing Script', cursive">Dancing Script (Cursiva Charmosa)</option>
+                                <option value="'Playfair Display', serif">Playfair Display (Serifada Clássica)</option>
+                            </select>
+                        </div>
+                        <!-- Mais opções de design podem ser adicionadas aqui -->
+                    </section>
+
+                    <div class="save-profile-btn-container">
+                        <button type="submit" class="btn btn-primary" style="padding: 12px 30px; font-size: 1.1em;"><i class="fas fa-save"></i> Salvar Configurações do Perfil</button>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // Configurações do Perfil Público
+        const couplePhotoInput = document.getElementById('couple-photo');
+        const couplePhotoPreview = document.getElementById('couple-photo-preview');
+        const couplePhotoPlaceholder = document.getElementById('couple-photo-placeholder');
+        const slugInput = document.getElementById('public-profile-slug');
+        const slugPreviewText = document.getElementById('slug-preview-text');
+        const slugPreviewLink = document.getElementById('slug-preview-link');
+        const colorPicker = document.getElementById('profile-theme-color');
+        const colorHexInput = document.getElementById('profile-theme-color-hex');
+        const publicProfileForm = document.getElementById('public-profile-settings-form');
+
+        if (couplePhotoInput && couplePhotoPreview && couplePhotoPlaceholder) {
+            couplePhotoInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        couplePhotoPreview.src = e.target.result;
+                        couplePhotoPreview.style.display = 'block';
+                        couplePhotoPlaceholder.style.display = 'none';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    couplePhotoPreview.src = '#';
+                    couplePhotoPreview.style.display = 'none';
+                    couplePhotoPlaceholder.style.display = 'block';
+                }
+            });
+        }
+
+        function updateSlugPreview() {
+            const slugValue = slugInput.value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            slugPreviewText.textContent = slugValue || "[seu-slug-aqui]";
+            slugPreviewLink.href = `https://nuptial.link/casamento/${slugValue || "[seu-slug-aqui]"}`; // Domínio de exemplo
+        }
+        if (slugInput && slugPreviewText && slugPreviewLink) {
+            slugInput.addEventListener('input', updateSlugPreview);
+            updateSlugPreview(); // Inicializa
+        }
+
+        if (colorPicker && colorHexInput) {
+            colorPicker.addEventListener('input', function() {
+                colorHexInput.value = this.value;
+            });
+            colorHexInput.addEventListener('change', function() { // 'change' para validar após sair do campo
+                if (/^#([0-9A-F]{3}){1,2}$/i.test(this.value)) { // Valida HEX 3 ou 6 dígitos
+                    colorPicker.value = this.value;
+                } else {
+                    // Opcional: feedback de erro se o HEX for inválido, ou reverter para o valor do colorPicker
+                    this.value = colorPicker.value; 
+                }
+            });
+        }
+
+        if(publicProfileForm) {
+            publicProfileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // TODO: Coletar todos os dados do formulário
+                const formData = new FormData(publicProfileForm);
+                const settings = {};
+                for (let [key, value] of formData.entries()) {
+                    if (publicProfileForm.elements[key].type === 'checkbox') {
+                        settings[key] = publicProfileForm.elements[key].checked;
+                    } else {
+                        settings[key] = value;
+                    }
+                }
+                console.log("Configurações a serem salvas:", settings);
+                // TODO: Salvar 'settings' no Firebase em /weddings/{weddingId}/publicProfile e /settings
+                alert('Configurações do perfil público salvas com sucesso (simulação)!');
+            });
+        }
+        
+        // TODO: JS para carregar configurações salvas do Firebase ao carregar a página
+        // e popular os campos do formulário, incluindo o preview da imagem e o slug.
+    </script>
+</body>
+</html>

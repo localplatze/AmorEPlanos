@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap'); /* Fonte para nomes dos noivos */
+
+:root {
+    --guest-primary-color: #AA336A; /* Cor principal do casamento (mesma dos noivos) */
+    --guest-primary-color-dark: #8c2b57;
+    --guest-primary-color-light: #fdeef5;
+    --guest-text-color-dark: #34495e;
+    --guest-text-color-medium: #555e68;
+    --guest-text-color-light: #7f8c8d;
+    --guest-bg-color: #fdfcfa; /* Um branco levemente off-white/creme */
+    --guest-card-bg: #ffffff;
+    --guest-border-color: #e0e0e0;
+    --guest-shadow-color: rgba(0, 0, 0, 0.08);
+    --guest-font-family-body: 'Montserrat', sans-serif;
+    --guest-font-family-headings: 'Montserrat', sans-serif; /* Pode ser diferente se desejar */
+    --guest-font-family-display: 'Great Vibes', cursive; /* Para nomes dos noivos */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--guest-font-family-body);
+    background-color: var(--guest-bg-color);
+    color: var(--guest-text-color-medium);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.guest-app-container { /* Envolve todo o conteúdo da página do convidado */
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Header do Convidado --- */
+.guest-header {
+    background-color: var(--guest-primary-color);
+    color: white;
+    padding: 20px 0;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+}
+
+.guest-header .header-content {
+    width: 90%;
+    max-width: 1100px; /* Aumentar um pouco para mais espaço */
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Para responsividade */
+}
+
+.guest-header .couple-names h1 {
+    margin: 0;
+    font-size: 2.2em; /* Aumentado */
+    font-family: var(--guest-font-family-display);
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+.guest-nav ul {
+    list-style-type: none;
+    display: flex;
+    gap: 20px; /* Aumentado */
+    align-items: center;
+    flex-wrap: wrap; /* Para responsividade */
+    justify-content: center; /* Centraliza em mobile quando quebra linha */
+}
+
+.guest-nav ul li a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 0.95em;
+    font-weight: 500;
+    padding: 8px 5px; /* Ajustado */
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+.guest-nav ul li a:hover,
+.guest-nav ul li a.active {
+    color: white;
+    border-bottom-color: white;
+}
+.guest-nav ul li a .nav-icon {
+    margin-right: 6px;
+}
+
+/* --- Conteúdo Principal do Convidado --- */
+.guest-main-content {
+    width: 90%;
+    max-width: 950px; /* Um pouco menor que o header */
+    margin: 30px auto; /* Aumentada margem superior/inferior */
+    padding: 0 15px;
+    flex-grow: 1;
+}
+
+/* --- Estilos Comuns (Cards, Botões, etc.) --- */
+.guest-page-section {
+    background-color: var(--guest-card-bg);
+    border-radius: 12px;
+    padding: 30px; /* Aumentado */
+    box-shadow: 0 5px 15px var(--guest-shadow-color); /* Sombra mais pronunciada */
+    margin-bottom: 30px;
+}
+.guest-page-section:last-child {
+    margin-bottom: 0;
+}
+
+.guest-section-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.guest-section-header h2 {
+    font-family: var(--guest-font-family-headings);
+    font-size: 2em; /* Aumentado */
+    color: var(--guest-primary-color);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+.guest-section-header p.subtitle {
+    font-size: 1.05em;
+    color: var(--guest-text-color-medium);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-guest {
+    background-color: var(--guest-primary-color);
+    color: white;
+    padding: 12px 25px; /* Aumentado */
+    text-decoration: none;
+    border-radius: 8px; /* Mais arredondado */
+    display: inline-block;
+    font-size: 1em;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.btn-guest:hover {
+    background-color: var(--guest-primary-color-dark);
+    transform: translateY(-2px);
+}
+.btn-guest-secondary {
+    background-color: var(--guest-text-color-light);
+}
+.btn-guest-secondary:hover {
+    background-color: var(--guest-text-color-medium);
+}
+.btn-guest-success { /* Para botão de confirmar RSVP */
+    background-color: #27ae60;
+}
+.btn-guest-success:hover {
+    background-color: #229954;
+}
+
+/* Formulários */
+.guest-form .form-group {
+    margin-bottom: 20px;
+}
+.guest-form .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--guest-text-color-dark);
+}
+.guest-form .form-group input[type="text"],
+.guest-form .form-group input[type="email"],
+.guest-form .form-group textarea,
+.guest-form .form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--guest-border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: var(--guest-font-family-body);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.guest-form .form-group input:focus,
+.guest-form .form-group textarea:focus,
+.guest-form .form-group select:focus {
+    outline: none;
+    border-color: var(--guest-primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(170, 51, 106, 0.15);
+}
+.guest-form .form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+.guest-form .radio-group label {
+    margin-right: 20px;
+    font-weight: normal;
+    cursor: pointer;
+    display: inline-flex; /* Para alinhar melhor o radio button */
+    align-items: center;
+}
+.guest-form .radio-group input[type="radio"] {
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+
+/* --- Footer do Convidado --- */
+.guest-footer {
+    text-align: center;
+    padding: 30px 0; /* Aumentado */
+    margin-top: 40px;
+    background-color: #f0f2f5; /* Um cinza um pouco mais claro que o noivos */
+    font-size: 0.9em;
+    color: var(--guest-text-color-medium);
+    border-top: 1px solid var(--guest-border-color);
+}
+.guest-footer p {
+    margin: 0;
+}
+.guest-footer .couple-names-footer {
+    font-family: var(--guest-font-family-display);
+    font-size: 1.5em;
+    color: var(--guest-primary-color);
+    display: block; /* Para ficar em linha separada */
+    margin-bottom: 5px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .guest-header .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .guest-nav ul {
+        gap: 10px; /* Reduz gap em mobile */
+        font-size: 0.9em; /* Reduz tamanho da fonte */
+        justify-content: center;
+    }
+    .guest-nav ul li a {
+        padding: 8px 3px; /* Menos padding lateral */
+    }
+
+    .guest-section-header h2 {
+        font-size: 1.7em;
+    }
+    .guest-page-section {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+     .guest-header .couple-names h1 {
+        font-size: 1.8em;
+    }
+    .guest-nav ul {
+        flex-direction: column; /* Empilha links da nav em telas muito pequenas */
+        width: 100%;
+        align-items: center;
+    }
+    .guest-nav ul li {
+        width: 100%;
+        text-align: center;
+    }
+     .guest-nav ul li a {
+        display: block;
+        width: 100%;
+    }
+}

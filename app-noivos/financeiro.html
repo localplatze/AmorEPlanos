@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento Financeiro - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        /* Estilos específicos para esta página podem ir aqui ou no CSS principal */
+        .pizza-chart-container {
+            min-height: 300px; /* Garante espaço para o gráfico */
+        }
+        .payment-calendar {
+             min-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <!-- Sidebar (Copie do dashboard.html e ajuste o link ativo) -->
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html" class="active"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <!-- Header (Copie do dashboard.html) -->
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Gerenciamento Financeiro</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="financeiro-page">
+                <section class="summary-cards-grid">
+                    <div class="summary-card-item">
+                        <h4><i class="fas fa-bullseye" style="margin-right: 5px;"></i>Custo Total Estimado</h4>
+                        <span class="amount" id="total-estimado">R$ 0,00</span>
+                    </div>
+                    <div class="summary-card-item">
+                        <h4><i class="fas fa-check-circle" style="margin-right: 5px; color: #27ae60;"></i>Total Pago</h4>
+                        <span class="amount" id="total-pago" style="color: #27ae60;">R$ 0,00</span>
+                    </div>
+                    <div class="summary-card-item">
+                        <h4><i class="fas fa-hourglass-half" style="margin-right: 5px; color: #e67e22;"></i>Total Restante</h4>
+                        <span class="amount" id="total-restante" style="color: #e67e22;">R$ 0,00</span>
+                    </div>
+                </section>
+
+                <section class="page-section pizza-chart-container">
+                    <h2><i class="fas fa-chart-pie" style="margin-right: 8px;"></i>Custos por Categoria</h2>
+                    <div class="chart-placeholder">
+                         <canvas id="costsChart" style="max-height: 300px;"></canvas> <!-- Chart.js será renderizado aqui -->
+                        <!-- <p>Gráfico de Pizza aparecerá aqui.</p> -->
+                    </div>
+                </section>
+
+                <section class="page-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-list-ul" style="margin-right: 8px;"></i>Lista de Despesas</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="open-expense-dialog-btn"><i class="fas fa-plus"></i> Adicionar Despesa</button>
+                        </div>
+                    </div>
+
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <label for="filter-category">Categoria:</label>
+                            <select id="filter-category" name="filter-category">
+                                <option value="all">Todas</option>
+                                <!-- JS popula -->
+                            </select>
+                        </div>
+                         <div class="filter-group">
+                            <label for="filter-payment-status">Status Pag.:</label>
+                            <select id="filter-payment-status" name="filter-payment-status">
+                                <option value="all">Todos</option>
+                                <option value="pago">Pago</option>
+                                <option value="parcial">Parcialmente Pago</option>
+                                <option value="pendente">Pendente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Nome da Despesa</th>
+                                <th>Categoria</th>
+                                <th>Estimativa</th>
+                                <th>Preço Real</th>
+                                <th>Progresso Pago</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expense-table-body">
+                            <tr>
+                                <td>Decoração Igreja</td>
+                                <td>Decoração</td>
+                                <td>R$ 5.000,00</td>
+                                <td>R$ 4.800,00</td>
+                                <td>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar-fill" style="width: 100%; background-color: #27ae60;"></div>
+                                    </div>
+                                    <span class="progress-bar-text">R$ 4.800,00 / R$ 4.800,00 (100%)</span>
+                                </td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-secondary btn-sm" onclick="viewExpenseDetails('expenseId1')" title="Detalhes"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-secondary btn-sm" onclick="editExpense('expenseId1')" title="Editar"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteExpense('expenseId1')" title="Excluir"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <!-- Mais despesas aqui -->
+                        </tbody>
+                    </table>
+                    <p id="no-expenses-message" class="no-items-message" style="display:none;">Nenhuma despesa cadastrada ainda.</p>
+                </section>
+
+                <section class="page-section payment-calendar">
+                    <h2><i class="fas fa-calendar-alt" style="margin-right: 8px;"></i>Calendário de Pagamentos Futuros</h2>
+                    <div id="payment-timeline" class="chart-placeholder">
+                        <p>Visualização do calendário de pagamentos virá aqui.</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Adicionar/Editar Despesa -->
+    <div id="expense-dialog" class="dialog-overlay">
+        <div class="dialog-content" style="max-width: 750px;"> <!-- Aumentado para acomodar mais campos -->
+            <h3 id="expense-dialog-title">Adicionar Nova Despesa</h3>
+            <form id="expense-form">
+                <input type="hidden" id="expense-id" name="expense-id">
+                <div class="form-group">
+                    <label for="expense-name">Nome da Despesa:</label>
+                    <input type="text" id="expense-name" name="expense-name" required>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div class="form-group">
+                        <label for="expense-category">Categoria:</label>
+                        <select id="expense-category" name="expense-category" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Buffet">Buffet</option>
+                            <option value="Decoração">Decoração</option>
+                            <option value="Fotografia">Fotografia</option>
+                            <option value="Música">Música</option>
+                            <option value="Trajes">Trajes</option>
+                            <option value="Local">Local</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-estimated-cost">Custo Estimado (R$):</label>
+                        <input type="number" id="expense-estimated-cost" name="expense-estimated-cost" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-actual-cost">Custo Real (R$):</label>
+                        <input type="number" id="expense-actual-cost" name="expense-actual-cost" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+
+                <hr style="margin: 25px 0;">
+                <h4><i class="fas fa-handshake" style="margin-right: 8px;"></i>Fornecedores Associados</h4>
+                <div id="suppliers-container">
+                    <!-- Fornecedores adicionados dinamicamente -->
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-supplier-btn" style="margin-bottom:20px;"><i class="fas fa-plus"></i> Adicionar Fornecedor</button>
+
+                <hr style="margin: 25px 0;">
+                <h4><i class="fas fa-tasks" style="margin-right: 8px;"></i>Cronograma de Pagamentos</h4>
+                <div id="payments-container">
+                    <!-- Pagamentos adicionados dinamicamente -->
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-payment-schedule-btn" style="margin-bottom:20px;"><i class="fas fa-plus"></i> Adicionar Parcela</button>
+
+                <hr style="margin: 25px 0;">
+                <div class="form-group">
+                    <label for="expense-notes">Observações Importantes:</label>
+                    <textarea id="expense-notes" name="expense-notes" rows="3"></textarea>
+                </div>
+
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-expense-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Despesa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Template para Fornecedor -->
+    <template id="supplier-template">
+        <div class="dynamic-entry supplier-entry">
+            <div class="dynamic-entry-header">
+                <h5>Detalhes do Fornecedor</h5>
+                <button type="button" class="btn remove-btn remove-supplier-btn"><i class="fas fa-times"></i> Remover</button>
+            </div>
+            <div class="form-group">
+                <label>Nome do Fornecedor:</label> <input type="text" name="supplier_name[]" placeholder="Nome">
+            </div>
+            <div class="form-group">
+                <label>Contato (Telefone/Email):</label> <input type="text" name="supplier_contact[]" placeholder="Contato">
+            </div>
+            <div class="form-group">
+                <label>Preço Proposto (R$):</label> <input type="number" name="supplier_price[]" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>Observação:</label> <textarea name="supplier_observation[]" rows="2"></textarea>
+            </div>
+        </div>
+    </template>
+
+    <!-- Template para Parcela de Pagamento -->
+    <template id="payment-schedule-template">
+        <div class="dynamic-entry payment-entry">
+             <div class="dynamic-entry-header">
+                <h5>Detalhes da Parcela</h5>
+                <button type="button" class="btn remove-btn remove-payment-btn"><i class="fas fa-times"></i> Remover</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>Título/Descrição:</label> <input type="text" name="payment_title[]" placeholder="Ex: Sinal Buffet">
+                </div>
+                <div class="form-group">
+                    <label>Data de Vencimento:</label> <input type="date" name="payment_due_date[]">
+                </div>
+                <div class="form-group">
+                    <label>Valor (R$):</label> <input type="number" name="payment_amount[]" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Status:</label>
+                    <select name="payment_status[]">
+                        <option value="pendente">Pendente</option>
+                        <option value="pago">Pago</option>
+                        <option value="atrasado">Atrasado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Pago por:</label>
+                <select name="payment_paid_by[]" class="payment-paid-by-select">
+                    <option value="noivos">Noivos</option>
+                    <option value="externo">Externo (Outra pessoa)</option>
+                    <option value="dividido">Dividido (Detalhar em obs.)</option>
+                </select>
+            </div>
+            <div class="form-group external-payer-name-group" style="display:none;">
+                <label>Nome do Pagador Externo:</label> <input type="text" name="payment_external_payer_name[]">
+            </div>
+            <div class="form-group">
+                <label>Observação da Parcela:</label> <textarea name="payment_observation[]" rows="2"></textarea>
+            </div>
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Script da Sidebar e Header (copie do dashboard.html)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebarFn() { // Renomeado para evitar conflito se copiado
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebarFn);
+            sidebarOverlay.addEventListener('click', toggleSidebarFn);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUserFinance = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+        if (currentUserFinance && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUserFinance.name}!`;
+            userAvatarElement.textContent = currentUserFinance.initials;
+        }
+        // Fim do script da Sidebar/Header
+
+        // Script específico da página Financeiro
+        document.addEventListener('DOMContentLoaded', () => {
+            const openBtn = document.getElementById('open-expense-dialog-btn');
+            const dialog = document.getElementById('expense-dialog');
+            const cancelBtn = document.getElementById('cancel-expense-dialog-btn');
+
+            if (openBtn) openBtn.addEventListener('click', () => dialog.classList.add('active'));
+            if (cancelBtn) cancelBtn.addEventListener('click', () => dialog.classList.remove('active'));
+            if (dialog) dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('active'); });
+
+            const addSupplierBtn = document.getElementById('add-supplier-btn');
+            const suppliersContainer = document.getElementById('suppliers-container');
+            const supplierTemplate = document.getElementById('supplier-template');
+            if (addSupplierBtn && suppliersContainer && supplierTemplate) {
+                addSupplierBtn.addEventListener('click', () => {
+                    const clone = supplierTemplate.content.cloneNode(true);
+                    suppliersContainer.appendChild(clone);
+                });
+                suppliersContainer.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('remove-supplier-btn') || e.target.closest('.remove-supplier-btn')) {
+                        (e.target.closest('.remove-supplier-btn') || e.target).closest('.supplier-entry').remove();
+                    }
+                });
+            }
+
+            const addPaymentBtn = document.getElementById('add-payment-schedule-btn');
+            const paymentsContainer = document.getElementById('payments-container');
+            const paymentTemplate = document.getElementById('payment-schedule-template');
+            if (addPaymentBtn && paymentsContainer && paymentTemplate) {
+                addPaymentBtn.addEventListener('click', () => {
+                    const clone = paymentTemplate.content.cloneNode(true);
+                    paymentsContainer.appendChild(clone);
+                });
+                paymentsContainer.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('remove-payment-btn') || e.target.closest('.remove-payment-btn')) {
+                         (e.target.closest('.remove-payment-btn') || e.target).closest('.payment-entry').remove();
+                    }
+                    if (e.target.classList.contains('payment-paid-by-select')) {
+                        const selectedValue = e.target.value;
+                        const parentEntry = e.target.closest('.payment-entry');
+                        const externalPayerGroup = parentEntry.querySelector('.external-payer-name-group');
+                        if (externalPayerGroup) {
+                            externalPayerGroup.style.display = selectedValue === 'externo' ? 'block' : 'none';
+                        }
+                    }
+                });
+            }
+
+            // Exemplo Gráfico Chart.js
+            const ctx = document.getElementById('costsChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut', // ou 'pie'
+                    data: {
+                        labels: ['Buffet', 'Decoração', 'Foto/Vídeo', 'Música', 'Trajes', 'Outros'],
+                        datasets: [{
+                            label: 'Custos por Categoria',
+                            data: [12000, 8000, 5000, 3000, 4000, 2000], // Dados de exemplo
+                            backgroundColor: [
+                                'rgba(170, 51, 106, 0.7)', // --primary-color
+                                'rgba(212, 175, 55, 0.7)', // Dourado
+                                'rgba(41, 128, 185, 0.7)', // Azul
+                                'rgba(39, 174, 96, 0.7)',  // Verde
+                                'rgba(142, 68, 173, 0.7)', // Roxo
+                                'rgba(127, 140, 141, 0.7)' // Cinza
+                            ],
+                            borderColor: [
+                                'rgba(170, 51, 106, 1)',
+                                'rgba(212, 175, 55, 1)',
+                                'rgba(41, 128, 185, 1)',
+                                'rgba(39, 174, 96, 1)',
+                                'rgba(142, 68, 173, 1)',
+                                'rgba(127, 140, 141, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { padding: 15 } }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

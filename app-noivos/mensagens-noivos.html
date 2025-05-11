@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens dos Convidados - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        .message-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px; /* Aumentado espaço entre cards */
+            box-shadow: var(--shadow-color) 0px 2px 4px;
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px; /* Aumentado espaço */
+        }
+        .message-header .sender-info {
+            display: flex;
+            align-items: center;
+        }
+        .message-header .sender-avatar { /* Para um pequeno avatar ou inicial */
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary-color-light);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 12px;
+        }
+        .message-header .sender-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color-dark);
+        }
+        .message-header .message-date {
+            font-size: 0.8rem;
+            color: var(--text-color-light);
+        }
+        .message-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-color-medium);
+            margin-bottom: 15px; /* Adicionado espaço antes do link do presente/ações */
+        }
+        .message-gift-link {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            padding: 8px 0;
+            border-top: 1px dashed var(--border-color); /* Separador sutil */
+        }
+        .message-gift-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .message-gift-link a:hover {
+            text-decoration: underline;
+        }
+        .message-actions {
+            text-align: right;
+            margin-top: 10px;
+            padding-top: 10px; /* Espaçamento para as ações */
+            border-top: 1px solid var(--border-color); /* Separador se não houver link de presente */
+        }
+        .message-actions button + button {
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html" class="active"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Mensagens dos Convidados</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                    <a href="#" id="logout-btn-header" class="logout-link" style="display: none;">Sair</a>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="mensagens-page">
+                <section class="page-section">
+                    <div class="section-header">
+                        <h2>Mural de Mensagens</h2>
+                        <div class="actions">
+                            <label for="filtroTipoMensagem" style="margin-right: 10px; font-weight: 500;">Filtrar por:</label>
+                            <select id="filtroTipoMensagem" class="form-group" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); min-width: 180px; font-size:0.9rem;">
+                                <option value="todas">Todas as Mensagens</option>
+                                <option value="presentes">Vinculadas a Presentes</option>
+                                <option value="gerais">Mensagens Gerais</option>
+                                <option value="nao_lidas">Não Lidas</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="messagesContainer" style="margin-top: 20px;">
+                        <!-- Exemplo de Card de Mensagem (JS vai popular) -->
+                        <div class="message-card" data-message-id="msg1">
+                            <div class="message-header">
+                                <div class="sender-info">
+                                    <div class="sender-avatar">TM</div>
+                                    <span class="sender-name">Tia Maria da Silva</span>
+                                </div>
+                                <span class="message-date">15 de Julho de 2024, 10:30</span>
+                            </div>
+                            <p class="message-body">
+                                Queridos sobrinhos, que felicidade imensa fazer parte deste momento tão especial! O jogo de panelas é para que cada refeição seja recheada de amor e cumplicidade. Muitas felicidades nesta nova jornada!
+                            </p>
+                            <div class="message-gift-link">
+                                <i class="fas fa-gift" style="margin-right: 5px;"></i>Mensagem vinculada ao presente: <a href="lista-presentes-noivos.html#gift1" target="_blank">Jogo de Panelas Premium</a>
+                            </div>
+                            <div class="message-actions">
+                                <button class="btn btn-secondary btn-sm btn-marcar-lida" data-message-id="msg1"><i class="fas fa-envelope-open"></i> Marcar como Lida</button>
+                                <button class="btn btn-primary btn-sm btn-responder-msg" data-sender-name="Tia Maria da Silva" data-sender-contact="tiamaria@email.com"><i class="fas fa-reply"></i> Responder</button>
+                                <button class="btn btn-danger btn-sm btn-excluir-msg" data-message-id="msg1"><i class="fas fa-trash"></i> Excluir</button>
+                            </div>
+                        </div>
+
+                        <div class="message-card" data-message-id="msg2">
+                            <div class="message-header">
+                                <div class="sender-info">
+                                    <div class="sender-avatar">CA</div>
+                                    <span class="sender-name">Carlos Alberto (Amigo)</span>
+                                </div>
+                                <span class="message-date">14 de Julho de 2024, 18:00</span>
+                            </div>
+                            <p class="message-body">
+                                E aí, casal! Parabéns pela decisão! Que a vida de vocês seja cheia de alegrias, companheirismo e muitas risadas. Contem comigo para o que precisarem! Abraços!
+                            </p>
+                            <!-- Sem message-gift-link se for uma mensagem geral -->
+                            <div class="message-actions">
+                                <button class="btn btn-secondary btn-sm btn-marcar-lida" data-message-id="msg2"><i class="fas fa-envelope-open"></i> Marcar como Lida</button>
+                                <button class="btn btn-primary btn-sm btn-responder-msg" data-sender-name="Carlos Alberto" data-sender-contact="carlos.amigo@email.com"><i class="fas fa-reply"></i> Responder</button>
+                                <button class="btn btn-danger btn-sm btn-excluir-msg" data-message-id="msg2"><i class="fas fa-trash"></i> Excluir</button>
+                            </div>
+                        </div>
+
+                         <div class="message-card" data-message-id="msg3" style="border-left-color: #f39c12;"> <!-- Exemplo de não lida, se quiser destacar -->
+                            <div class="message-header">
+                                <div class="sender-info">
+                                    <div class="sender-avatar">JS</div>
+                                    <span class="sender-name">Família Souza</span>
+                                </div>
+                                <span class="message-date">13 de Julho de 2024, 09:15</span>
+                            </div>
+                            <p class="message-body">
+                                Ana e Bruno, desejamos a vocês toda a felicidade do mundo nesta nova etapa. Que o amor de vocês se fortaleça a cada dia. Com carinho, Família Souza.
+                            </p>
+                            <div class="message-gift-link">
+                                <i class="fas fa-gift" style="margin-right: 5px;"></i>Mensagem vinculada ao presente: <a href="lista-presentes-noivos.html#giftX" target="_blank">Cota para Viagem de Lua de Mel</a>
+                            </div>
+                             <div class="message-actions">
+                                <button class="btn btn-secondary btn-sm btn-marcar-lida" data-message-id="msg3"><i class="fas fa-envelope-open"></i> Marcar como Lida</button>
+                                <button class="btn btn-primary btn-sm btn-responder-msg" data-sender-name="Família Souza" data-sender-contact="familia.souza@email.com"><i class="fas fa-reply"></i> Responder</button>
+                                <button class="btn btn-danger btn-sm btn-excluir-msg" data-message-id="msg3"><i class="fas fa-trash"></i> Excluir</button>
+                            </div>
+                        </div>
+                        <!-- Mensagem de "Nenhuma mensagem" -->
+                        <!-- <div class="no-items-message">Nenhuma mensagem recebida ainda.</div> -->
+                    </div>
+                    <div class="pagination-controls" style="text-align: center; margin-top: 20px;">
+                        <!-- Controles de paginação -->
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Responder Mensagem -->
+    <div class="dialog-overlay" id="dialogResponderMensagem">
+        <div class="dialog-content" style="max-width: 600px;">
+            <h3 id="dialogResponderTitle">Responder Mensagem para <span id="responderToName"></span></h3>
+            <form id="formResponderMensagem">
+                <input type="hidden" id="responderToContact">
+                <div class="form-group">
+                    <label for="respostaMensagem">Sua Resposta:</label>
+                    <textarea id="respostaMensagem" rows="5" required placeholder="Escreva sua mensagem de agradecimento aqui..."></textarea>
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarDialogResposta">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Enviar Resposta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" };
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // Scripts específicos da página Mensagens
+        const dialogResponderMensagem = document.getElementById('dialogResponderMensagem');
+        const btnCancelarDialogResposta = document.getElementById('btnCancelarDialogResposta');
+        const formResponderMensagem = document.getElementById('formResponderMensagem');
+        const responderToNameEl = document.getElementById('responderToName');
+        const responderToContactInput = document.getElementById('responderToContact');
+
+        document.querySelectorAll('.btn-responder-msg').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const senderName = e.currentTarget.dataset.senderName;
+                const senderContact = e.currentTarget.dataset.senderContact; // Pode ser email ou telefone para referência
+                
+                responderToNameEl.textContent = senderName;
+                responderToContactInput.value = senderContact;
+                formResponderMensagem.reset(); // Limpa textarea
+                dialogResponderMensagem.classList.add('active');
+            });
+        });
+
+        if(btnCancelarDialogResposta) {
+            btnCancelarDialogResposta.addEventListener('click', () => {
+                dialogResponderMensagem.classList.remove('active');
+            });
+        }
+
+        if(formResponderMensagem) {
+            formResponderMensagem.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const resposta = document.getElementById('respostaMensagem').value;
+                const contato = responderToContactInput.value;
+                console.log(`Enviando resposta para ${contato}: ${resposta}`);
+                // TODO: Implementar lógica de envio (ex: abrir cliente de email, ou sistema interno se houver)
+                alert('Resposta enviada (simulação)!');
+                dialogResponderMensagem.classList.remove('active');
+            });
+        }
+
+        document.querySelectorAll('.btn-excluir-msg').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const messageId = e.currentTarget.dataset.messageId;
+                if (confirm('Tem certeza que deseja excluir esta mensagem? Esta ação não pode ser desfeita.')) {
+                    console.log(`Excluindo mensagem ${messageId}`);
+                    // TODO: Implementar lógica de exclusão no Firebase e remover o card da UI
+                    e.currentTarget.closest('.message-card').remove();
+                    alert('Mensagem excluída (simulação)!');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.btn-marcar-lida').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const messageId = e.currentTarget.dataset.messageId;
+                console.log(`Marcando mensagem ${messageId} como lida`);
+                // TODO: Atualizar status no Firebase
+                e.currentTarget.closest('.message-card').style.borderLeftColor = 'var(--border-color)'; // Feedback visual
+                e.currentTarget.textContent = 'Lida';
+                e.currentTarget.disabled = true;
+                alert('Mensagem marcada como lida (simulação)!');
+            });
+        });
+
+        // TODO: Lógica para carregar mensagens do Firebase, aplicar filtros.
+    </script>
+</body>
+</html>

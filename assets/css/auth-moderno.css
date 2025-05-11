@@ -1,0 +1,245 @@
+/* assets/css/auth-moderno.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color-noivos: #AA336A;
+    --primary-color-noivos-dark: #8c2b57;
+    --primary-color-convidado: #2980b9;
+    --primary-color-convidado-dark: #206694;
+    --text-color-primary: #333;
+    --text-color-secondary: #555;
+    --background-color: #f8f9fa; /* Um cinza mais claro e moderno */
+    --container-background: #ffffff;
+    --border-color: #ddd;
+    --error-color: #e74c3c;
+    --error-background-color: #fbeae5;
+    --input-focus-shadow: rgba(170, 51, 106, 0.25);
+    --input-focus-shadow-convidado: rgba(41, 128, 185, 0.25);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color-primary);
+    display: flex;
+    flex-direction: column; /* Para permitir footer/header se necessário */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.auth-container {
+    background-color: var(--container-background);
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 480px; /* Aumentado um pouco para o cadastro */
+    text-align: center;
+}
+
+.auth-container.login-container,
+.auth-container.guest-container {
+    max-width: 420px; /* Menor para login e convidado */
+}
+
+.auth-logo { /* Espaço para um logo */
+    margin-bottom: 20px;
+    /* Exemplo:
+    img { max-width: 150px; height: auto; }
+    */
+}
+
+.auth-container h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--text-color-primary);
+    font-size: 1.8rem; /* 28.8px */
+    font-weight: 700;
+}
+
+.auth-container p.subtitle {
+    margin-bottom: 25px;
+    color: var(--text-color-secondary);
+    font-size: 0.95rem; /* 15.2px */
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9rem; /* 14.4px */
+    color: #444;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem; /* 16px */
+    font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus {
+    outline: none;
+    border-color: var(--primary-color-noivos);
+    box-shadow: 0 0 0 0.2rem var(--input-focus-shadow);
+}
+/* Foco específico para formulário de convidado */
+.guest-form input:focus {
+    border-color: var(--primary-color-convidado);
+    box-shadow: 0 0 0 0.2rem var(--input-focus-shadow-convidado);
+}
+
+
+small {
+    font-size: 0.8em;
+    color: #777;
+    display: block;
+    margin-top: 5px;
+}
+
+button[type="submit"] {
+    background-color: var(--primary-color-noivos);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.05rem; /* 16.8px */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--primary-color-noivos-dark);
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+/* Estilos para botões de convidado */
+.guest-button {
+    background-color: var(--primary-color-convidado);
+}
+.guest-button:hover {
+    background-color: var(--primary-color-convidado-dark);
+}
+
+.auth-links {
+    margin-top: 25px;
+    font-size: 0.9em;
+}
+
+.auth-links p {
+    margin-bottom: 8px;
+    color: var(--text-color-secondary);
+}
+
+.auth-links a {
+    color: var(--primary-color-noivos);
+    text-decoration: none;
+    font-weight: 600;
+}
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+/* Links para página de convidado */
+.guest-page .auth-links a {
+    color: var(--primary-color-convidado);
+}
+
+
+.error-message {
+    color: var(--error-color);
+    background-color: var(--error-background-color);
+    border: 1px solid var(--error-color);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    text-align: left; /* Manter consistência */
+}
+.error-message:empty { /* Esconder se estiver vazio */
+    display: none;
+}
+
+
+.names-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px; /* Adiciona espaço abaixo do grupo */
+}
+.names-group .form-group {
+    flex: 1;
+    margin-bottom: 0; /* Remove margem individual para controle pelo container */
+}
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 25px 30px;
+        margin-top: 0; /* Body padding handles spacing */
+    }
+    .auth-container h1 {
+        font-size: 1.6rem; /* 25.6px */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+    .auth-container {
+        padding: 20px;
+    }
+    .names-group {
+        flex-direction: column;
+        gap: 0; /* Removido, pois .form-group já tem margin-bottom */
+    }
+    .names-group .form-group {
+        margin-bottom: 20px; /* Re-adiciona para espaçamento quando empilhado */
+    }
+    .names-group .form-group:last-child {
+        margin-bottom: 0; /* Evitar margem dupla se for o último elemento antes do submit */
+    }
+    .names-group + .form-group { /* Adiciona margem superior ao próximo form-group se .names-group for seguido por um */
+         margin-top: 20px;
+    }
+
+    button[type="submit"] {
+        padding: 14px 15px;
+        font-size: 1rem;
+    }
+}

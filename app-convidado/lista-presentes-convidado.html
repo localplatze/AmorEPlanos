@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Presentes - Casamento de [Noivo] & [Noiva]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/convidado-style.css">
+    <style>
+        /* Estilos específicos da Lista de Presentes */
+        .gift-list-intro {
+            text-align: center;
+            margin-bottom: 40px; /* Aumentado */
+        }
+        .gift-list-intro h2 {
+            font-family: var(--guest-font-family-headings);
+            font-size: 2em;
+            color: var(--guest-primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .gift-list-intro p {
+            font-size: 1.1em;
+            color: var(--guest-text-color-medium);
+            max-width:750px;
+            margin-left:auto;
+            margin-right:auto;
+            line-height: 1.7;
+        }
+
+        .gift-grid-guest { /* Evitar conflito com .gift-grid se houver */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); /* Um pouco maior */
+            gap: 25px;
+        }
+        .gift-item-card-guest {
+            background-color: var(--guest-card-bg);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--guest-shadow-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        .gift-item-card-guest:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .gift-item-card-guest .gift-image-wrapper {
+            width: 100%;
+            height: 230px; /* Aumentado */
+            background-color:#f0f2f5;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow: hidden; /* Garante que a imagem não estoure */
+        }
+        .gift-item-card-guest .gift-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Garante que a imagem cubra sem distorcer */
+            transition: transform 0.3s ease;
+        }
+        .gift-item-card-guest:hover .gift-image-wrapper img {
+            transform: scale(1.05);
+        }
+        .gift-item-card-guest .gift-info-content { /* Renomeado para evitar conflito */
+            padding: 20px;
+            flex-grow: 1;
+            display:flex;
+            flex-direction:column;
+        }
+        .gift-item-card-guest .gift-info-content h3 {
+            font-family: var(--guest-font-family-headings);
+            font-size: 1.25em; /* Aumentado */
+            margin-top: 0;
+            margin-bottom: 8px;
+            color:var(--guest-text-color-dark);
+            font-weight: 600;
+        }
+        .gift-item-card-guest .gift-description-text { /* Renomeado */
+            font-size: 0.9em;
+            color: var(--guest-text-color-medium);
+            margin-bottom: 12px;
+            flex-grow: 1; /* Empurra preço e botão para baixo */
+            min-height: 50px; /* Garante altura mínima */
+        }
+        .gift-item-card-guest .gift-price-display { /* Renomeado */
+            font-size: 1.15em; /* Aumentado */
+            font-weight: 700;
+            color: var(--guest-primary-color);
+            margin-bottom: 15px;
+        }
+        .gift-item-card-guest .btn-give-gift-action { /* Renomeado */
+            width: 100%; /* Botão ocupa toda a largura */
+            padding: 12px 15px; /* Botão maior */
+        }
+        .gift-item-card-guest .btn-give-gift-action.disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .gift-item-card-guest .gift-purchased-info { /* Renomeado */
+            font-size: 0.85em;
+            color: #27ae60; /* Verde para presenteado */
+            font-weight: 500;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .guest-leave-message-section { /* Renomeado */
+            margin-top: 40px;
+        }
+        .guest-leave-message-section h2 { /* Usa o guest-section-header h2 */
+            font-size: 1.8em;
+        }
+
+        /* Estilo para o Dialog de Presentear (usando classes guest-form) */
+        #give-gift-dialog-guest .dialog-content-guest { /* Usar um nome específico para o dialog */
+            background-color: var(--guest-card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 550px; /* Um pouco maior */
+            text-align:left;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        #give-gift-dialog-guest .dialog-title-guest { /* Título do dialog */
+            font-family: var(--guest-font-family-headings);
+            font-size: 1.6em;
+            color: var(--guest-primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        #give-gift-dialog-guest p {
+            margin-bottom:12px;
+            font-size: 1em;
+            color: var(--guest-text-color-medium);
+        }
+        #give-gift-dialog-guest #pix-key-display-guest { /* Chave PIX destacada */
+            font-weight:bold;
+            font-size:1.1em;
+            color:var(--guest-text-color-dark);
+            text-align:center;
+            padding:12px;
+            background-color:var(--guest-primary-color-light);
+            border-radius:6px;
+            margin: 10px 0;
+            border: 1px dashed var(--guest-primary-color);
+            word-break: break-all; /* Quebra chaves PIX longas */
+        }
+        #give-gift-dialog-guest #copy-pix-key-btn-guest { /* Botão de copiar */
+            font-size:0.9em;
+            padding:8px 15px;
+            margin-bottom: 15px;
+        }
+        #give-gift-dialog-guest hr {
+            border: none;
+            border-top: 1px solid var(--guest-border-color);
+            margin: 20px 0;
+        }
+        #give-gift-dialog-guest .dialog-actions-guest {
+            text-align: right;
+            margin-top: 25px;
+            display: flex; /* Para alinhar botões */
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        #give-gift-dialog-guest #gift-dialog-confirmation-guest {
+            color: #1e8a57;
+            text-align:center;
+            margin-top:15px;
+            display:none;
+            font-weight: 500;
+            padding: 10px;
+            background-color: #e6f9f0;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="guest-app-container">
+        <header class="guest-header">
+            <div class="header-content">
+                <div class="couple-names" id="header-couple-names"><h1>Ana & Bruno</h1></div>
+                 <nav class="guest-nav">
+                    <ul>
+                        <li><a href="home-convidado.html"><span class="nav-icon"><i class="fas fa-home"></i></span>Início</a></li>
+                        <li><a href="rsvp.html"><span class="nav-icon"><i class="fas fa-check-circle"></i></span>Confirmar Presença</a></li>
+                        <li><a href="informacoes-locais.html"><span class="nav-icon"><i class="fas fa-map-marker-alt"></i></span>Locais</a></li>
+                        <li><a href="passagens-hospedagem-convidado.html"><span class="nav-icon"><i class="fas fa-plane"></i></span>Viagem/Hosp.</a></li>
+                        <li><a href="cardapio-programacao.html"><span class="nav-icon"><i class="fas fa-utensils"></i></span>Detalhes</a></li>
+                        <li><a href="lista-presentes-convidado.html" class="active"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Presentes</a></li>
+                        <li><a href="pos-evento-convidado.html"><span class="nav-icon"><i class="fas fa-camera"></i></span>Fotos</a></li>
+                        <li><a href="#" id="logout-convidado-btn" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="guest-main-content" id="lista-presentes-convidado-page">
+            <section class="gift-list-intro">
+                <h2>Nossa Lista de Presentes</h2>
+                <p id="gift-list-message-from-couple">Queridos amigos e familiares, a sua presença em nosso casamento já é o maior presente que poderíamos receber! Contudo, para aqueles que desejam nos presentear de alguma forma, preparamos esta lista com muito carinho. Ela inclui itens para nosso novo lar e também opções de cotas para nossa sonhada lua de mel. Sintam-se à vontade!</p>
+            </section>
+
+            <div class="gift-grid-guest" id="gift-items-container">
+                <!-- JS irá popular esta seção -->
+                <!-- Exemplo de Item: -->
+                <div class="gift-item-card-guest" data-gift-id="gift1_ex">
+                    <div class="gift-image-wrapper">
+                        <img src="https://via.placeholder.com/300x230/AA336A/FFFFFF?text=Jogo+Panelas" alt="Jogo de Panelas">
+                    </div>
+                    <div class="gift-info-content">
+                        <div>
+                            <h3>Jogo de Panelas Tramontina Versalhes</h3>
+                            <p class="gift-description-text">Conjunto completo com 5 peças antiaderentes, perfeito para nossas aventuras culinárias.</p>
+                            <p class="gift-price-display">Valor: R$ 350,00</p>
+                        </div>
+                        <button class="btn-guest btn-give-gift-action" onclick="openGiftDialogGuest('gift1_ex', 'Jogo de Panelas Tramontina Versalhes', '350.00', 'chavepix.noivos@email.com')">
+                            <i class="fas fa-gift"></i> Quero Presentear!
+                        </button>
+                    </div>
+                </div>
+                 <div class="gift-item-card-guest" data-gift-id="gift2_ex">
+                    <div class="gift-image-wrapper">
+                        <img src="https://via.placeholder.com/300x230/8c2b57/FFFFFF?text=Lua+de+Mel" alt="Cota Lua de Mel">
+                    </div>
+                    <div class="gift-info-content">
+                         <div>
+                            <h3>Cota para Lua de Mel em Fernando de Noronha</h3>
+                            <p class="gift-description-text">Ajude-nos a realizar a viagem dos nossos sonhos para um paraíso tropical!</p>
+                            <p class="gift-price-display">Contribuição Sugerida: R$ 100,00 (ou outro valor)</p>
+                        </div>
+                        <button class="btn-guest btn-give-gift-action" onclick="openGiftDialogGuest('gift2_ex', 'Cota para Lua de Mel', '100.00', 'chavepix.luademel@email.com', true)">
+                            <i class="fas fa-heart"></i> Contribuir
+                        </button>
+                    </div>
+                </div>
+                <div class="gift-item-card-guest" data-gift-id="gift3_ex">
+                    <div class="gift-image-wrapper">
+                        <img src="https://via.placeholder.com/300x230/2c3e50/FFFFFF?text=Liquidificador" alt="Liquidificador">
+                    </div>
+                    <div class="gift-info-content">
+                         <div>
+                            <h3>Liquidificador Oster Super Chef</h3>
+                            <p class="gift-description-text">Para preparar vitaminas, smoothies e receitas deliciosas em nosso novo lar.</p>
+                            <p class="gift-price-display">Valor: R$ 150,00</p>
+                        </div>
+                        <button class="btn-guest btn-give-gift-action disabled" disabled>
+                            <i class="fas fa-check"></i> Já Presenteado!
+                        </button>
+                        <p class="gift-purchased-info">Presenteado por: Ana Paula S.</p>
+                    </div>
+                </div>
+                 <!-- Fim do Exemplo -->
+            </div>
+             <p id="no-gifts-guest" class="no-items-message" style="text-align:center; display:none; margin-top:20px;">A lista de presentes ainda não foi montada pelos noivos ou todos os itens já foram presenteados. Obrigado!</p>
+
+            <section class="guest-page-section guest-leave-message-section">
+                <div class="guest-section-header">
+                    <h2><i class="fas fa-comments" style="margin-right: 10px;"></i>Deixe uma Mensagem para os Noivos</h2>
+                </div>
+                <form id="guest-message-form" class="guest-form">
+                    <div class="form-group">
+                        <label for="message-sender-name">Seu Nome (como gostaria de ser identificado):</label>
+                        <input type="text" id="message-sender-name" name="message-sender-name" required placeholder="Seu nome completo ou apelido carinhoso">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text-content">Sua Mensagem:</label>
+                        <textarea id="message-text-content" name="message-text-content" required rows="5" placeholder="Escreva aqui seus votos de felicidade, lembranças ou o que seu coração mandar..."></textarea>
+                    </div>
+                    <div style="text-align:center;">
+                        <button type="submit" class="btn-guest"><i class="fas fa-paper-plane"></i> Enviar Mensagem</button>
+                    </div>
+                    <p id="guest-message-confirmation" style="text-align:center; color:#1e8a57; margin-top:15px; display:none; font-weight:500;">Sua mensagem foi enviada com sucesso! Obrigado pelo carinho.</p>
+                </form>
+            </section>
+        </main>
+
+        <footer class="guest-footer">
+            <p><span class="couple-names-footer" id="footer-couple-names-display">Ana & Bruno</span></p>
+            <p>Celebração em <span id="wedding-date-footer-display">[Data do Casamento]</span></p>
+        </footer>
+    </div>
+
+    <!-- Dialog para Presentear (Convidado) -->
+    <div id="give-gift-dialog-guest" class="dialog-overlay"> <!-- Adicionado -guest para evitar conflito com dialog de noivos -->
+        <div class="dialog-content-guest">
+            <h3 id="gift-dialog-title-guest" class="dialog-title-guest">Presentear com: [Nome do Presente]</h3>
+            <p>Que alegria saber que você escolheu nos presentear com <strong id="gift-dialog-item-name-guest">este item</strong>!</p>
+            
+            <div id="pix-instructions-guest">
+                <p id="gift-dialog-item-value-display-guest"><strong>Valor do item:</strong> R$ <span id="gift-dialog-item-value-guest">0,00</span></p>
+                <p>Para confirmar sua intenção, você pode realizar um PIX para a chave abaixo. Assim que fizer, por favor, preencha os campos mais abaixo para nos avisar!</p>
+                <p id="pix-key-display-guest">[CHAVE PIX AQUI]</p>
+                <div style="text-align:center;">
+                    <button class="btn-guest btn-guest-secondary" id="copy-pix-key-btn-guest"><i class="fas fa-copy"></i> Copiar Chave PIX</button>
+                </div>
+            </div>
+
+             <div id="monetary-contribution-amount-guest" style="display:none;" class="guest-form">
+                <div class="form-group">
+                    <label for="contribution-amount-guest">Qual valor você gostaria de contribuir (R$)?</label>
+                    <input type="number" id="contribution-amount-guest" name="contribution-amount-guest" step="0.01" min="1" placeholder="Ex: 50.00">
+                </div>
+            </div>
+            <hr>
+            <p>Após realizar o PIX (ou decidir contribuir), por favor, preencha os campos abaixo para que possamos agradecer e registrar seu carinho (mesmo que seja anônimo, só nos avise!):</p>
+            <form id="gift-confirmation-form-guest" class="guest-form">
+                <input type="hidden" id="confirm-gift-id-guest" name="confirm-gift-id-guest">
+                <div class="form-group">
+                    <label for="gifter-name-guest">Seu Nome (para identificarmos o presente):</label>
+                    <input type="text" id="gifter-name-guest" name="gifter-name-guest" required placeholder="Seu nome ou "Presente Anônimo"">
+                </div>
+                <div class="form-group">
+                    <label for="gifter-message-guest">Deixe uma mensagem junto com o presente (opcional):</label>
+                    <textarea id="gifter-message-guest" name="gifter-message-guest" rows="3" placeholder="Sua mensagem especial..."></textarea>
+                </div>
+                <div class="dialog-actions-guest">
+                    <button type="button" class="btn-guest btn-guest-secondary" id="cancel-give-gift-btn-guest">Cancelar</button>
+                    <button type="submit" class="btn-guest"><i class="fas fa-check-circle"></i> Confirmei o Presente!</button>
+                </div>
+            </form>
+            <p id="gift-dialog-confirmation-guest"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulação de carregamento de dados
+            const coupleNames = "Ana & Bruno";
+            const weddingDateStr = "2024-12-25T17:00:00";
+            const giftListMessage = "Sua presença em nosso casamento é o nosso maior presente! Mas, se você desejar nos presentear de alguma forma, preparamos esta lista com itens que nos ajudarão a começar nossa nova vida juntos ou para contribuir com nossa sonhada lua de mel. Agradecemos de coração!";
+
+
+            document.getElementById('header-couple-names').innerHTML = `<h1>${coupleNames}</h1>`;
+            document.getElementById('gift-list-message-from-couple').textContent = giftListMessage;
+            document.getElementById('footer-couple-names-display').textContent = coupleNames;
+            document.getElementById('wedding-date-footer-display').textContent = new Date(weddingDateStr).toLocaleDateString('pt-BR', {year: 'numeric', month: 'long', day: 'numeric'});
+
+            // Dialog de Presentear
+            const giveGiftDialog = document.getElementById('give-gift-dialog-guest');
+            const cancelGiveGiftBtn = document.getElementById('cancel-give-gift-btn-guest');
+            const copyPixBtn = document.getElementById('copy-pix-key-btn-guest');
+            const giftConfirmationForm = document.getElementById('gift-confirmation-form-guest');
+            const giftDialogConfirmationP = document.getElementById('gift-dialog-confirmation-guest');
+
+
+            if (cancelGiveGiftBtn) cancelGiveGiftBtn.addEventListener('click', () => giveGiftDialog.classList.remove('active')); // Usa active do CSS comum
+            if (giveGiftDialog) giveGiftDialog.addEventListener('click', (e) => { 
+                if(e.target === giveGiftDialog) giveGiftDialog.classList.remove('active'); 
+            });
+
+            window.openGiftDialogGuest = function(giftId, giftName, giftValue, pixKey, isMonetary = false) {
+                document.getElementById('gift-dialog-title-guest').textContent = `Presentear com: ${giftName}`;
+                document.getElementById('gift-dialog-item-name-guest').textContent = giftName;
+                document.getElementById('gift-dialog-item-value-guest').textContent = parseFloat(giftValue).toFixed(2);
+                document.getElementById('pix-key-display-guest').textContent = pixKey || "[Chave PIX dos Noivos]";
+                document.getElementById('confirm-gift-id-guest').value = giftId;
+                giftConfirmationForm.reset();
+                giftDialogConfirmationP.style.display = 'none';
+                giftDialogConfirmationP.className = ''; // Limpa classes de status
+
+                const monetaryDiv = document.getElementById('monetary-contribution-amount-guest');
+                const valueDisplayP = document.getElementById('gift-dialog-item-value-display-guest');
+
+
+                if (isMonetary) {
+                    monetaryDiv.style.display = 'block';
+                    document.getElementById('contribution-amount-guest').value = parseFloat(giftValue).toFixed(2);
+                    valueDisplayP.style.display = 'none';
+                } else {
+                    monetaryDiv.style.display = 'none';
+                     valueDisplayP.style.display = 'block';
+                }
+
+                giveGiftDialog.classList.add('active');
+            }
+
+            if (copyPixBtn) {
+                copyPixBtn.addEventListener('click', () => {
+                    const pixKeyText = document.getElementById('pix-key-display-guest').textContent;
+                    navigator.clipboard.writeText(pixKeyText).then(() => {
+                        alert('Chave PIX copiada para a área de transferência!');
+                    }).catch(err => {
+                        alert('Erro ao copiar a chave PIX. Por favor, copie manualmente.');
+                        console.error('Erro ao copiar PIX: ', err);
+                    });
+                });
+            }
+
+            if(giftConfirmationForm) {
+                giftConfirmationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const gifterName = document.getElementById('gifter-name-guest').value;
+                    const gifterMessage = document.getElementById('gifter-message-guest').value;
+                    const giftId = document.getElementById('confirm-gift-id-guest').value;
+                    let contributionAmount = null;
+                    if (document.getElementById('monetary-contribution-amount-guest').style.display === 'block') {
+                        contributionAmount = document.getElementById('contribution-amount-guest').value;
+                    }
+
+                    console.log(`Confirmação de presente: ID ${giftId}, Doador: ${gifterName}, Mensagem: ${gifterMessage}, Valor Contribuído (se cota): ${contributionAmount}`);
+                    // TODO: Enviar dados para o Firebase (marcar presente como "em processo de compra" ou "comprado", salvar nome do doador e mensagem)
+                    
+                    giftDialogConfirmationP.textContent = 'Obrigado por nos presentear! Sua confirmação foi registrada com carinho.';
+                    giftDialogConfirmationP.style.display = 'block';
+                    // Opcional: desabilitar botão de presentear na lista principal ou fechar dialog após um tempo
+                    // setTimeout(() => { giveGiftDialog.classList.remove('active'); }, 3000);
+                });
+            }
+            
+            // Envio de Mensagem Geral
+            const guestMessageForm = document.getElementById('guest-message-form');
+            const guestMessageConfirmationP = document.getElementById('guest-message-confirmation');
+            if(guestMessageForm) {
+                guestMessageForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const senderName = document.getElementById('message-sender-name').value;
+                    const messageText = document.getElementById('message-text-content').value;
+                    console.log(`Mensagem de ${senderName}: ${messageText}`);
+                    // TODO: Enviar mensagem para o Firebase
+                    guestMessageConfirmationP.style.display = 'block';
+                    this.reset();
+                    setTimeout(() => { guestMessageConfirmationP.style.display = 'none'; }, 4000);
+                });
+            }
+            
+             // Logout (simulação)
+            const logoutBtn = document.getElementById('logout-convidado-btn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Logout realizado (simulação).');
+                });
+            }
+            // TODO: JS para carregar a lista de presentes do Firebase.
+            // Atualizar botões para "Já Presenteado" se for o caso.
+        });
+    </script>
+</body>
+</html>

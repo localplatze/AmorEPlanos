@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        /* Estilos específicos para a timeline, se necessário, além do noivos-dashboard.css */
+        .timeline-main-container {
+            position: relative;
+            padding-left: 50px; /* Espaço para a linha e ícones */
+        }
+        .timeline-main-container::before { /* A linha vertical principal da timeline */
+            content: '';
+            position: absolute;
+            left: 20px; /* Centraliza o ponto na linha */
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--primary-color-light); /* Cor suave para a linha */
+            border-radius: 2px;
+            z-index: 1;
+        }
+        .timeline-event-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-color) 0px 4px 12px;
+            border-left: 6px solid var(--primary-color); /* Destaque lateral com cor primária */
+            z-index: 2;
+        }
+        .timeline-event-item.status-concluido {
+            border-left-color: #27ae60; /* Verde para concluído */
+        }
+        .timeline-event-item.status-em_andamento {
+            border-left-color: #f39c12; /* Laranja para em andamento */
+        }
+        .timeline-event-item::before { /* O marcador de ponto na linha */
+            content: '';
+            position: absolute;
+            left: -44px; /* (20px da linha) + (18px/2 do ponto) + 6px da borda-esquerda + margem */
+            top: 22px; /* Ajustar verticalmente para alinhar com o título/data */
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 4px solid var(--content-bg); /* Cor de fundo para criar efeito de anel */
+            z-index: 3;
+        }
+        .timeline-event-item.status-concluido::before { background-color: #27ae60; }
+        .timeline-event-item.status-em_andamento::before { background-color: #f39c12; }
+
+        .timeline-event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Alinha data e título no topo */
+            margin-bottom: 10px;
+        }
+        .timeline-event-date {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.9em;
+            background-color: var(--primary-color-light);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .timeline-event-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-color-dark);
+            margin: 0;
+            flex-grow: 1;
+        }
+        .timeline-event-description {
+            font-size: 0.95rem;
+            color: var(--text-color-medium);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .timeline-event-actions {
+            text-align: right;
+            margin-top: 10px;
+        }
+        .timeline-event-actions .btn + .btn {
+            margin-left: 8px;
+        }
+        .wedding-date-highlight {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .wedding-date-highlight h2 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .wedding-date-highlight .form-group {
+             max-width: 400px; margin: 15px auto 0 auto;
+        }
+         .wedding-date-highlight .form-group input[type="datetime-local"]{
+             background-color: rgba(255,255,255,0.9);
+             color: var(--text-color-dark);
+             border: 1px solid rgba(255,255,255,0.5);
+         }
+         .wedding-date-highlight .form-group label { color: rgba(255,255,255,0.8); }
+         .wedding-date-highlight .btn-primary {
+             background-color: rgba(255,255,255,0.2);
+             border: 1px solid rgba(255,255,255,0.5);
+         }
+         .wedding-date-highlight .btn-primary:hover { background-color: rgba(255,255,255,0.3); }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html" class="active"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Linha do Tempo do Casamento</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="linha-do-tempo-page">
+                <section class="wedding-date-highlight">
+                    <h2>Data do Casamento: <span id="current-wedding-date">Ainda não definida</span></h2>
+                    <div class="form-group">
+                        <label for="set-wedding-date">Definir ou Alterar a Data do Casamento:</label>
+                        <input type="datetime-local" id="set-wedding-date" name="set-wedding-date">
+                        <button class="btn btn-primary" id="save-wedding-date-btn" style="margin-top:10px;"><i class="fas fa-calendar-check"></i> Salvar Data</button>
+                    </div>
+                </section>
+
+                <section class="page-section">
+                    <div class="section-header">
+                        <h2>Marcos e Tarefas</h2>
+                        <button class="btn btn-primary" id="open-add-timeline-event-dialog-btn"><i class="fas fa-plus-circle"></i> Adicionar Evento/Tarefa</button>
+                    </div>
+
+                    <div class="timeline-main-container" id="timeline-events-container" style="margin-top: 25px;">
+                        <!-- Exemplo de Evento (JS vai popular) -->
+                        <div class="timeline-event-item status-concluido" data-event-id="event1">
+                            <div class="timeline-event-header">
+                                <span class="timeline-event-date">15 de Janeiro de 2024</span>
+                                <h3 class="timeline-event-title">Escolha do Local da Recepção</h3>
+                            </div>
+                            <p class="timeline-event-description">Visitamos 3 locais e fechamos contrato com o Salão Sonho Real. Buffet incluso no pacote, capacidade para 200 pessoas.</p>
+                            <div class="timeline-event-actions">
+                                <button class="btn btn-secondary btn-sm btn-edit-event" data-event-id="event1"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn btn-danger btn-sm btn-delete-event" data-event-id="event1"><i class="fas fa-trash"></i> Excluir</button>
+                                <button class="btn btn-secondary btn-sm btn-mark-pending" data-event-id="event1"><i class="fas fa-clock"></i> Marcar Pendente</button>
+                            </div>
+                        </div>
+
+                        <div class="timeline-event-item status-em_andamento" data-event-id="event2">
+                            <div class="timeline-event-header">
+                                 <span class="timeline-event-date">10 de Agosto de 2024</span>
+                                <h3 class="timeline-event-title">Degustação do Buffet</h3>
+                            </div>
+                            <p class="timeline-event-description">Confirmar presença para a degustação final dos pratos e doces. Levar lista de restrições alimentares dos convidados e definir bebidas.</p>
+                             <div class="timeline-event-actions">
+                                <button class="btn btn-secondary btn-sm btn-edit-event" data-event-id="event2"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn btn-danger btn-sm btn-delete-event" data-event-id="event2"><i class="fas fa-trash"></i> Excluir</button>
+                                <button class="btn btn-success btn-sm btn-mark-completed" data-event-id="event2"><i class="fas fa-check-circle"></i> Marcar Concluído</button>
+                            </div>
+                        </div>
+                         <div class="timeline-event-item" data-event-id="event3"> <!-- Pendente por padrão -->
+                            <div class="timeline-event-header">
+                                 <span class="timeline-event-date">01 de Setembro de 2024</span>
+                                <h3 class="timeline-event-title">Envio dos Convites Oficiais</h3>
+                            </div>
+                            <p class="timeline-event-description">Finalizar design do convite e enviar para a gráfica. Após receber, iniciar o envio para todos os convidados confirmados no Save The Date.</p>
+                             <div class="timeline-event-actions">
+                                <button class="btn btn-secondary btn-sm btn-edit-event" data-event-id="event3"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn btn-danger btn-sm btn-delete-event" data-event-id="event3"><i class="fas fa-trash"></i> Excluir</button>
+                                <button class="btn btn-success btn-sm btn-mark-completed" data-event-id="event3"><i class="fas fa-check-circle"></i> Marcar Concluído</button>
+                            </div>
+                        </div>
+                        <!-- Fim do Exemplo -->
+                    </div>
+                    <p id="no-timeline-events-message" class="no-items-message" style="display:none;">Nenhum evento adicionado à linha do tempo ainda.</p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Adicionar/Editar Evento da Linha do Tempo -->
+    <div id="timeline-event-dialog" class="dialog-overlay">
+        <div class="dialog-content">
+            <h3 id="timeline-event-dialog-title">Adicionar Novo Evento/Tarefa</h3>
+            <form id="timeline-event-form">
+                <input type="hidden" id="timeline-event-id" name="timeline-event-id">
+                <div class="form-group">
+                    <label for="timeline-event-title-input">Título do Evento/Tarefa:</label>
+                    <input type="text" id="timeline-event-title-input" name="timeline-event-title-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="timeline-event-date-input">Data Prevista:</label>
+                    <input type="date" id="timeline-event-date-input" name="timeline-event-date-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="timeline-event-description-input">Descrição/Detalhes:</label>
+                    <textarea id="timeline-event-description-input" name="timeline-event-description-input" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="timeline-event-status-input">Status Inicial:</label>
+                    <select id="timeline-event-status-input" name="timeline-event-status-input">
+                        <option value="pendente">Pendente</option>
+                        <option value="em_andamento">Em Andamento</option>
+                        <option value="concluido">Concluído</option>
+                    </select>
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-timeline-event-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Evento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // Linha do Tempo
+        const openEventDialogBtn = document.getElementById('open-add-timeline-event-dialog-btn');
+        const eventDialog = document.getElementById('timeline-event-dialog');
+        const cancelEventDialogBtn = document.getElementById('cancel-timeline-event-dialog-btn');
+        const timelineForm = document.getElementById('timeline-event-form');
+        const currentWeddingDateEl = document.getElementById('current-wedding-date');
+        const saveWeddingDateBtn = document.getElementById('save-wedding-date-btn');
+        const weddingDateInput = document.getElementById('set-wedding-date');
+
+        if (openEventDialogBtn && eventDialog) {
+            openEventDialogBtn.addEventListener('click', () => {
+                document.getElementById('timeline-event-dialog-title').textContent = 'Adicionar Novo Evento/Tarefa';
+                timelineForm.reset();
+                document.getElementById('timeline-event-id').value = '';
+                eventDialog.classList.add('active');
+            });
+        }
+        if (cancelEventDialogBtn) cancelEventDialogBtn.addEventListener('click', () => eventDialog.classList.remove('active'));
+        if (eventDialog) eventDialog.addEventListener('click', (e) => { if (e.target === eventDialog) eventDialog.classList.remove('active'); });
+        
+        document.querySelectorAll('.btn-edit-event').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const eventId = e.currentTarget.dataset.eventId;
+                document.getElementById('timeline-event-dialog-title').textContent = 'Editar Evento/Tarefa';
+                // TODO: JS para buscar dados do evento 'eventId' e popular o formulário
+                document.getElementById('timeline-event-id').value = eventId;
+                // Exemplo de popular:
+                // document.getElementById('timeline-event-title-input').value = "Título do Evento";
+                eventDialog.classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.btn-delete-event').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const eventId = e.currentTarget.dataset.eventId;
+                if (confirm('Tem certeza que deseja excluir este evento da linha do tempo?')) {
+                    console.log(`Excluindo evento ${eventId}`);
+                    // TODO: JS para excluir do Firebase e remover da UI
+                    e.currentTarget.closest('.timeline-event-item').remove();
+                    alert('Evento excluído (simulação).');
+                }
+            });
+        });
+
+        function updateEventStatusClass(eventItem, status) {
+            eventItem.classList.remove('status-concluido', 'status-em_andamento');
+            if (status === 'concluido') eventItem.classList.add('status-concluido');
+            else if (status === 'em_andamento') eventItem.classList.add('status-em_andamento');
+        }
+
+        document.querySelectorAll('.btn-mark-completed').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const eventId = e.currentTarget.dataset.eventId;
+                console.log(`Marcando evento ${eventId} como concluído`);
+                // TODO: JS para atualizar status no Firebase
+                updateEventStatusClass(e.currentTarget.closest('.timeline-event-item'), 'concluido');
+            });
+        });
+        document.querySelectorAll('.btn-mark-pending').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const eventId = e.currentTarget.dataset.eventId;
+                 console.log(`Marcando evento ${eventId} como pendente`);
+                // TODO: JS para atualizar status no Firebase
+                updateEventStatusClass(e.currentTarget.closest('.timeline-event-item'), 'pendente');
+            });
+        });
+        
+        if(saveWeddingDateBtn && weddingDateInput) {
+            saveWeddingDateBtn.addEventListener('click', () => {
+                const newDate = weddingDateInput.value;
+                if(newDate){
+                    const formattedDate = new Date(newDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+                    currentWeddingDateEl.textContent = formattedDate;
+                    // TODO: Salvar no Firebase (em /weddings/{weddingId}/weddingDate)
+                    alert(`Data do casamento salva: ${formattedDate} (simulação)`);
+                } else {
+                    alert('Por favor, selecione uma data válida.');
+                }
+            });
+        }
+        // TODO: JS para carregar a data do casamento do Firebase e popular currentWeddingDateEl e weddingDateInput.
+        // TODO: JS para carregar eventos da linha do tempo do Firebase.
+    </script>
+</body>
+</html>

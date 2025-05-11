@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Noivos - NuptialLink</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/auth-moderno.css"> <!-- Ajuste o caminho se necessário -->
+</head>
+<body> <!-- Removida classe auth-page, o CSS geral já cobre -->
+
+    <div class="auth-container">
+        <!-- <div class="auth-logo"> <img src="link-para-seu-logo.png" alt="NuptialLink Logo"> </div> -->
+        <h1>Crie sua Conta de Noivos</h1>
+        <p class="subtitle">Comece a planejar o casamento dos seus sonhos!</p>
+
+        <form id="cadastro-noivos-form">
+            <div id="cadastro-error-message" class="error-message" style="display: none;"></div>
+
+            <div class="names-group">
+                <div class="form-group">
+                    <label for="noivo1-nome">Seu Nome:</label>
+                    <input type="text" id="noivo1-nome" name="noivo1-nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="noivo2-nome">Nome do(a) Parceiro(a):</label>
+                    <input type="text" id="noivo2-nome" name="noivo2-nome" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email-cadastro">Email de Contato Principal:</label>
+                <input type="email" id="email-cadastro" name="email-cadastro" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password-cadastro">Crie uma Senha:</label>
+                <input type="password" id="password-cadastro" name="password-cadastro" required minlength="6">
+            </div>
+
+            <div class="form-group">
+                <label for="password-confirm">Confirme a Senha:</label>
+                <input type="password" id="password-confirm" name="password-confirm" required>
+            </div>
+
+            <div class="form-group">
+                <label for="wedding-date">Data Estimada do Casamento:</label>
+                <input type="date" id="wedding-date" name="wedding-date">
+                <small>Você poderá alterar esta data depois.</small>
+            </div>
+
+            <button type="submit">Cadastrar e Começar</button>
+        </form>
+
+        <div class="auth-links">
+            <p>Já tem uma conta? <a href="login-noivos.html">Faça login aqui</a></p>
+            <p><a href="../index.html">Voltar para a Home</a></p>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs (Adicionar no final do body) -->
+    <!-- Seus scripts Firebase -->
+</body>
+</html>

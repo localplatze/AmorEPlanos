@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio e Programação - Casamento de [Noivo] & [Noiva]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/convidado-style.css">
+    <style>
+        /* Estilos específicos da página Cardápio/Programação */
+        .details-card { /* Para cada seção: Cardápio, Programação */
+            background-color: var(--guest-card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px var(--guest-shadow-color);
+            margin-bottom: 30px;
+        }
+        .details-card h3 { /* Título de cada subseção (Entradas, Pratos Principais, etc.) */
+            font-family: var(--guest-font-family-headings);
+            font-size: 1.5em;
+            color: var(--guest-primary-color);
+            margin-top: 0; /* Reset para o primeiro h3 */
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--guest-primary-color-light);
+            font-weight: 600;
+        }
+        .details-card h3:not(:first-of-type) { /* Adiciona margem superior para h3s subsequentes */
+             margin-top: 25px;
+        }
+
+        .menu-category ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .menu-category ul li {
+            font-size: 1.05em;
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            color: var(--guest-text-color-medium);
+        }
+        .menu-category ul li::before { /* Marcador personalizado */
+            content: "\f00c"; /* Ícone de check do Font Awesome */
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900; /* Solid icon */
+            color: var(--guest-primary-color);
+            position: absolute;
+            left: 0;
+            top: 2px; /* Ajuste vertical */
+            font-size: 0.9em;
+        }
+
+        .schedule-list {
+            position: relative;
+            padding-left: 30px; /* Espaço para a linha e ícones */
+        }
+        .schedule-list::before { /* Linha vertical da programação */
+            content: '';
+            position: absolute;
+            left: 8px; 
+            top: 5px;
+            bottom: 5px;
+            width: 3px;
+            background-color: var(--guest-primary-color-light);
+            border-radius: 2px;
+        }
+        .schedule-item-guest {
+            position: relative;
+            margin-bottom: 20px;
+            padding-left: 25px; /* Espaço após o ícone */
+        }
+        .schedule-item-guest::before { /* Ícone de marcador na linha */
+            content: "\f017"; /* Ícone de relógio do Font Awesome */
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: var(--guest-primary-color);
+            position: absolute;
+            left: -5px; /* Ajuste para sobrepor a linha */
+            top: 1px; /* Ajuste vertical */
+            font-size: 1.3em;
+            background-color: var(--guest-card-bg); /* Para cobrir a linha atrás do ícone */
+            padding: 0 3px; /* Espaço em volta do ícone */
+        }
+        .schedule-item-guest .time-display {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+            color: var(--guest-text-color-dark);
+        }
+        .schedule-item-guest .event-description {
+            font-size: 1.05em;
+            color: var(--guest-text-color-medium);
+        }
+    </style>
+</head>
+<body>
+    <div class="guest-app-container">
+        <header class="guest-header">
+            <div class="header-content">
+                <div class="couple-names" id="header-couple-names"><h1>Ana & Bruno</h1></div>
+                 <nav class="guest-nav">
+                    <ul>
+                        <li><a href="home-convidado.html"><span class="nav-icon"><i class="fas fa-home"></i></span>Início</a></li>
+                        <li><a href="rsvp.html"><span class="nav-icon"><i class="fas fa-check-circle"></i></span>Confirmar Presença</a></li>
+                        <li><a href="informacoes-locais.html"><span class="nav-icon"><i class="fas fa-map-marker-alt"></i></span>Locais</a></li>
+                        <li><a href="passagens-hospedagem-convidado.html"><span class="nav-icon"><i class="fas fa-plane"></i></span>Viagem/Hosp.</a></li>
+                        <li><a href="cardapio-programacao.html" class="active"><span class="nav-icon"><i class="fas fa-utensils"></i></span>Detalhes</a></li>
+                        <li><a href="lista-presentes-convidado.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Presentes</a></li>
+                        <li><a href="pos-evento-convidado.html"><span class="nav-icon"><i class="fas fa-camera"></i></span>Fotos</a></li>
+                        <li><a href="#" id="logout-convidado-btn" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="guest-main-content" id="cardapio-programacao-page">
+            <div class="guest-section-header">
+                 <h2>Detalhes da Celebração</h2>
+                 <p class="subtitle">Confira o que preparamos com carinho para este dia especial e a programação dos eventos.</p>
+            </div>
+
+            <section class="details-card" id="menu-details">
+                <h2 style="text-align: left; border-bottom: none; margin-bottom: 10px;"><i class="fas fa-concierge-bell" style="margin-right: 10px;"></i>Cardápio da Recepção</h2>
+                <p style="margin-bottom: 25px; font-size: 1.05em;">Uma seleção deliciosa para brindarmos juntos!</p>
+                
+                <div id="menu-content">
+                    <!-- JS irá popular esta seção -->
+                    <!-- Exemplo de Categoria de Menu: -->
+                    <div class="menu-category">
+                        <h3><i class="fas fa-pepper-hot" style="margin-right: 8px; font-size: 0.9em;"></i>Entradas</h3>
+                        <ul>
+                            <li>Canapés Variados (Salmão, Tomate Seco com Rúcula, Queijo Brie com Geleia de Pimenta)</li>
+                            <li>Mini Quiches de Alho Poró e Lorraine</li>
+                            <li>Rolinhos Primavera com Molho Agridoce</li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-category">
+                        <h3><i class="fas fa-drumstick-bite" style="margin-right: 8px; font-size: 0.9em;"></i>Pratos Principais</h3>
+                        <ul>
+                            <li>Filé Mignon ao Molho Madeira com Risoto de Parmesão e Aspargos Frescos</li>
+                            <li>Salmão Grelhado ao Molho de Maracujá com Purê de Batata Doce e Ervas</li>
+                            <li>Conchiglione de Ricota e Espinafre ao Molho Bechamel Gratinado (Opção Vegetariana)</li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-category">
+                        <h3><i class="fas fa-cookie-bite" style="margin-right: 8px; font-size: 0.9em;"></i>Sobremesas</h3>
+                        <ul>
+                            <li>Bolo dos Noivos (Sabor: [Sabor do Bolo])</li>
+                            <li>Docinhos Finos Variados (Brigadeiro Gourmet, Beijinho, Camafeu, etc.)</li>
+                            <li>Mesa de Frutas Frescas da Estação</li>
+                            <li>Mini Cheesecakes com Calda de Frutas Vermelhas</li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-category">
+                        <h3><i class="fas fa-wine-glass-alt" style="margin-right: 8px; font-size: 0.9em;"></i>Bebidas</h3>
+                        <ul>
+                            <li>Água Mineral (com e sem gás)</li>
+                            <li>Refrigerantes (Coca-Cola, Guaraná, Diet)</li>
+                            <li>Sucos Naturais (Laranja, Abacaxi com Hortelã)</li>
+                            <li>Cerveja Premium (Heineken, Stella Artois)</li>
+                            <li>Vinho Tinto Cabernet Sauvignon e Vinho Branco Chardonnay</li>
+                            <li>Espumante Brut para Brindes</li>
+                        </ul>
+                    </div>
+                    <!-- Fim do Exemplo -->
+                </div>
+                <p id="no-menu-info" class="no-items-message" style="text-align:center; display:none; margin-top: 15px;">O cardápio será divulgado em breve pelos noivos.</p>
+            </section>
+
+            <section class="details-card" id="event-schedule">
+                <h2 style="text-align: left; border-bottom: none; margin-bottom: 25px;"><i class="far fa-calendar-alt" style="margin-right: 10px;"></i>Programação do Dia</h2>
+                <div class="schedule-list" id="schedule-content">
+                    <!-- JS irá popular esta seção -->
+                    <!-- Exemplo de Item da Programação: -->
+                    <div class="schedule-item-guest">
+                        <span class="time-display">16:30</span>
+                        <span class="event-description">Recepção dos Convidados na Cerimônia</span>
+                    </div>
+                    <div class="schedule-item-guest">
+                        <span class="time-display">17:00</span>
+                        <span class="event-description">Início da Cerimônia</span>
+                    </div>
+                    <div class="schedule-item-guest">
+                        <span class="time-display">18:30</span>
+                        <span class="event-description">Chegada dos Convidados à Recepção / Coquetel de Boas-Vindas</span>
+                    </div>
+                    <div class="schedule-item-guest">
+                        <span class="time-display">19:30</span>
+                        <span class="event-description">Jantar Servido</span>
+                    </div>
+                    <div class="schedule-item-guest">
+                        <span class="time-display">21:00</span>
+                        <span class="event-description">Primeira Dança dos Noivos e Brinde</span>
+                    </div>
+                     <div class="schedule-item-guest">
+                        <span class="time-display">21:30</span>
+                        <span class="event-description">Abertura da Pista de Dança com DJ</span>
+                    </div>
+                     <div class="schedule-item-guest">
+                        <span class="time-display">00:00</span>
+                        <span class="event-description">Corte do Bolo e Mesa de Doces</span>
+                    </div>
+                     <div class="schedule-item-guest">
+                        <span class="time-display">02:30</span>
+                        <span class="event-description">Encerramento da Festa e Despedida dos Noivos</span>
+                    </div>
+                    <!-- Fim do Exemplo -->
+                </div>
+                <p id="no-schedule-info" class="no-items-message" style="text-align:center; display:none; margin-top: 15px;">A programação detalhada será divulgada em breve.</p>
+            </section>
+        </main>
+
+        <footer class="guest-footer">
+             <p><span class="couple-names-footer" id="footer-couple-names-display">Ana & Bruno</span></p>
+            <p>Celebração em <span id="wedding-date-footer-display">[Data do Casamento]</span></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulação de carregamento de dados
+            const coupleNames = "Ana & Bruno";
+            const weddingDateStr = "2024-12-25T17:00:00";
+
+            document.getElementById('header-couple-names').innerHTML = `<h1>${coupleNames}</h1>`;
+            document.getElementById('footer-couple-names-display').textContent = coupleNames;
+            document.getElementById('wedding-date-footer-display').textContent = new Date(weddingDateStr).toLocaleDateString('pt-BR', {year: 'numeric', month: 'long', day: 'numeric'});
+            
+             // Logout (simulação)
+            const logoutBtn = document.getElementById('logout-convidado-btn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Logout realizado (simulação).');
+                });
+            }
+            // TODO: JS para carregar dinamicamente o cardápio e a programação do Firebase.
+            // Se os dados não existirem, mostrar as mensagens "no-menu-info" e "no-schedule-info".
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Convidado - NuptialLink</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/auth-moderno.css"> <!-- Ajuste o caminho se necessário -->
+</head>
+<body class="guest-page"> <!-- Adicionada classe guest-page -->
+
+    <div class="auth-container guest-container"> <!-- Adicionada classe guest-container -->
+        <!-- <div class="auth-logo"> <img src="link-para-seu-logo.png" alt="NuptialLink Logo"> </div> -->
+        <h1>Acesso do Convidado</h1>
+        <p class="subtitle">Use o código ou telefone fornecido no convite para acessar as informações do casamento.</p>
+
+        <form id="login-convidado-form" class="guest-form"> <!-- Adicionada classe guest-form -->
+            <div id="convidado-login-error-message" class="error-message" style="display: none;"></div>
+
+            <div class="form-group">
+                <label for="convidado-id">Código do Convite / Nº de Telefone:</label>
+                <input type="text" id="convidado-id" name="convidado-id" required placeholder="Ex: JOAOMARIA2024 ou (XX)XXXXX-XXXX">
+            </div>
+
+            <div class="form-group">
+                <label for="convidado-senha">Senha (se houver):</label>
+                <input type="password" id="convidado-senha" name="convidado-senha" placeholder="Opcional, se fornecida">
+            </div>
+
+            <button type="submit" class="guest-button">Acessar Casamento</button> <!-- Adicionada classe guest-button -->
+        </form>
+
+        <div class="auth-links">
+            <p>Não tem um código? Verifique seu convite ou entre em contato com os noivos.</p>
+            <p><a href="../index.html">Voltar para a Home</a></p>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+</body>
+</html>

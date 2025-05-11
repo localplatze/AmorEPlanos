@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convites & Check-In - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html" class="active"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Convites & Check-In</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                    <a href="#" id="logout-btn-header" class="logout-link" style="display: none;">Sair</a>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="convites-checkin-page">
+                <section class="page-section">
+                    <div class="section-header">
+                        <h2>Gestão de Convites e Check-In</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="btnEnviarConvitesLote"><i class="fas fa-paper-plane"></i> Enviar Convites em Lote</button>
+                            <button class="btn btn-secondary" id="btnAbrirLeitorQr"><i class="fas fa-qrcode"></i> Abrir Leitor QR (Check-In)</button>
+                        </div>
+                    </div>
+
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <label for="filtroNomeConvidado">Buscar Convidado:</label>
+                            <input type="text" id="filtroNomeConvidado" placeholder="Nome ou grupo">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filtroStatusConvite">Status Convite:</label>
+                            <select id="filtroStatusConvite">
+                                <option value="">Todos</option>
+                                <option value="nao_enviado">Não Enviado</option>
+                                <option value="enviado">Enviado</option>
+                                <option value="erro_envio">Erro no Envio</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filtroStatusCheckin">Status Check-In:</label>
+                            <select id="filtroStatusCheckin">
+                                <option value="">Todos</option>
+                                <option value="pendente">Pendente</option>
+                                <option value="confirmado">Confirmado</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-sm" id="btnAplicarFiltrosConvites">Aplicar Filtros</button>
+                    </div>
+
+                    <table class="styled-table" id="tabelaConvitesCheckin">
+                        <thead>
+                            <tr>
+                                <th>Convidado/Grupo</th>
+                                <th>Contato Principal</th>
+                                <th>Status Convite</th>
+                                <th>QR Code</th>
+                                <th>Check-In</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Exemplo de Linha (Dados virão do Firebase) -->
+                            <tr>
+                                <td>Família Silva (João, Maria, Pedro)</td>
+                                <td>(XX) XXXXX-XXXX</td>
+                                <td><span class="status-enviado"><i class="fas fa-check-circle"></i> Enviado</span></td>
+                                <td><button class="btn btn-secondary btn-sm btn-ver-qr" data-guest-id="guest1"><i class="fas fa-qrcode"></i> Ver/Gerar</button></td>
+                                <td><span class="status-pendente"><i class="fas fa-hourglass-half"></i> Pendente</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-primary btn-sm btn-enviar-convite" data-guest-id="guest1"><i class="fas fa-paper-plane"></i> Enviar</button>
+                                    <button class="btn btn-success btn-sm btn-marcar-checkin" data-guest-id="guest1"><i class="fas fa-user-check"></i> Check-In</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Carlos Alberto</td>
+                                <td>carlos@email.com</td>
+                                <td><span class="status-pendente">Não Enviado</span></td>
+                                <td><button class="btn btn-secondary btn-sm btn-ver-qr" data-guest-id="guest2"><i class="fas fa-qrcode"></i> Ver/Gerar</button></td>
+                                <td><span class="status-pendente"><i class="fas fa-hourglass-half"></i> Pendente</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-primary btn-sm btn-enviar-convite" data-guest-id="guest2"><i class="fas fa-paper-plane"></i> Enviar</button>
+                                    <button class="btn btn-success btn-sm btn-marcar-checkin" data-guest-id="guest2" disabled><i class="fas fa-user-check"></i> Check-In</button>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td>Ana Paula e Marcos</td>
+                                <td>(YY) YYYYY-YYYY</td>
+                                <td><span class="status-enviado"><i class="fas fa-check-circle"></i> Enviado</span></td>
+                                <td><button class="btn btn-secondary btn-sm btn-ver-qr" data-guest-id="guest3"><i class="fas fa-qrcode"></i> Ver/Gerar</button></td>
+                                <td><span class="status-confirmado"><i class="fas fa-check-double"></i> Confirmado</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-primary btn-sm btn-enviar-convite" data-guest-id="guest3" disabled><i class="fas fa-paper-plane"></i> Enviar</button>
+                                    <button class="btn btn-secondary btn-sm btn-desfazer-checkin" data-guest-id="guest3"><i class="fas fa-undo"></i> Desfazer</button>
+                                </td>
+                            </tr>
+                            <!-- Mais linhas aqui -->
+                            <!-- Mensagem de "Nenhum convidado encontrado" -->
+                            <!-- <tr>
+                                <td colspan="6" class="no-items-message">Nenhum convidado encontrado com os filtros atuais.</td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                    <div class="pagination-controls" style="text-align: center; margin-top: 20px;">
+                        <!-- Controles de paginação (Prev, 1, 2, 3, Next) -->
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Visualizar/Gerar QR Code -->
+    <div class="dialog-overlay" id="dialogVerQrCode">
+        <div class="dialog-content" style="max-width: 400px; text-align: center;">
+            <h3>QR Code do Convite</h3>
+            <p id="qrCodeGuestName">Convidado: Nome do Convidado</p>
+            <div id="qrCodeImageContainer" style="margin: 20px 0;">
+                <!-- Imagem do QR Code aqui (ex: <img src="path/to/qr.png" alt="QR Code">) -->
+                <div class="chart-placeholder" style="min-height: 200px; width: 200px; margin:auto;">QR Code</div>
+            </div>
+            <p>Este QR Code pode ser usado para o check-in no evento.</p>
+            <div class="dialog-actions">
+                <button type="button" class="btn btn-primary" id="btnImprimirQr">Imprimir</button>
+                <button type="button" class="btn btn-secondary" id="btnCloseDialogQr">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog para Leitor de QR Code (simulação) -->
+    <div class="dialog-overlay" id="dialogLeitorQr">
+        <div class="dialog-content" style="max-width: 500px;">
+            <h3>Leitor de QR Code para Check-In</h3>
+            <div id="qrReaderContainer" style="width: 100%; height: 300px; background: #eee; display:flex; align-items:center; justify-content:center; border: 1px dashed #ccc;">
+                <p>Simulação de câmera para leitura de QR Code</p>
+                <!-- Aqui iria a integração com uma biblioteca de leitura de QR Code, como html5-qrcode -->
+            </div>
+            <p id="qrReadResult" style="margin-top: 15px; text-align: center;">Aguardando leitura...</p>
+            <div class="dialog-actions">
+                <button type="button" class="btn btn-secondary" id="btnCloseDialogLeitorQr">Fechar Leitor</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" };
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // Scripts específicos da página Convites/Check-In
+        const dialogVerQrCode = document.getElementById('dialogVerQrCode');
+        const btnCloseDialogQr = document.getElementById('btnCloseDialogQr');
+        const btnsVerQr = document.querySelectorAll('.btn-ver-qr');
+
+        btnsVerQr.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Popular dados do convidado e QR Code no dialog
+                document.getElementById('qrCodeGuestName').textContent = `Convidado: ${btn.closest('tr').querySelector('td:first-child').textContent}`;
+                dialogVerQrCode.classList.add('active');
+            });
+        });
+        if(btnCloseDialogQr) btnCloseDialogQr.addEventListener('click', () => dialogVerQrCode.classList.remove('active'));
+
+        const dialogLeitorQr = document.getElementById('dialogLeitorQr');
+        const btnAbrirLeitorQr = document.getElementById('btnAbrirLeitorQr');
+        const btnCloseDialogLeitorQr = document.getElementById('btnCloseDialogLeitorQr');
+
+        if(btnAbrirLeitorQr) btnAbrirLeitorQr.addEventListener('click', () => dialogLeitorQr.classList.add('active'));
+        if(btnCloseDialogLeitorQr) btnCloseDialogLeitorQr.addEventListener('click', () => dialogLeitorQr.classList.remove('active'));
+
+        // TODO: Lógica para enviar convites, marcar check-in, gerar QR Codes reais, etc.
+    </script>
+</body>
+</html>

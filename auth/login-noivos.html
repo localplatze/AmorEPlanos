@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Noivos - NuptialLink</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/auth-moderno.css"> <!-- Ajuste o caminho se necessário -->
+</head>
+<body>
+
+    <div class="auth-container login-container"> <!-- Adicionada classe login-container -->
+        <!-- <div class="auth-logo"> <img src="link-para-seu-logo.png" alt="NuptialLink Logo"> </div> -->
+        <h1>Login dos Noivos</h1>
+        <p class="subtitle">Acesse sua conta para gerenciar seu casamento.</p>
+
+        <form id="login-noivos-form">
+            <div id="login-error-message" class="error-message" style="display: none;"></div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit">Entrar</button>
+        </form>
+
+        <div class="auth-links">
+            <p>Ainda não tem uma conta? <a href="cadastro-noivos.html">Cadastre-se aqui</a></p>
+            <p><a href="recuperar-senha.html">Esqueceu sua senha?</a></p> <!-- MODIFICADO AQUI -->
+            <p><a href="../index.html">Voltar para a Home</a></p>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Convidados - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <!-- Sidebar (Copie do dashboard.html e ajuste o link ativo) -->
+         <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html" class="active"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <!-- Header (Copie do dashboard.html) -->
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Gestão de Convidados</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="convidados-page">
+                <section class="page-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-users-cog" style="margin-right: 8px;"></i>Lista de Convidados</h2>
+                        <div class="actions">
+                            <button class="btn btn-secondary" id="import-guests-btn"><i class="fas fa-file-import"></i> Importar Lista</button>
+                            <button class="btn btn-primary" id="open-guest-dialog-btn"><i class="fas fa-user-plus"></i> Adicionar Convidado/Grupo</button>
+                        </div>
+                    </div>
+
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <label for="filter-guest-name">Buscar por Nome:</label>
+                            <input type="text" id="filter-guest-name" placeholder="Nome do convidado...">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-guest-status-std">Status (Save The Date):</label>
+                            <select id="filter-guest-status-std">
+                                <option value="all">Todos</option>
+                                <option value="confirmado">Confirmado</option>
+                                <option value="pendente">Pendente</option>
+                                <option value="recusado">Recusado</option>
+                                <option value="nao_enviado">Não Enviado</option>
+                            </select>
+                        </div>
+                         <div class="filter-group">
+                            <label for="filter-guest-status-invite">Status (Convite):</label>
+                            <select id="filter-guest-status-invite">
+                                <option value="all">Todos</option>
+                                <option value="confirmado">Confirmado</option>
+                                <option value="pendente">Pendente</option>
+                                <option value="recusado">Recusado</option>
+                                <option value="nao_enviado">Não Enviado</option>
+                                <option value="enviado">Enviado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="select-all-guests-table" title="Selecionar Todos"></th>
+                                <th>Grupo/Contato Principal</th>
+                                <th>Membros (Total)</th>
+                                <th>Cidade (UF)</th>
+                                <th>Status Save The Date</th>
+                                <th>Status Convite</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guest-table-body">
+                            <tr>
+                                <td><input type="checkbox" name="selected_guest_row"></td>
+                                <td>Família Silva (João Silva)</td>
+                                <td>João S., Maria S., Pedro S. (3)</td>
+                                <td>São Paulo (SP)</td>
+                                <td><span class="status-confirmado"><i class="fas fa-check-circle status-dot" style="color: #27ae60;"></i>Confirmado</span></td>
+                                <td><span class="status-enviado"><i class="fas fa-paper-plane status-dot" style="color: #3498db;"></i>Enviado</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-secondary btn-sm" onclick="viewGuestDetails('guestId1')" title="Ver"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-secondary btn-sm" onclick="editGuest('guestId1')" title="Editar"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteGuest('guestId1')" title="Excluir"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" name="selected_guest_row"></td>
+                                <td>Carlos Alberto</td>
+                                <td>Carlos A. (1)</td>
+                                <td>Rio de Janeiro (RJ)</td>
+                                <td><span class="status-pendente"><i class="fas fa-hourglass-half status-dot" style="color: #f39c12;"></i>Pendente</span></td>
+                                <td>Não Enviado</td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-secondary btn-sm" title="Ver"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-secondary btn-sm" title="Editar"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" title="Excluir"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p id="no-guests-message" class="no-items-message" style="display:none;">Nenhum convidado cadastrado ainda.</p>
+                     <div class="table-actions-footer" style="margin-top: 20px;">
+                        <button class="btn btn-secondary" id="bulk-action-std-btn" disabled><i class="fas fa-envelope"></i> Ação em Lote (Save The Date)</button>
+                        <button class="btn btn-secondary" id="bulk-action-invite-btn" disabled><i class="fas fa-envelope-open-text"></i> Ação em Lote (Convite)</button>
+                    </div>
+                </section>
+
+                <section class="page-section summary-stats">
+                    <h2 style="margin-bottom: 15px;"><i class="fas fa-chart-bar" style="margin-right: 8px;"></i>Resumo Geral</h2>
+                    <div class="summary-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                        <div class="summary-card-item">
+                            <h4>Grupos/Convites</h4>
+                            <span class="amount" id="total-guest-groups">0</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Pessoas Convidadas</h4>
+                            <span class="amount" id="total-invited-people">0</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Confirmados (STD)</h4>
+                            <span class="amount" id="total-confirmed-std" style="color: #27ae60;">0</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Confirmados (Convite)</h4>
+                            <span class="amount" id="total-confirmed-invite" style="color: #27ae60;">0</span>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Adicionar/Editar Convidado/Grupo -->
+    <div id="guest-dialog" class="dialog-overlay">
+        <div class="dialog-content" style="max-width: 700px;">
+            <h3 id="guest-dialog-title">Adicionar Novo Convidado/Grupo</h3>
+            <form id="guest-form">
+                <input type="hidden" id="guest-group-id" name="guest-group-id">
+                <div class="form-group">
+                    <label for="guest-group-name">Nome do Grupo/Família (Opcional, para sua organização):</label>
+                    <input type="text" id="guest-group-name" name="guest-group-name" placeholder="Ex: Família Silva, Amigos do Trabalho">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="guest-main-contact-name">Nome do Contato Principal (para o envelope/convite):</label>
+                        <input type="text" id="guest-main-contact-name" name="guest-main-contact-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guest-contact-id">Identificador Único (Telefone com DDD ou Código):</label>
+                        <input type="text" id="guest-contact-id" name="guest-contact-id" required placeholder="(XX)XXXXX-XXXX ou seu código">
+                    </div>
+                </div>
+                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="guest-city">Cidade de Residência:</label>
+                        <input type="text" id="guest-city" name="guest-city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guest-state">Estado (UF):</label>
+                        <input type="text" id="guest-state" name="guest-state" required maxlength="2" placeholder="Ex: SP">
+                    </div>
+                </div>
+                <p style="font-size:0.85em; color: var(--text-color-light); margin-top:-10px; margin-bottom:20px;"><em>A marcação "De outra cidade?" será automática comparando com a cidade da cerimônia (configurada no Perfil Público).</em></p>
+
+                <hr style="margin: 20px 0;">
+                <h4><i class="fas fa-users" style="margin-right: 8px;"></i>Membros do Grupo/Convite:</h4>
+                <div id="guest-members-container">
+                    <!-- Membros adicionados dinamicamente -->
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-guest-member-btn" style="margin-bottom:15px;"><i class="fas fa-plus"></i> Adicionar Membro ao Grupo</button>
+
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-guest-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Convidado/Grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Template para Membro do Convidado -->
+    <template id="guest-member-template">
+        <div class="dynamic-entry guest-member-entry">
+            <div class="dynamic-entry-header">
+                 <h5>Detalhes do Membro</h5>
+                 <button type="button" class="btn remove-btn remove-guest-member-btn"><i class="fas fa-times"></i> Remover</button>
+            </div>
+            <div class="form-group">
+                <label>Nome Completo do Membro:</label>
+                <input type="text" name="member_name[]" required>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" name="member_is_child[]" id="member_is_child_dynamic_id_placeholder" style="width:auto; margin-right: 5px;">
+                <label for="member_is_child_dynamic_id_placeholder" class="checkbox-label">É criança?</label>
+            </div>
+            <div class="form-group">
+                 <label>Papel (Opcional - para organização interna):</label>
+                 <select name="member_role[]">
+                    <option value="">Nenhum</option>
+                    <option value="padrinho">Padrinho</option>
+                    <option value="madrinha">Madrinha</option>
+                    <option value="pajem">Pajem</option>
+                    <option value="daminha">Daminha</option>
+                    <option value="avo_noivo">Avô do Noivo</option>
+                    <option value="avo_noiva">Avó da Noiva</option>
+                    <!-- Adicionar mais papéis conforme necessário -->
+                 </select>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // Script da Sidebar e Header (copie do dashboard.html)
+        const mobileMenuToggleConv = document.getElementById('mobileMenuToggle'); // Renomeado
+        const sidebarConv = document.getElementById('noivosSidebar'); // Renomeado
+        const sidebarOverlayConv = document.getElementById('sidebarOverlay'); // Renomeado
+        function toggleSidebarConvFn() {
+            sidebarConv.classList.toggle('active');
+            sidebarOverlayConv.classList.toggle('active');
+            const icon = mobileMenuToggleConv.querySelector('i');
+            if (sidebarConv.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggleConv && sidebarConv && sidebarOverlayConv) {
+            mobileMenuToggleConv.addEventListener('click', toggleSidebarConvFn);
+            sidebarOverlayConv.addEventListener('click', toggleSidebarConvFn);
+        }
+        const userNameElementConv = document.getElementById('userName'); // Renomeado
+        const userAvatarElementConv = document.getElementById('userAvatar'); // Renomeado
+        const currentUserConv = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+        if (currentUserConv && userNameElementConv && userAvatarElementConv) {
+            userNameElementConv.textContent = `Olá, ${currentUserConv.name}!`;
+            userAvatarElementConv.textContent = currentUserConv.initials;
+        }
+        // Fim script Sidebar/Header
+
+        // Script específico da página Convidados
+        document.addEventListener('DOMContentLoaded', () => {
+            const openBtn = document.getElementById('open-guest-dialog-btn');
+            const dialog = document.getElementById('guest-dialog');
+            const cancelBtn = document.getElementById('cancel-guest-dialog-btn');
+
+            if (openBtn) openBtn.addEventListener('click', () => dialog.classList.add('active'));
+            if (cancelBtn) cancelBtn.addEventListener('click', () => dialog.classList.remove('active'));
+            if (dialog) dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('active'); });
+
+            const addMemberBtn = document.getElementById('add-guest-member-btn');
+            const membersContainer = document.getElementById('guest-members-container');
+            const memberTemplate = document.getElementById('guest-member-template');
+            let memberIdCounter = 0;
+
+            const addInitialMember = () => {
+                if (membersContainer.children.length === 0) {
+                    addMemberToForm();
+                }
+            };
+            if (openBtn) openBtn.addEventListener('click', addInitialMember);
+
+            function addMemberToForm() {
+                const clone = memberTemplate.content.cloneNode(true);
+                const checkbox = clone.querySelector('input[type="checkbox"]');
+                const label = clone.querySelector('label[for="member_is_child_dynamic_id_placeholder"]');
+                const newId = `member_is_child_${memberIdCounter++}`;
+                if(checkbox && label) {
+                    checkbox.id = newId;
+                    label.setAttribute('for', newId);
+                }
+                membersContainer.appendChild(clone);
+            }
+
+            if (addMemberBtn && membersContainer && memberTemplate) {
+                addMemberBtn.addEventListener('click', addMemberToForm);
+                membersContainer.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('remove-guest-member-btn') || e.target.closest('.remove-guest-member-btn')) {
+                        (e.target.closest('.remove-guest-member-btn') || e.target).closest('.guest-member-entry').remove();
+                    }
+                });
+            }
+
+            // Lógica para select all e botões de ação em lote
+            const selectAllTableCheckbox = document.getElementById('select-all-guests-table');
+            const rowCheckboxes = document.querySelectorAll('#guest-table-body input[name="selected_guest_row"]');
+            const bulkStdBtn = document.getElementById('bulk-action-std-btn');
+            const bulkInviteBtn = document.getElementById('bulk-action-invite-btn');
+
+            function toggleBulkButtons() {
+                let anyChecked = false;
+                rowCheckboxes.forEach(cb => { if(cb.checked) anyChecked = true; });
+                if (bulkStdBtn) bulkStdBtn.disabled = !anyChecked;
+                if (bulkInviteBtn) bulkInviteBtn.disabled = !anyChecked;
+            }
+
+            if (selectAllTableCheckbox) {
+                selectAllTableCheckbox.addEventListener('change', function() {
+                    rowCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
+                    toggleBulkButtons();
+                });
+            }
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    let allChecked = true;
+                    rowCheckboxes.forEach(cb => { if(!cb.checked) allChecked = false; });
+                    if (selectAllTableCheckbox) selectAllTableCheckbox.checked = allChecked;
+                    toggleBulkButtons();
+                });
+            });
+            toggleBulkButtons(); // Initial state
+        });
+    </script>
+</body>
+</html>

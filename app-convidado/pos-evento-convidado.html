@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotos do Casamento - [Noivo] & [Noiva]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/convidado-style.css">
+     <style>
+        /* Estilos específicos da Galeria Pós-Evento para Convidados */
+        .guest-gallery-intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .guest-gallery-intro h2 {
+            font-family: var(--guest-font-family-headings);
+            font-size: 2em;
+            color: var(--guest-primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .guest-gallery-intro p {
+            font-size: 1.1em;
+            color: var(--guest-text-color-medium);
+            max-width:750px;
+            margin-left:auto;
+            margin-right:auto;
+            line-height: 1.7;
+        }
+
+        .media-gallery-grid-guest { /* Para evitar conflito com a galeria dos noivos */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .media-item-card-guest { /* Card individual para cada mídia */
+            background-color: var(--guest-card-bg);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--guest-shadow-color);
+            overflow: hidden;
+            cursor: pointer; /* Indica que é clicável para lightbox */
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        .media-item-card-guest:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .media-item-card-guest .media-content-wrapper {
+            width: 100%;
+            height: 220px; /* Altura da imagem/vídeo */
+            overflow: hidden;
+            background-color: #f0f2f5; /* Fundo para placeholders */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .media-item-card-guest .media-content-wrapper img,
+        .media-item-card-guest .media-content-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+         .media-item-card-guest:hover .media-content-wrapper img,
+         .media-item-card-guest:hover .media-content-wrapper video {
+            transform: scale(1.05);
+        }
+        .media-item-card-guest .media-caption-text { /* Renomeado */
+            font-size:0.9em;
+            padding: 12px 15px; /* Ajustado padding */
+            text-align:center;
+            color:var(--guest-text-color-medium);
+            background-color: rgba(255,255,255,0.8); /* Fundo leve para legenda sobrepor imagem se necessário */
+            border-top: 1px solid var(--guest-border-color);
+        }
+        
+        /* Lightbox Styles (Reutilizando do pos-evento-noivos.html, adaptado para guest) */
+        #media-lightbox-overlay-guest { /* ID específico */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #media-lightbox-overlay-guest.active { display: flex; opacity: 1; }
+        #media-lightbox-content-guest {
+            position:relative;
+            max-width:90vw;
+            max-height:90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        #media-lightbox-overlay-guest.active #media-lightbox-content-guest {
+            transform: scale(1);
+        }
+        #media-lightbox-content-guest img,
+        #media-lightbox-content-guest video {
+            display:block;
+            max-width:100%;
+            max-height:100%;
+            object-fit:contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        #media-lightbox-content-guest video { outline: none; }
+        #close-lightbox-btn-guest { /* ID específico */
+            position:absolute;
+            top: -15px;
+            right: -15px;
+            font-size:1.5em;
+            color:white;
+            background-color:rgba(40,40,40,0.8);
+            border:none;
+            cursor:pointer;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #close-lightbox-btn-guest:hover { background-color:rgba(0,0,0,0.9); transform: rotate(90deg); }
+    </style>
+</head>
+<body>
+    <div class="guest-app-container">
+        <header class="guest-header">
+            <div class="header-content">
+                <div class="couple-names" id="header-couple-names"><h1>Ana & Bruno</h1></div>
+                <nav class="guest-nav">
+                    <ul>
+                        <li><a href="home-convidado.html"><span class="nav-icon"><i class="fas fa-home"></i></span>Início</a></li>
+                        <li><a href="rsvp.html"><span class="nav-icon"><i class="fas fa-check-circle"></i></span>Confirmar Presença</a></li>
+                        <li><a href="informacoes-locais.html"><span class="nav-icon"><i class="fas fa-map-marker-alt"></i></span>Locais</a></li>
+                        <li><a href="passagens-hospedagem-convidado.html"><span class="nav-icon"><i class="fas fa-plane"></i></span>Viagem/Hosp.</a></li>
+                        <li><a href="cardapio-programacao.html"><span class="nav-icon"><i class="fas fa-utensils"></i></span>Detalhes</a></li>
+                        <li><a href="lista-presentes-convidado.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Presentes</a></li>
+                        <li><a href="pos-evento-convidado.html" class="active"><span class="nav-icon"><i class="fas fa-camera"></i></span>Fotos</a></li>
+                        <li><a href="#" id="logout-convidado-btn" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="guest-main-content" id="pos-evento-convidado-page">
+            <section class="guest-gallery-intro">
+                <h2><i class="fas fa-images" style="margin-right: 10px;"></i>Recordações do Nosso Casamento</h2>
+                <p>Reviva os melhores momentos conosco! Aqui estão algumas fotos e vídeos do nosso grande dia. Esperamos que gostem!</p>
+            </section>
+
+            <div class="media-gallery-grid-guest" id="wedding-gallery-guest-container">
+                <!-- JS irá popular esta seção -->
+                <!-- Exemplo de Mídia: -->
+                <div class="media-item-card-guest" data-media-id="media1_guest_ex" onclick="openGuestMediaLightbox('https://via.placeholder.com/800x600/AA336A/FFFFFF?text=Foto+1+Grande', 'photo', 'Nossa primeira dança!')">
+                    <div class="media-content-wrapper">
+                        <img src="https://via.placeholder.com/300x220/AA336A/FFFFFF?text=Foto+1" alt="Nossa primeira dança!">
+                    </div>
+                    <p class="media-caption-text">Nossa primeira dança!</p>
+                </div>
+                <div class="media-item-card-guest" data-media-id="media2_guest_ex" onclick="openGuestMediaLightbox('https://via.placeholder.com/800x600/8c2b57/FFFFFF?text=Foto+2+Grande', 'image', 'O bolo estava divino!')">
+                     <div class="media-content-wrapper">
+                        <img src="https://via.placeholder.com/300x220/8c2b57/FFFFFF?text=Foto+2" alt="O bolo estava divino!">
+                    </div>
+                    <p class="media-caption-text">O bolo estava divino!</p>
+                </div>
+                <div class="media-item-card-guest" data-media-id="media3_guest_ex" onclick="openGuestMediaLightbox('../assets/videos/wedding-video-placeholder.mp4', 'video', 'Melhores momentos da festa.')">
+                     <div class="media-content-wrapper">
+                        <video preload="metadata" poster="https://via.placeholder.com/300x220/2c3e50/FFFFFF?text=Video+Preview">
+                             <source src="../assets/videos/wedding-video-placeholder.mp4#t=0.5" type="video/mp4">
+                        </video>
+                    </div>
+                    <p class="media-caption-text">Melhores momentos da festa.</p>
+                </div>
+                 <!-- Fim do Exemplo -->
+            </div>
+            <p id="no-photos-guest-message" class="no-items-message" style="text-align:center; display:none; margin-top: 20px; background-color:var(--guest-card-bg); padding:20px; border-radius:8px;">
+                <i class="fas fa-camera-retro fa-2x" style="color: var(--guest-text-color-light); margin-bottom:10px;"></i><br>
+                As fotos e vídeos do casamento ainda não foram publicadas pelos noivos. <br>Volte em breve para reviver esses momentos conosco!
+            </p>
+        </main>
+
+        <footer class="guest-footer">
+            <p><span class="couple-names-footer" id="footer-couple-names-display">Ana & Bruno</span></p>
+            <p>Celebração em <span id="wedding-date-footer-display">[Data do Casamento]</span></p>
+        </footer>
+    </div>
+
+    <!-- Lightbox para Visualizar Mídia (Convidado) -->
+    <div id="media-lightbox-overlay-guest">
+        <div id="media-lightbox-content-guest">
+            <img id="lightbox-image-content-guest" src="#" alt="Mídia em tela cheia" style="display:none;">
+            <video id="lightbox-video-content-guest" controls style="display:none;"></video>
+            <button id="close-lightbox-btn-guest" title="Fechar"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulação de carregamento de dados
+            const coupleNames = "Ana & Bruno";
+            const weddingDateStr = "2024-12-25T17:00:00";
+
+            document.getElementById('header-couple-names').innerHTML = `<h1>${coupleNames}</h1>`;
+            document.getElementById('footer-couple-names-display').textContent = coupleNames;
+            document.getElementById('wedding-date-footer-display').textContent = new Date(weddingDateStr).toLocaleDateString('pt-BR', {year: 'numeric', month: 'long', day: 'numeric'});
+            
+            // Lightbox (Convidado)
+            const lightboxOverlay = document.getElementById('media-lightbox-overlay-guest');
+            const lightboxImageEl = document.getElementById('lightbox-image-content-guest');
+            const lightboxVideoEl = document.getElementById('lightbox-video-content-guest');
+            const closeLightboxBtn = document.getElementById('close-lightbox-btn-guest');
+
+            window.openGuestMediaLightbox = function(mediaUrl, mediaType, caption) {
+                if (mediaType === 'image' || mediaType === 'photo') { // Aceita 'photo' também
+                    lightboxImageEl.src = mediaUrl;
+                    lightboxImageEl.alt = caption || "Imagem do casamento";
+                    lightboxImageEl.style.display = 'block';
+                    lightboxVideoEl.style.display = 'none';
+                    lightboxVideoEl.pause(); lightboxVideoEl.currentTime = 0;
+                } else if (mediaType === 'video') {
+                    lightboxVideoEl.src = mediaUrl;
+                    lightboxVideoEl.style.display = 'block';
+                    lightboxImageEl.style.display = 'none';
+                    lightboxVideoEl.play();
+                }
+                lightboxOverlay.classList.add('active');
+            }
+
+            if(closeLightboxBtn) closeLightboxBtn.addEventListener('click', () => {
+                lightboxOverlay.classList.remove('active');
+                lightboxImageEl.src = '#';
+                lightboxVideoEl.src = '';
+                lightboxVideoEl.pause(); lightboxVideoEl.currentTime = 0;
+            });
+            if(lightboxOverlay) lightboxOverlay.addEventListener('click', (e) => { 
+                if(e.target === lightboxOverlay) closeLightboxBtn.click(); 
+            });
+            
+             // Logout (simulação)
+            const logoutBtn = document.getElementById('logout-convidado-btn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Logout realizado (simulação).');
+                });
+            }
+            // TODO: JS para carregar a galeria de mídias do Firebase.
+            // Se não houver mídias, mostrar "no-photos-guest-message".
+        });
+    </script>
+</body>
+</html>

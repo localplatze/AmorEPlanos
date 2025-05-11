@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viagem e Hospedagem - Casamento de [Noivo] & [Noiva]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/convidado-style.css">
+    <style>
+        /* Estilos específicos da página Viagem/Hospedagem */
+        .info-item-guest {
+            background-color: #fdfdfd; /* Fundo sutil para cada item */
+            border: 1px solid var(--guest-border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .info-item-guest h3 {
+            font-family: var(--guest-font-family-headings);
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--guest-text-color-dark);
+            display: flex;
+            align-items: center;
+        }
+        .info-item-guest h3 .item-icon {
+            margin-right: 10px;
+            color: var(--guest-primary-color);
+            font-size: 1.1em;
+        }
+        .info-item-guest p {
+            margin-bottom: 8px;
+            font-size: 1em;
+            line-height: 1.6;
+            color: var(--guest-text-color-medium);
+        }
+        .info-item-guest p strong {
+            color: var(--guest-text-color-dark);
+            font-weight: 600;
+        }
+        .info-item-guest a {
+            color: var(--guest-primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .info-item-guest a:hover {
+            text-decoration: underline;
+        }
+
+        #financial-aid-section .guest-form .form-group {
+            margin-top: 0; /* Reset margin para o form dentro da seção */
+        }
+        #financial-aid-section #submit-aid-request-btn { /* Estilo para o botão dentro do form */
+            margin-top: 15px;
+        }
+        #aid-request-status {
+            margin-top:15px;
+            font-weight:bold;
+            padding: 10px;
+            border-radius: 6px;
+            display: none; /* Começa escondido */
+        }
+        #aid-request-status.success {
+            background-color: #e6f9f0; color: #1e8a57; border: 1px solid #a3e0c4;
+        }
+        #aid-request-status.info {
+            background-color: #e7f3fe; color: #2170b3; border: 1px solid #a6d1f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="guest-app-container">
+        <header class="guest-header">
+            <div class="header-content">
+                <div class="couple-names" id="header-couple-names"><h1>Ana & Bruno</h1></div>
+                <nav class="guest-nav">
+                    <ul>
+                        <li><a href="home-convidado.html"><span class="nav-icon"><i class="fas fa-home"></i></span>Início</a></li>
+                        <li><a href="rsvp.html"><span class="nav-icon"><i class="fas fa-check-circle"></i></span>Confirmar Presença</a></li>
+                        <li><a href="informacoes-locais.html"><span class="nav-icon"><i class="fas fa-map-marker-alt"></i></span>Locais</a></li>
+                        <li><a href="passagens-hospedagem-convidado.html" class="active"><span class="nav-icon"><i class="fas fa-plane"></i></span>Viagem/Hosp.</a></li>
+                        <li><a href="cardapio-programacao.html"><span class="nav-icon"><i class="fas fa-utensils"></i></span>Detalhes</a></li>
+                        <li><a href="lista-presentes-convidado.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Presentes</a></li>
+                        <li><a href="pos-evento-convidado.html"><span class="nav-icon"><i class="fas fa-camera"></i></span>Fotos</a></li>
+                        <li><a href="#" id="logout-convidado-btn" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="guest-main-content" id="passagens-hospedagem-convidado-page">
+            <div class="guest-section-header">
+                 <h2>Planejando sua Viagem</h2>
+                 <p class="subtitle">Se você vem de outra cidade, aqui estão algumas informações e sugestões para ajudar na sua organização.</p>
+            </div>
+
+            <section class="guest-page-section" id="transport-info-guest">
+                <h2><i class="fas fa-plane-departure" style="margin-right: 10px; color: var(--guest-primary-color);"></i>Informações de Transporte</h2>
+                <p style="margin-bottom: 20px;">Para facilitar sua chegada à <strong>[Cidade da Cerimônia]</strong>, reunimos algumas dicas:</p>
+                <div id="transport-options-list">
+                    <!-- JS irá popular esta seção -->
+                    <!-- Exemplo de Item: -->
+                    <div class="info-item-guest">
+                        <h3><span class="item-icon"><i class="fas fa-plane"></i></span>Aéreo (Ex: São Paulo → [Cidade Cerimônia])</h3>
+                        <p><strong>Preço Médio Estimado:</strong> R$ 600,00 (ida e volta)</p>
+                        <p><strong>Companhias Sugeridas:</strong> LATAM, GOL, Azul</p>
+                        <p><strong>Notas:</strong> O aeroporto mais próximo é o [Nome do Aeroporto]. Recomendamos comprar com antecedência para melhores tarifas. Verifique sites comparadores de preço.</p>
+                    </div>
+                    <div class="info-item-guest">
+                        <h3><span class="item-icon"><i class="fas fa-bus-alt"></i></span>Ônibus (Ex: Rio de Janeiro → [Cidade Cerimônia])</h3>
+                        <p><strong>Preço Médio Estimado:</strong> R$ 150,00 (por trecho)</p>
+                        <p><strong>Empresas Comuns:</strong> Viação Cometa, Útil</p>
+                        <p><strong>Notas:</strong> Viagem com duração aproximada de 8 horas. A rodoviária fica a cerca de [Distância] do centro.</p>
+                    </div>
+                    <!-- Fim do Exemplo -->
+                </div>
+                <p id="no-transport-info-guest" class="no-items-message" style="text-align:center; display:none; margin-top: 15px;">Os noivos ainda não adicionaram informações de transporte.</p>
+            </section>
+
+            <section class="guest-page-section" id="accommodation-info-guest">
+                <h2><i class="fas fa-hotel" style="margin-right: 10px; color: var(--guest-primary-color);"></i>Sugestões de Hospedagem</h2>
+                <p style="margin-bottom: 20px;">Para sua comodidade, selecionamos algumas opções de hospedagem em <strong>[Cidade da Cerimônia]</strong>:</p>
+                <div id="accommodation-options-list">
+                    <!-- JS irá popular esta seção -->
+                    <!-- Exemplo de Item: -->
+                    <div class="info-item-guest">
+                        <h3><span class="item-icon"><i class="fas fa-concierge-bell"></i></span>Hotel Central Palace</h3>
+                        <p><strong>Preço Médio da Diária:</strong> R$ 250,00 - R$ 350,00</p>
+                        <p><strong>Notas:</strong> Localizado próximo ao salão da recepção (aproximadamente [Distância/Tempo]). Oferece café da manhã. Mencione o casamento "Ana & Bruno" para possível tarifa especial (sujeito a disponibilidade).</p>
+                        <p><strong>Website:</strong> <a href="http://hotelcentral.com" target="_blank" rel="noopener noreferrer">hotelcentral.com <i class="fas fa-external-link-alt fa-xs"></i></a></p>
+                    </div>
+                    <div class="info-item-guest">
+                        <h3><span class="item-icon"><i class="fas fa-home"></i></span>Pousada Aconchego da Serra</h3>
+                        <p><strong>Preço Médio da Diária:</strong> R$ 180,00 - R$ 220,00</p>
+                        <p><strong>Notas:</strong> Opção mais charmosa e econômica, a cerca de [Distância/Tempo] de carro dos locais. Ideal para quem busca tranquilidade.</p>
+                        <p><strong>Contato:</strong> (XX) XXXXX-XXXX</p>
+                    </div>
+                    <!-- Fim do Exemplo -->
+                </div>
+                <p id="no-accommodation-info-guest" class="no-items-message" style="text-align:center; display:none; margin-top: 15px;">Os noivos ainda não adicionaram sugestões de hospedagem.</p>
+            </section>
+
+            <!-- Mostrar esta seção apenas se o convidado for de outra cidade (controlado por JS) -->
+            <section class="guest-page-section" id="financial-aid-section" style="display:none;">
+                <h2><i class="fas fa-hands-helping" style="margin-right: 10px; color: var(--guest-primary-color);"></i>Ajuda com Hospedagem/Viagem</h2>
+                <p style="margin-bottom: 20px;">Sabemos que viajar pode ser um desafio. Se você precisar de alguma ajuda ou tiver alguma dúvida sobre a viagem ou hospedagem, por favor, entre em contato conosco através do formulário abaixo. Faremos o possível para ajudar!</p>
+                <form id="financial-aid-form-guest" class="guest-form">
+                    <div class="form-group">
+                        <label for="aid-request-message">Sua mensagem ou pedido:</label>
+                        <textarea id="aid-request-message" name="aid-request-message" placeholder="Ex: Olá! Gostaria de verificar se há alguma indicação de hotel com tarifa negociada ou alguma ajuda com a hospedagem. Obrigado!" rows="4"></textarea>
+                    </div>
+                    <button type="submit" id="submit-aid-request-btn" class="btn-guest"><i class="fas fa-paper-plane"></i> Enviar Mensagem/Pedido</button>
+                    <p id="aid-request-status"></p>
+                </form>
+            </section>
+        </main>
+
+        <footer class="guest-footer">
+            <p><span class="couple-names-footer" id="footer-couple-names-display">Ana & Bruno</span></p>
+            <p>Celebração em <span id="wedding-date-footer-display">[Data do Casamento]</span></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulação de carregamento de dados
+            const coupleNames = "Ana & Bruno";
+            const weddingDateStr = "2024-12-25T17:00:00";
+            const ceremonyCity = "Curitiba"; // Viria do Firebase
+            // Simular se o convidado é de outra cidade
+            const guestIsFromOtherCity = true; // Viria da lógica de comparação de cidades do convidado e do evento
+
+            document.getElementById('header-couple-names').innerHTML = `<h1>${coupleNames}</h1>`;
+            document.querySelector('#transport-info-guest > p strong').textContent = ceremonyCity;
+            document.querySelector('#accommodation-info-guest > p strong').textContent = ceremonyCity;
+            document.getElementById('footer-couple-names-display').textContent = coupleNames;
+            document.getElementById('wedding-date-footer-display').textContent = new Date(weddingDateStr).toLocaleDateString('pt-BR', {year: 'numeric', month: 'long', day: 'numeric'});
+
+            const financialAidSection = document.getElementById('financial-aid-section');
+            if (guestIsFromOtherCity && financialAidSection) {
+                financialAidSection.style.display = 'block';
+            }
+
+            const aidForm = document.getElementById('financial-aid-form-guest');
+            const aidStatusEl = document.getElementById('aid-request-status');
+            if (aidForm && aidStatusEl) {
+                aidForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const message = document.getElementById('aid-request-message').value;
+                    console.log("Pedido de ajuda enviado:", message);
+                    // TODO: Enviar a mensagem/pedido para os noivos via Firebase
+                    
+                    // Feedback para o usuário
+                    aidStatusEl.textContent = 'Sua mensagem foi enviada aos noivos. Eles entrarão em contato em breve!';
+                    aidStatusEl.className = 'success'; // Adiciona classe de sucesso
+                    aidStatusEl.style.display = 'block';
+                    this.reset(); // Limpa o formulário
+                });
+            }
+            
+            // Logout (simulação)
+            const logoutBtn = document.getElementById('logout-convidado-btn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Logout realizado (simulação).');
+                });
+            }
+            // TODO: JS para carregar dinamicamente as informações de transporte e hospedagem do Firebase
+            // e também o status de qualquer pedido de ajuda já feito pelo convidado.
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Presença (RSVP) - Casamento de [Noivo] & [Noiva]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/convidado-style.css">
+    <style>
+        /* Estilos específicos da página RSVP */
+        .rsvp-form-section h2 {
+            font-family: var(--guest-font-family-headings);
+            font-size: 2em;
+            color: var(--guest-primary-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .rsvp-form-section .rsvp-deadline {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.05em;
+            color: var(--guest-text-color-medium);
+        }
+
+        .guest-member-rsvp-item {
+            border: 1px solid var(--guest-border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #fdfdfd; /* Um pouco diferente do fundo do card principal */
+        }
+        .guest-member-rsvp-item h4 {
+            font-family: var(--guest-font-family-headings);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            color: var(--guest-text-color-dark);
+            font-weight: 600;
+        }
+        .rsvp-options-group { /* Para os botões de rádio */
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .rsvp-options-group label {
+            font-size: 1em;
+            color: var(--guest-text-color-medium);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            border: 1px solid var(--guest-border-color);
+            border-radius: 6px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .rsvp-options-group label:hover {
+            border-color: var(--guest-primary-color);
+        }
+        .rsvp-options-group input[type="radio"] {
+            margin-right: 8px;
+            transform: scale(1.1);
+            accent-color: var(--guest-primary-color); /* Estiliza o radio button em navegadores modernos */
+        }
+        .rsvp-options-group input[type="radio"]:checked + span {
+            font-weight: 600;
+        }
+        /* Destacar label selecionado */
+        .rsvp-options-group input[type="radio"]:checked ~ .option-text-sim { color: #27ae60; }
+        .rsvp-options-group input[type="radio"]:checked ~ .option-text-nao { color: #e74c3c; }
+
+
+        .rsvp-form-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .rsvp-confirmation-message {
+            text-align:center;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top:25px;
+            font-size: 1.1em;
+        }
+        .rsvp-confirmation-message.success {
+            background-color: #e6f9f0; /* Verde claro */
+            color: #1e8a57;
+            border: 1px solid #a3e0c4;
+        }
+        .rsvp-confirmation-message.error {
+            background-color: #fdecea; /* Vermelho claro */
+            color: #c73e3a;
+            border: 1px solid #f5b8b6;
+        }
+        .rsvp-confirmation-message { display: none; } /* Começa escondido */
+    </style>
+</head>
+<body>
+    <div class="guest-app-container">
+        <header class="guest-header">
+            <div class="header-content">
+                <div class="couple-names" id="header-couple-names"><h1>Ana & Bruno</h1></div>
+                 <nav class="guest-nav">
+                    <ul>
+                        <li><a href="home-convidado.html"><span class="nav-icon"><i class="fas fa-home"></i></span>Início</a></li>
+                        <li><a href="rsvp.html" class="active"><span class="nav-icon"><i class="fas fa-check-circle"></i></span>Confirmar Presença</a></li>
+                        <li><a href="informacoes-locais.html"><span class="nav-icon"><i class="fas fa-map-marker-alt"></i></span>Locais</a></li>
+                        <li><a href="passagens-hospedagem-convidado.html"><span class="nav-icon"><i class="fas fa-plane"></i></span>Viagem/Hosp.</a></li>
+                        <li><a href="cardapio-programacao.html"><span class="nav-icon"><i class="fas fa-utensils"></i></span>Detalhes</a></li>
+                        <li><a href="lista-presentes-convidado.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Presentes</a></li>
+                        <li><a href="pos-evento-convidado.html"><span class="nav-icon"><i class="fas fa-camera"></i></span>Fotos</a></li>
+                        <li><a href="#" id="logout-convidado-btn" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="guest-main-content" id="rsvp-page">
+            <section class="guest-page-section rsvp-form-section">
+                <h2>Confirme sua Presença</h2>
+                <p class="rsvp-deadline">Por favor, responda até o dia <strong id="rsvp-deadline-date">[Data Limite RSVP]</strong>.</p>
+
+                <form id="rsvp-form" class="guest-form">
+                    <div id="guest-members-rsvp-list">
+                        <!-- JS irá popular esta seção -->
+                        <!-- Exemplo de um membro: -->
+                        <div class="guest-member-rsvp-item" data-member-id="member1_uIdRandom">
+                            <h4>Maria Joaquina Silva</h4>
+                            <div class="rsvp-options-group radio-group">
+                                <label>
+                                    <input type="radio" name="rsvp_member1_uIdRandom" value="sim" required> 
+                                    <i class="fas fa-check-circle" style="color: #27ae60; margin-right: 5px;"></i><span class="option-text-sim">Sim, irei!</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="rsvp_member1_uIdRandom" value="nao"> 
+                                    <i class="fas fa-times-circle" style="color: #e74c3c; margin-right: 5px;"></i><span class="option-text-nao">Não poderei comparecer</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="guest-member-rsvp-item" data-member-id="member2_uIdRandom">
+                            <h4>João Carlos Pereira</h4>
+                            <div class="rsvp-options-group radio-group">
+                                <label>
+                                    <input type="radio" name="rsvp_member2_uIdRandom" value="sim" required>
+                                    <i class="fas fa-check-circle" style="color: #27ae60; margin-right: 5px;"></i><span class="option-text-sim">Sim, irei!</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="rsvp_member2_uIdRandom" value="nao">
+                                    <i class="fas fa-times-circle" style="color: #e74c3c; margin-right: 5px;"></i><span class="option-text-nao">Não poderei comparecer</span>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Fim do Exemplo -->
+                    </div>
+
+                    <div class="form-group dietary-restrictions-group" style="display:none; margin-top: 25px;">
+                        <label for="dietary-restrictions">Alguma restrição alimentar que devamos saber? (Opcional)</label>
+                        <textarea id="dietary-restrictions" name="dietary-restrictions" placeholder="Ex: Sou vegetariano(a), tenho alergia a glúten, etc."></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 25px;">
+                        <label for="guest-message-to-couple">Deixe uma mensagem carinhosa para os noivos (Opcional):</label>
+                        <textarea id="guest-message-to-couple" name="guest-message-to-couple" placeholder="Seus votos de felicidade..."></textarea>
+                    </div>
+
+                    <div class="rsvp-form-actions">
+                        <button type="submit" class="btn-guest btn-guest-success" style="padding: 12px 35px; font-size: 1.1em;">
+                            <i class="fas fa-paper-plane"></i> Enviar Resposta
+                        </button>
+                    </div>
+                </form>
+                <div id="rsvp-confirmation" class="rsvp-confirmation-message">
+                    <!-- Mensagem será inserida por JS -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="guest-footer">
+             <p><span class="couple-names-footer" id="footer-couple-names-display">Ana & Bruno</span></p>
+            <p>Celebração em <span id="wedding-date-footer-display">[Data do Casamento]</span></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulação de carregamento de dados
+            const coupleNames = "Ana & Bruno";
+            const weddingDateStr = "2024-12-25T17:00:00";
+            const rsvpDeadline = "15 de Novembro de 2024";
+
+            document.getElementById('header-couple-names').innerHTML = `<h1>${coupleNames}</h1>`;
+            document.getElementById('rsvp-deadline-date').textContent = rsvpDeadline;
+            document.getElementById('footer-couple-names-display').textContent = coupleNames;
+            document.getElementById('wedding-date-footer-display').textContent = new Date(weddingDateStr).toLocaleDateString('pt-BR', {year: 'numeric', month: 'long', day: 'numeric'});
+
+            // Lógica para mostrar/ocultar campo de restrições alimentares
+            const rsvpForm = document.getElementById('rsvp-form');
+            const dietaryGroup = document.querySelector('.dietary-restrictions-group');
+            const rsvpConfirmationDiv = document.getElementById('rsvp-confirmation');
+
+            function checkDietaryVisibility() {
+                if (!rsvpForm || !dietaryGroup) return;
+                let someoneComing = false;
+                const radioInputs = rsvpForm.querySelectorAll('input[type="radio"][name^="rsvp_"]:checked');
+                radioInputs.forEach(radio => {
+                    if (radio.value === 'sim') {
+                        someoneComing = true;
+                    }
+                });
+                dietaryGroup.style.display = someoneComing ? 'block' : 'none';
+            }
+
+            if (rsvpForm) {
+                rsvpForm.addEventListener('change', (event) => {
+                    if (event.target.type === 'radio' && event.target.name.startsWith('rsvp_')) {
+                        checkDietaryVisibility();
+                    }
+                });
+                checkDietaryVisibility(); // Call on load in case form is pre-filled
+
+                rsvpForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // TODO: Validar se todos os membros responderam (se 'required' não for suficiente)
+                    // TODO: Coletar dados do formulário
+                    const formData = new FormData(this);
+                    const responses = {};
+                    document.querySelectorAll('.guest-member-rsvp-item').forEach(item => {
+                        const memberId = item.dataset.memberId;
+                        const rsvpValue = formData.get(`rsvp_${memberId}`);
+                        if (rsvpValue) { // Garante que só pega se o campo existir
+                           responses[memberId] = rsvpValue;
+                        }
+                    });
+                    const dietary = formData.get('dietary-restrictions');
+                    const message = formData.get('guest-message-to-couple');
+
+                    console.log("Respostas RSVP:", responses);
+                    console.log("Restrições:", dietary);
+                    console.log("Mensagem:", message);
+
+                    // TODO: Enviar dados para o Firebase
+                    // Simulação de sucesso:
+                    rsvpConfirmationDiv.textContent = 'Sua resposta foi enviada com sucesso! Obrigado por confirmar.';
+                    rsvpConfirmationDiv.className = 'rsvp-confirmation-message success'; // Adiciona classe de sucesso
+                    rsvpConfirmationDiv.style.display = 'block';
+                    // this.reset(); // Opcional: resetar formulário
+                    // checkDietaryVisibility(); // Re-checar visibilidade
+                });
+            }
+             // Logout (simulação)
+            const logoutBtn = document.getElementById('logout-convidado-btn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Logout realizado (simulação).');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

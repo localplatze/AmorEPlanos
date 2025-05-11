@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo ao Casamento de [Noivo] & [Noiva]!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/convidado-style.css">
+    <style>
+        /* Estilos específicos da Home do Convidado */
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .welcome-message h2 {
+            font-family: var(--guest-font-family-headings);
+            font-size: 2.2em;
+            color: var(--guest-text-color-dark);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .welcome-message .guest-name {
+            color: var(--guest-primary-color);
+            font-weight: 700;
+        }
+        .welcome-message p {
+            font-size: 1.1em;
+            color: var(--guest-text-color-medium);
+        }
+
+        .countdown-guest-section {
+            text-align: center;
+            padding: 35px 20px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--guest-primary-color), var(--guest-primary-color-dark));
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(170, 51, 106, 0.25);
+        }
+        .countdown-guest-section h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .countdown-guest-section .wedding-date-display {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        .countdown-guest-section .time-segments {
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Reduzido */
+            flex-wrap: wrap;
+        }
+        .countdown-guest-section .segment {
+            background-color: rgba(255,255,255,0.15);
+            padding: 15px; /* Ajustado */
+            border-radius: 8px;
+            min-width: 90px; /* Aumentado */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .countdown-guest-section .segment .value {
+            font-size: 2.5em; /* Aumentado */
+            font-weight: 700;
+            display: block;
+        }
+        .countdown-guest-section .segment .label {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .guest-info-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .guest-info-card {
+            background-color: var(--guest-card-bg);
+            padding: 30px; /* Aumentado */
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--guest-shadow-color);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        .guest-info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .guest-info-card .card-icon {
+            font-size: 2.8em; /* Aumentado */
+            color: var(--guest-primary-color);
+            margin-bottom: 20px;
+            line-height: 1; /* Para ícones FontAwesome */
+        }
+        .guest-info-card h3 {
+            font-family: var(--guest-font-family-headings);
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--guest-text-color-dark); /* Ajustado para melhor contraste */
+            font-size: 1.4em; /* Aumentado */
+            font-weight: 600;
+        }
+        .guest-info-card p {
+            font-size: 0.95em;
+            color: var(--guest-text-color-medium);
+            margin-bottom: 20px; /* Aumentado */
+            flex-grow: 1; /* Para alinhar botões ao final se os textos variarem */
+        }
+    </style>
+</head>
+<body>
+    <div class="guest-app-container">
+        <header class="guest-header">
+            <div class="header-content">
+                <div class="couple-names" id="header-couple-names"><h1>Ana & Bruno</h1></div>
+                <nav class="guest-nav">
+                    <ul>
+                        <li><a href="home-convidado.html" class="active"><span class="nav-icon"><i class="fas fa-home"></i></span>Início</a></li>
+                        <li><a href="rsvp.html"><span class="nav-icon"><i class="fas fa-check-circle"></i></span>Confirmar Presença</a></li>
+                        <li><a href="informacoes-locais.html"><span class="nav-icon"><i class="fas fa-map-marker-alt"></i></span>Locais</a></li>
+                        <li><a href="passagens-hospedagem-convidado.html"><span class="nav-icon"><i class="fas fa-plane"></i></span>Viagem/Hosp.</a></li>
+                        <li><a href="cardapio-programacao.html"><span class="nav-icon"><i class="fas fa-utensils"></i></span>Detalhes</a></li>
+                        <li><a href="lista-presentes-convidado.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Presentes</a></li>
+                        <li><a href="pos-evento-convidado.html"><span class="nav-icon"><i class="fas fa-camera"></i></span>Fotos</a></li>
+                        <li><a href="#" id="logout-convidado-btn" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="guest-main-content" id="home-convidado-page">
+            <section class="welcome-message">
+                <h2>Bem-vindo(a), <span class="guest-name" id="guest-name-display">[Nome do Convidado]</span>!</h2>
+                <p>Estamos imensamente felizes em compartilhar este momento tão especial com você.</p>
+            </section>
+
+            <section class="countdown-guest-section" id="wedding-countdown-guest">
+                <h3>Contagem Regressiva para o Grande Dia!</h3>
+                <p class="wedding-date-display"><strong>Data:</strong> <span id="wedding-date-countdown">25 de Dezembro de 2024, às 17:00</span></p>
+                <div class="time-segments">
+                    <div class="segment"><span class="value" id="days-value">00</span><span class="label">Dias</span></div>
+                    <div class="segment"><span class="value" id="hours-value">00</span><span class="label">Horas</span></div>
+                    <div class="segment"><span class="value" id="minutes-value">00</span><span class="label">Minutos</span></div>
+                    <div class="segment"><span class="value" id="seconds-value">00</span><span class="label">Segundos</span></div>
+                </div>
+            </section>
+
+            <section class="guest-info-cards-container">
+                <div class="guest-info-card">
+                    <div class="card-icon"><i class="fas fa-envelope-open-text"></i></div>
+                    <h3>Confirme sua Presença</h3>
+                    <p>Sua resposta é muito importante para nós! Por favor, nos informe se poderá celebrar conosco até <strong>[Data Limite RSVP]</strong>.</p>
+                    <a href="rsvp.html" class="btn-guest">RSVP Agora</a>
+                </div>
+                <div class="guest-info-card">
+                    <div class="card-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3>Locais do Evento</h3>
+                    <p>Descubra os endereços da cerimônia e da recepção, com mapas interativos e todas as direções necessárias.</p>
+                    <a href="informacoes-locais.html" class="btn-guest">Ver Locais</a>
+                </div>
+                <div class="guest-info-card">
+                    <div class="card-icon"><i class="fas fa-gift"></i></div>
+                    <h3>Lista de Presentes</h3>
+                    <p>Sua presença é o nosso maior presente! Mas, se desejar nos mimar, preparamos uma lista com carinho.</p>
+                    <a href="lista-presentes-convidado.html" class="btn-guest">Ver Lista de Presentes</a>
+                </div>
+                 <div class="guest-info-card">
+                    <div class="card-icon"><i class="fas fa-plane-departure"></i></div>
+                    <h3>Viagem e Hospedagem</h3>
+                    <p>Vindo de outra cidade? Veja dicas de transporte e sugestões de hospedagem para sua comodidade.</p>
+                    <a href="passagens-hospedagem-convidado.html" class="btn-guest">Dicas de Viagem</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="guest-footer">
+            <p><span class="couple-names-footer" id="footer-couple-names-display">Ana & Bruno</span></p>
+            <p>Celebração em <span id="wedding-date-footer-display">[Data do Casamento]</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Simulação de carregamento de dados (substituir com Firebase)
+        document.addEventListener('DOMContentLoaded', () => {
+            const coupleNames = "Ana & Bruno"; // Viria do Firebase
+            const weddingDateStr = "2024-12-25T17:00:00"; // Viria do Firebase
+            const guestName = "Maria Silva"; // Viria do Firebase Auth ou dados do convidado
+            const rsvpDeadline = "15 de Novembro de 2024"; // Viria do Firebase
+
+            document.getElementById('header-couple-names').innerHTML = `<h1>${coupleNames}</h1>`;
+            document.getElementById('guest-name-display').textContent = guestName;
+            
+            const formattedWeddingDate = new Date(weddingDateStr).toLocaleDateString('pt-BR', {
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+            document.getElementById('wedding-date-countdown').textContent = formattedWeddingDate;
+            document.getElementById('footer-couple-names-display').textContent = coupleNames;
+            document.getElementById('wedding-date-footer-display').textContent = new Date(weddingDateStr).toLocaleDateString('pt-BR', {year: 'numeric', month: 'long', day: 'numeric'});
+
+            // Atualiza data limite no card de RSVP
+            const rsvpCardP = document.querySelector('.guest-info-card:nth-child(1) p');
+            if(rsvpCardP) rsvpCardP.innerHTML = `Sua resposta é muito importante para nós! Por favor, nos informe se poderá celebrar conosco até <strong>${rsvpDeadline}</strong>.`;
+
+
+            // Countdown Timer
+            const countdownFunction = () => {
+                const weddingDateTime = new Date(weddingDateStr).getTime();
+                const now = new Date().getTime();
+                const distance = weddingDateTime - now;
+
+                if (distance < 0) {
+                    document.querySelector('.countdown-guest-section .time-segments').innerHTML = "<p style='font-size:1.5em; padding:10px;'>O grande dia já passou! Esperamos que tenha sido incrível!</p>";
+                    document.querySelector('.countdown-guest-section h3').textContent = "Celebração Realizada!";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days-value').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours-value').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes-value').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds-value').textContent = String(seconds).padStart(2, '0');
+            };
+            countdownFunction(); // Initial call
+            setInterval(countdownFunction, 1000);
+
+            // Logout (simulação)
+            const logoutBtn = document.getElementById('logout-convidado-btn');
+            if(logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Logout realizado (simulação).');
+                    // window.location.href = 'pagina_de_login_convidado.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

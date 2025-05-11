@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divisão de Papéis - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html" class="active"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Divisão de Papéis</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                    <a href="#" id="logout-btn-header" class="logout-link" style="display: none;">Sair</a>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="divisao-papeis-page">
+                <section class="page-section">
+                    <div class="section-header">
+                        <h2>Definir Papéis dos Convidados</h2>
+                        <!-- Pode ter um botão para adicionar papéis personalizados se necessário -->
+                    </div>
+
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <label for="filtroNomePapel">Buscar Convidado:</label>
+                            <input type="text" id="filtroNomePapel" placeholder="Nome do convidado">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filtroTipoPapel">Filtrar por Papel:</label>
+                            <select id="filtroTipoPapel">
+                                <option value="">Todos</option>
+                                <option value="padrinho">Padrinho</option>
+                                <option value="madrinha">Madrinha</option>
+                                <option value="daminha">Daminha</option>
+                                <option value="pajem">Pajem</option>
+                                <option value="pais_noivo">Pais do Noivo</option>
+                                <option value="pais_noiva">Pais da Noiva</option>
+                                <option value="sem_papel_definido">Sem Papel Definido</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-sm" id="btnAplicarFiltrosPapeis">Aplicar Filtros</button>
+                    </div>
+
+                    <table class="styled-table" id="tabelaDivisaoPapeis">
+                        <thead>
+                            <tr>
+                                <th>Convidado</th>
+                                <th>Papel Atual</th>
+                                <th>Atribuir Papel</th>
+                                <th>Responsabilidades</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Exemplo de Linha (Dados virão do Firebase) -->
+                            <tr>
+                                <td>João Silva (Membro da Família Silva)</td>
+                                <td>Padrinho</td>
+                                <td>
+                                    <select class="form-control-sm" data-guest-member-id="member1">
+                                        <option value="">Convidado</option>
+                                        <option value="padrinho" selected>Padrinho</option>
+                                        <option value="madrinha">Madrinha</option>
+                                        <option value="daminha">Daminha</option>
+                                        <!-- etc. -->
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control-sm" placeholder="Ex: Levar as alianças" value="Levar as alianças" data-guest-member-id="member1_resp">
+                                </td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-primary btn-sm btn-salvar-papel" data-guest-member-id="member1"><i class="fas fa-save"></i> Salvar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Maria Silva (Membro da Família Silva)</td>
+                                <td>Convidado</td>
+                                <td>
+                                    <select class="form-control-sm" data-guest-member-id="member2">
+                                        <option value="" selected>Convidado</option>
+                                        <option value="padrinho">Padrinho</option>
+                                        <option value="madrinha">Madrinha</option>
+                                        <option value="daminha">Daminha</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control-sm" placeholder="Defina uma responsabilidade" data-guest-member-id="member2_resp">
+                                </td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-primary btn-sm btn-salvar-papel" data-guest-member-id="member2"><i class="fas fa-save"></i> Salvar</button>
+                                </td>
+                            </tr>
+                            <!-- Mais linhas aqui -->
+                        </tbody>
+                    </table>
+                    <div class="summary-cards-grid" style="margin-top: 30px;">
+                        <div class="summary-card-item">
+                            <h4>Padrinhos Definidos</h4>
+                            <span class="amount" id="totalPadrinhos">5</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Madrinhas Definidas</h4>
+                            <span class="amount" id="totalMadrinhas">5</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Daminhas/Pajens</h4>
+                            <span class="amount" id="totalDaminhasPajens">4</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Convidados Sem Papel</h4>
+                            <span class="amount" id="totalSemPapel">120</span>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" };
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // TODO: Lógica para carregar convidados, salvar papéis e responsabilidades, atualizar contadores.
+    </script>
+</body>
+</html>

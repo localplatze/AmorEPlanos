@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passagens e Hospedagens - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css"> <!-- Seu CSS principal -->
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html" class="active"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Gestão de Passagens e Hospedagens</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="passagens-hospedagem-page">
+                <section class="page-section">
+                    <div class="form-group">
+                        <label for="ceremony-city">Cidade da Cerimônia/Recepção (para referência):</label>
+                        <input type="text" id="ceremony-city" name="ceremony-city" value="Cidade Exemplo, UF" readonly>
+                         <small class="form-text text-muted">Esta informação é usada para ajudar a identificar convidados de outras cidades.</small>
+                    </div>
+                </section>
+
+                <section class="page-section transport-info">
+                    <div class="section-header">
+                        <h2><i class="fas fa-bus-alt" style="margin-right: 10px; color: var(--primary-color);"></i>Informações de Transporte</h2>
+                        <button class="btn btn-primary" id="open-add-transport-dialog-btn"><i class="fas fa-plus-circle"></i> Adicionar Transporte</button>
+                    </div>
+                    <div id="transport-info-container" class="dynamic-items-list" style="margin-top: 15px;">
+                        <!-- Exemplo de Item (JS vai popular) -->
+                        <div class="dynamic-entry" data-id="trans1">
+                            <div class="dynamic-entry-header">
+                                <h5>Aéreo (Ex: São Paulo -> Cidade da Cerimônia)</h5>
+                                <div>
+                                    <button class="btn btn-secondary btn-sm btn-edit-transport" data-id="trans1"><i class="fas fa-edit"></i> Editar</button>
+                                    <button class="btn btn-danger btn-sm btn-delete-transport" data-id="trans1"><i class="fas fa-trash"></i> Excluir</button>
+                                </div>
+                            </div>
+                            <p><strong>Preço Médio:</strong> R$ 600,00</p>
+                            <p><strong>Notas:</strong> Voos diretos pela Cia X. Comprar com antecedência.</p>
+                        </div>
+                        <div class="dynamic-entry" data-id="trans2">
+                             <div class="dynamic-entry-header">
+                                <h5>Ônibus (Ex: Cidade Vizinha -> Cidade da Cerimônia)</h5>
+                                <div>
+                                    <button class="btn btn-secondary btn-sm btn-edit-transport" data-id="trans2"><i class="fas fa-edit"></i> Editar</button>
+                                    <button class="btn btn-danger btn-sm btn-delete-transport" data-id="trans2"><i class="fas fa-trash"></i> Excluir</button>
+                                </div>
+                            </div>
+                            <p><strong>Preço Médio:</strong> R$ 80,00</p>
+                            <p><strong>Notas:</strong> Saídas de hora em hora. Viagem de 2h.</p>
+                        </div>
+                        <!-- Fim do Exemplo -->
+                    </div>
+                    <p id="no-transport-info" class="no-items-message" style="display:none;">Nenhuma informação de transporte adicionada.</p>
+                </section>
+
+                <section class="page-section accommodation-info">
+                    <div class="section-header">
+                        <h2><i class="fas fa-hotel" style="margin-right: 10px; color: var(--primary-color);"></i>Informações de Hospedagem</h2>
+                        <button class="btn btn-primary" id="open-add-accommodation-dialog-btn"><i class="fas fa-plus-circle"></i> Adicionar Hospedagem</button>
+                    </div>
+                    <div id="accommodation-info-container" class="dynamic-items-list" style="margin-top: 15px;">
+                        <!-- Exemplo de Item (JS vai popular) -->
+                         <div class="dynamic-entry" data-id="acc1">
+                            <div class="dynamic-entry-header">
+                                <h5>Hotel Central</h5>
+                                <div>
+                                    <button class="btn btn-secondary btn-sm btn-edit-accommodation" data-id="acc1"><i class="fas fa-edit"></i> Editar</button>
+                                    <button class="btn btn-danger btn-sm btn-delete-accommodation" data-id="acc1"><i class="fas fa-trash"></i> Excluir</button>
+                                </div>
+                            </div>
+                            <p><strong>Preço Médio (Diária):</strong> R$ 250,00</p>
+                            <p><strong>Notas:</strong> Próximo ao local da festa. Convênio com o evento (código: CASAMENTO123).</p>
+                            <p><strong>Link para Reserva:</strong> <a href="http://hotelcentral.com" target="_blank" rel="noopener noreferrer">hotelcentral.com <i class="fas fa-external-link-alt fa-xs"></i></a></p>
+                        </div>
+                        <!-- Fim do Exemplo -->
+                    </div>
+                    <p id="no-accommodation-info" class="no-items-message" style="display:none;">Nenhuma informação de hospedagem adicionada.</p>
+                </section>
+
+                <section class="page-section guest-travel-needs">
+                     <div class="section-header">
+                        <h2><i class="fas fa-map-marked-alt" style="margin-right: 10px; color: var(--primary-color);"></i>Necessidades dos Convidados de Outras Cidades</h2>
+                    </div>
+                    <table class="styled-table" id="guest-travel-table">
+                        <thead>
+                            <tr>
+                                <th>Convidado (Grupo)</th>
+                                <th>Cidade de Origem</th>
+                                <th>Ajuda Financeira?</th>
+                                <th>Hospedagem Designada</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guest-travel-table-body">
+                            <!-- Exemplo de Linha (JS vai popular) -->
+                            <tr>
+                                <td>Carlos Alberto Santos</td>
+                                <td>Rio de Janeiro, RJ</td>
+                                <td>
+                                    <span class="status-pendente" title="Pedido: Ajuda com 2 diárias.">
+                                        <i class="fas fa-exclamation-circle"></i> Sim (Pendente)
+                                    </span>
+                                </td>
+                                <td>Hotel Central - Quarto 101</td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-secondary btn-sm btn-manage-aid" data-guest-id="guestIdX"><i class="fas fa-hand-holding-usd"></i> Ajuda</button>
+                                    <button class="btn btn-secondary btn-sm btn-assign-accommodation" data-guest-id="guestIdX"><i class="fas fa-bed"></i> Hospedar</button>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td>Tia Joana e Família (3 pessoas)</td>
+                                <td>Belo Horizonte, MG</td>
+                                <td><span>Não</span></td>
+                                <td><em>Não Designada</em></td>
+                                <td class="actions-cell">
+                                     <button class="btn btn-secondary btn-sm btn-manage-aid" data-guest-id="guestIdY" disabled><i class="fas fa-hand-holding-usd"></i> Ajuda</button>
+                                     <button class="btn btn-secondary btn-sm btn-assign-accommodation" data-guest-id="guestIdY"><i class="fas fa-bed"></i> Hospedar</button>
+                                </td>
+                            </tr>
+                            <!-- Fim do Exemplo -->
+                        </tbody>
+                    </table>
+                    <p id="no-out-of-town-guests" class="no-items-message" style="display:none;">Nenhum convidado de outra cidade identificado ou com necessidades registradas.</p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Adicionar/Editar Info de Transporte -->
+    <div id="transport-dialog" class="dialog-overlay">
+        <div class="dialog-content">
+            <h3 id="transport-dialog-title">Adicionar Informação de Transporte</h3>
+            <form id="transport-form">
+                <input type="hidden" id="transport-id" name="transport-id">
+                <div class="form-group">
+                    <label for="transport-mode">Modo de Transporte (Ex: Aéreo, Ônibus, Carro):</label>
+                    <input type="text" id="transport-mode" name="transport-mode" required>
+                </div>
+                <div class="form-group">
+                    <label for="transport-avg-price">Preço Médio Estimado (R$):</label>
+                    <input type="number" id="transport-avg-price" name="transport-avg-price" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="transport-notes">Notas/Observações (Ex: Cias aéreas, tempo de viagem, dicas):</label>
+                    <textarea id="transport-notes" name="transport-notes" rows="3"></textarea>
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-transport-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Informação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dialog para Adicionar/Editar Info de Hospedagem -->
+    <div id="accommodation-dialog" class="dialog-overlay">
+        <div class="dialog-content">
+            <h3 id="accommodation-dialog-title">Adicionar Informação de Hospedagem</h3>
+            <form id="accommodation-form">
+                <input type="hidden" id="accommodation-id" name="accommodation-id">
+                <div class="form-group">
+                    <label for="accommodation-name">Nome do Hotel/Pousada:</label>
+                    <input type="text" id="accommodation-name" name="accommodation-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="accommodation-avg-price">Preço Médio da Diária (R$):</label>
+                    <input type="number" id="accommodation-avg-price" name="accommodation-avg-price" step="0.01" placeholder="0.00">
+                </div>
+                 <div class="form-group">
+                    <label for="accommodation-booking-link">Link para Reserva (Opcional):</label>
+                    <input type="url" id="accommodation-booking-link" name="accommodation-booking-link" placeholder="https://exemplo.com">
+                </div>
+                <div class="form-group">
+                    <label for="accommodation-notes">Notas/Observações (Ex: Proximidade, convênios, contato):</label>
+                    <textarea id="accommodation-notes" name="accommodation-notes" rows="3"></textarea>
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-accommodation-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Informação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dialog para Gerenciar Ajuda Financeira -->
+    <div id="financial-aid-dialog" class="dialog-overlay">
+        <div class="dialog-content">
+            <h3 id="financial-aid-dialog-title">Gerenciar Ajuda Financeira para <span id="aid-guest-name-placeholder">[Convidado]</span></h3>
+            <p><strong>Pedido do Convidado:</strong> "<span id="aid-request-details">Carregando...</span>"</p>
+            <form id="financial-aid-form">
+                <input type="hidden" id="aid-guest-id" name="aid-guest-id">
+                <div class="form-group">
+                    <label for="aid-status">Status do Pedido:</label>
+                    <select id="aid-status" name="aid-status">
+                        <option value="pendente">Pendente</option>
+                        <option value="aprovado">Aprovado</option>
+                        <option value="negado">Negado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="aid-notes-noivos">Observações dos Noivos (interno):</label>
+                    <textarea id="aid-notes-noivos" name="aid-notes-noivos" rows="2"></textarea>
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-financial-aid-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dialog para Designar Hospedagem -->
+    <div id="assign-accommodation-dialog" class="dialog-overlay">
+        <div class="dialog-content">
+            <h3 id="assign-accommodation-dialog-title">Designar Hospedagem para <span id="assign-acc-guest-name-placeholder">[Convidado]</span></h3>
+            <form id="assign-accommodation-form">
+                <input type="hidden" id="assign-acc-guest-id" name="assign-acc-guest-id">
+                <div class="form-group">
+                    <label for="assigned-hotel-name">Hotel/Pousada Designada:</label>
+                    <select id="assigned-hotel-name" name="assigned-hotel-name">
+                        <option value="">Selecione uma hospedagem cadastrada</option>
+                        <!-- JS populará com as hospedagens cadastradas -->
+                        <option value="Hotel Central">Hotel Central</option>
+                        <option value="Pousada Aconchego">Pousada Aconchego</option>
+                    </select>
+                    <small class="form-text text-muted">Ou digite o nome se não estiver na lista:</small>
+                    <input type="text" id="assigned-hotel-name-manual" name="assigned-hotel-name-manual" placeholder="Nome do Hotel/Pousada (manual)">
+                </div>
+                <div class="form-group">
+                    <label for="assigned-room-details">Detalhes do Quarto/Reserva (Ex: Quarto Duplo, Reserva #123):</label>
+                    <input type="text" id="assigned-room-details" name="assigned-room-details">
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-assign-accommodation-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Designação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // Funções para abrir/fechar dialogs e popular dados (simplificado)
+        function setupDialog(dialogId, openBtnId, cancelBtnId, formId, titleElementId, idInputElementId = null) {
+            const dialog = document.getElementById(dialogId);
+            const openBtn = document.getElementById(openBtnId);
+            const cancelBtn = document.getElementById(cancelBtnId);
+            const form = document.getElementById(formId);
+            const titleElement = document.getElementById(titleElementId);
+
+            if (openBtn && dialog) {
+                openBtn.addEventListener('click', () => {
+                    if (titleElement) titleElement.textContent = `Adicionar ${titleElement.dataset.defaultTitle || 'Item'}`; // Use data-default-title
+                    if (form) form.reset();
+                    if (idInputElementId) document.getElementById(idInputElementId).value = ''; // Limpa ID para adição
+                    dialog.classList.add('active');
+                });
+            }
+            if (cancelBtn && dialog) cancelBtn.addEventListener('click', () => dialog.classList.remove('active'));
+            if (dialog) dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('active'); });
+        }
+
+        // Setup para Dialog de Transporte
+        setupDialog('transport-dialog', 'open-add-transport-dialog-btn', 'cancel-transport-dialog-btn', 'transport-form', 'transport-dialog-title', 'transport-id');
+        document.querySelectorAll('.btn-edit-transport').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                document.getElementById('transport-dialog-title').textContent = 'Editar Informação de Transporte';
+                // TODO: JS para buscar dados do 'id' e popular o formulário
+                document.getElementById('transport-id').value = id;
+                document.getElementById('transport-mode').value = "Aéreo (Ex: São Paulo -> Cidade da Cerimônia)"; // Exemplo
+                document.getElementById('transport-dialog').classList.add('active');
+            });
+        });
+
+        // Setup para Dialog de Hospedagem
+        setupDialog('accommodation-dialog', 'open-add-accommodation-dialog-btn', 'cancel-accommodation-dialog-btn', 'accommodation-form', 'accommodation-dialog-title', 'accommodation-id');
+         document.querySelectorAll('.btn-edit-accommodation').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                document.getElementById('accommodation-dialog-title').textContent = 'Editar Informação de Hospedagem';
+                // TODO: JS para buscar dados do 'id' e popular o formulário
+                document.getElementById('accommodation-id').value = id;
+                document.getElementById('accommodation-name').value = "Hotel Central"; // Exemplo
+                document.getElementById('accommodation-dialog').classList.add('active');
+            });
+        });
+        
+        // Gerenciar Ajuda Financeira Dialog
+        const financialAidDialog = document.getElementById('financial-aid-dialog');
+        const cancelFinancialAidBtn = document.getElementById('cancel-financial-aid-dialog-btn');
+        if(cancelFinancialAidBtn) cancelFinancialAidBtn.addEventListener('click', () => financialAidDialog.classList.remove('active'));
+        if(financialAidDialog) financialAidDialog.addEventListener('click', (e) => { if(e.target === financialAidDialog) financialAidDialog.classList.remove('active'); });
+        document.querySelectorAll('.btn-manage-aid').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const guestId = e.currentTarget.dataset.guestId;
+                const guestName = e.currentTarget.closest('tr').querySelector('td:first-child').textContent;
+                document.getElementById('aid-guest-name-placeholder').textContent = guestName;
+                document.getElementById('aid-guest-id').value = guestId;
+                // TODO: JS para buscar o pedido de ajuda do convidado (aid-request-details)
+                document.getElementById('aid-request-details').textContent = "Ajuda com 2 diárias."; // Exemplo
+                financialAidDialog.classList.add('active');
+            });
+        });
+        
+        // Designar Hospedagem Dialog
+        const assignAccDialog = document.getElementById('assign-accommodation-dialog');
+        const cancelAssignAccBtn = document.getElementById('cancel-assign-accommodation-dialog-btn');
+        if(cancelAssignAccBtn) cancelAssignAccBtn.addEventListener('click', () => assignAccDialog.classList.remove('active'));
+        if(assignAccDialog) assignAccDialog.addEventListener('click', (e) => { if(e.target === assignAccDialog) assignAccDialog.classList.remove('active'); });
+        document.querySelectorAll('.btn-assign-accommodation').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const guestId = e.currentTarget.dataset.guestId;
+                 const guestName = e.currentTarget.closest('tr').querySelector('td:first-child').textContent;
+                document.getElementById('assign-acc-guest-name-placeholder').textContent = guestName;
+                document.getElementById('assign-acc-guest-id').value = guestId;
+                // TODO: JS para buscar a designação atual do convidado e popular os campos
+                // TODO: JS para popular o select #assigned-hotel-name com as hospedagens cadastradas
+                assignAccDialog.classList.add('active');
+            });
+        });
+        
+        // TODO: Implementar JS para salvar dados dos formulários, deletar itens, carregar lista de convidados, etc.
+    </script>
+</body>
+</html>

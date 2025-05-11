@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            padding: 30px; /* Aumentado padding */
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            background-color: var(--primary-color-light);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .file-upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: #f0e6ea; /* Um tom mais escuro do primary-color-light */
+        }
+        .file-upload-area input[type="file"] {
+            display: none;
+        }
+        .file-upload-area .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .file-upload-area .upload-text {
+            font-size: 1rem;
+            color: var(--text-color-medium);
+        }
+        #file-name-display {
+            font-size: 0.9em;
+            margin-top:10px;
+            color: var(--text-color-medium);
+            font-style: italic;
+        }
+        #upload-progress-container { /* Renomeado para evitar conflito e dar mais clareza */
+            margin-top:15px;
+            display:none;
+        }
+        #upload-progress-container progress {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+        }
+        /* Estilo para barra de progresso (pode precisar de prefixos para navegadores) */
+        #upload-progress-container progress::-webkit-progress-bar {
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        #upload-progress-container progress::-webkit-progress-value {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            transition: width 0.2s ease;
+        }
+        #upload-progress-container progress::-moz-progress-bar {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+             transition: width 0.2s ease;
+        }
+        .search-bar-container { /* Para a barra de busca da tabela */
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end; /* Alinha à direita */
+        }
+        .search-bar-container input[type="text"] {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 100%;
+            max-width: 300px; /* Limita largura da busca */
+            font-size: 0.95rem;
+        }
+        .document-icon { /* Para ícone de tipo de arquivo na tabela */
+            font-size: 1.3em;
+            margin-right: 8px;
+            color: var(--text-color-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html" class="active"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Documentação do Casamento</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="documentacao-page">
+                <section class="page-section upload-document-card">
+                    <div class="section-header" style="border-bottom: none; margin-bottom: 15px;">
+                        <h2><i class="fas fa-file-upload" style="margin-right:10px; color: var(--primary-color);"></i>Adicionar Novo Documento</h2>
+                    </div>
+                    <form id="upload-document-form">
+                        <div class="form-group">
+                            <label for="doc-file-upload" class="file-upload-area" id="file-upload-label">
+                                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <div class="upload-text">Clique aqui para selecionar ou arraste e solte o arquivo</div>
+                                <input type="file" id="doc-file-upload" name="doc-file-upload" required>
+                            </label>
+                            <p id="file-name-display"></p>
+                        </div>
+                         <div class="form-group">
+                            <label for="doc-description">Descrição do Documento:</label>
+                            <input type="text" id="doc-description" name="doc-description" required placeholder="Ex: Contrato Buffet Sabor Divino, Orçamento Fotografia XYZ">
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Documento</button>
+                        <div id="upload-progress-container">
+                            <progress value="0" max="100" id="upload-progress-bar"></progress>
+                            <span id="upload-progress-text" style="font-size:0.85em; margin-left: 10px;">0%</span>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="page-section document-list">
+                    <div class="section-header">
+                        <h2><i class="fas fa-folder-open" style="margin-right:10px; color: var(--primary-color);"></i>Documentos Armazenados</h2>
+                    </div>
+                    <div class="search-bar-container">
+                         <input type="text" id="search-document" placeholder="Buscar por nome ou descrição...">
+                    </div>
+
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Tipo</th>
+                                <th>Nome do Arquivo</th>
+                                <th>Descrição</th>
+                                <th>Data de Upload</th>
+                                <th style="width: 220px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="document-table-body">
+                            <!-- Exemplo de Documento (será populado por JS) -->
+                            <tr>
+                                <td><i class="fas fa-file-pdf document-icon" title="PDF"></i></td>
+                                <td>contrato_buffet_final.pdf</td>
+                                <td>Contrato assinado com o Buffet Sabor Divino, inclui cardápio detalhado e condições.</td>
+                                <td>20 de Fevereiro de 2024</td>
+                                <td class="actions-cell">
+                                    <a href="#" class="btn btn-secondary btn-sm btn-download-doc" data-doc-id="docId1" title="Baixar"><i class="fas fa-download"></i></a>
+                                    <button class="btn btn-secondary btn-sm btn-edit-doc" data-doc-id="docId1" title="Editar Informações"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm btn-delete-doc" data-doc-id="docId1" title="Excluir"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-file-excel document-icon" title="Planilha Excel"></i></td>
+                                <td>orcamento_fotografia_casamento.xlsx</td>
+                                <td>Planilha comparativa com orçamentos de 3 fotógrafos (Detalhes e Portfólios).</td>
+                                <td>10 de Março de 2024</td>
+                                <td class="actions-cell">
+                                     <a href="#" class="btn btn-secondary btn-sm btn-download-doc" data-doc-id="docId2" title="Baixar"><i class="fas fa-download"></i></a>
+                                    <button class="btn btn-secondary btn-sm btn-edit-doc" data-doc-id="docId2" title="Editar Informações"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm btn-delete-doc" data-doc-id="docId2" title="Excluir"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td><i class="fas fa-file-word document-icon" title="Documento Word"></i></td>
+                                <td>lista_musicas_cerimonia.docx</td>
+                                <td>Lista de músicas escolhidas para a cerimônia e recepção.</td>
+                                <td>05 de Abril de 2024</td>
+                                <td class="actions-cell">
+                                     <a href="#" class="btn btn-secondary btn-sm btn-download-doc" data-doc-id="docId3" title="Baixar"><i class="fas fa-download"></i></a>
+                                    <button class="btn btn-secondary btn-sm btn-edit-doc" data-doc-id="docId3" title="Editar Informações"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm btn-delete-doc" data-doc-id="docId3" title="Excluir"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <!-- Fim do Exemplo -->
+                        </tbody>
+                    </table>
+                    <p id="no-documents-message" class="no-items-message" style="display:none;">Nenhum documento armazenado ainda.</p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Editar Informações do Documento -->
+    <div id="edit-doc-info-dialog" class="dialog-overlay">
+        <div class="dialog-content">
+            <h3 id="edit-doc-info-dialog-title">Editar Informações do Documento</h3>
+            <form id="edit-doc-info-form">
+                <input type="hidden" id="edit-doc-id" name="edit-doc-id">
+                <p><strong>Nome do Arquivo:</strong> <span id="edit-doc-filename-display" style="font-weight:normal;"></span></p>
+                <div class="form-group">
+                    <label for="edit-doc-description">Descrição do Documento:</label>
+                    <textarea id="edit-doc-description" name="edit-doc-description" rows="3" required></textarea>
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-edit-doc-info-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // Documentação
+        const fileUploadInput = document.getElementById('doc-file-upload');
+        const fileUploadLabel = document.getElementById('file-upload-label');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const uploadProgressContainer = document.getElementById('upload-progress-container');
+        const uploadProgressBar = document.getElementById('upload-progress-bar');
+        const uploadProgressText = document.getElementById('upload-progress-text');
+
+        if (fileUploadLabel && fileUploadInput) {
+            fileUploadLabel.addEventListener('click', () => fileUploadInput.click()); // Permite clique na área
+            fileUploadInput.addEventListener('change', () => {
+                if (fileUploadInput.files.length > 0) {
+                    fileNameDisplay.textContent = `Arquivo selecionado: ${fileUploadInput.files[0].name}`;
+                } else {
+                    fileNameDisplay.textContent = '';
+                }
+            });
+        }
+        
+        // Simulação de Upload
+        const uploadForm = document.getElementById('upload-document-form');
+        if(uploadForm) {
+            uploadForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!fileUploadInput.files.length) {
+                    alert('Por favor, selecione um arquivo para enviar.');
+                    return;
+                }
+                // Simulação de progresso
+                uploadProgressContainer.style.display = 'block';
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    uploadProgressBar.value = progress;
+                    uploadProgressText.textContent = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        alert('Documento enviado com sucesso (simulação)!');
+                        uploadProgressContainer.style.display = 'none';
+                        uploadProgressBar.value = 0;
+                        uploadProgressText.textContent = '0%';
+                        fileNameDisplay.textContent = '';
+                        uploadForm.reset();
+                        // TODO: Adicionar o documento à tabela (via JS, após salvar no Firebase)
+                    }
+                }, 200);
+            });
+        }
+
+        // Dialog Editar Info
+        const editDocDialog = document.getElementById('edit-doc-info-dialog');
+        const cancelEditDocBtn = document.getElementById('cancel-edit-doc-info-dialog-btn');
+        if(cancelEditDocBtn) cancelEditDocBtn.addEventListener('click', () => editDocDialog.classList.remove('active'));
+        if(editDocDialog) editDocDialog.addEventListener('click', (e) => { if(e.target === editDocDialog) editDocDialog.classList.remove('active'); });
+
+        document.querySelectorAll('.btn-edit-doc').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const docId = e.currentTarget.dataset.docId;
+                const row = e.currentTarget.closest('tr');
+                const fileName = row.querySelector('td:nth-child(2)').textContent;
+                const description = row.querySelector('td:nth-child(3)').textContent;
+
+                document.getElementById('edit-doc-id').value = docId;
+                document.getElementById('edit-doc-filename-display').textContent = fileName;
+                document.getElementById('edit-doc-description').value = description;
+                editDocDialog.classList.add('active');
+            });
+        });
+        
+        document.querySelectorAll('.btn-download-doc').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault(); // Se for um link <a>
+                const docId = e.currentTarget.dataset.docId;
+                alert(`Iniciando download do documento ${docId} (simulação).`);
+                // TODO: Implementar lógica de download do Firebase Storage.
+            });
+        });
+
+        document.querySelectorAll('.btn-delete-doc').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const docId = e.currentTarget.dataset.docId;
+                if (confirm('Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.')) {
+                    console.log(`Excluindo documento ${docId}`);
+                    // TODO: JS para excluir do Firebase Storage, Realtime DB e remover da UI.
+                    e.currentTarget.closest('tr').remove();
+                    alert('Documento excluído (simulação).');
+                }
+            });
+        });
+        
+        // TODO: JS para carregar documentos do Firebase e popular a tabela.
+        // TODO: JS para filtrar a tabela com base no input #search-document.
+        // TODO: JS para determinar o ícone do arquivo (pdf, docx, xlsx, img, etc.)
+    </script>
+</body>
+</html>

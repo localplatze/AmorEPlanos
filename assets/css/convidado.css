@@ -1,0 +1,142 @@
+/* assets/css/convidado.css */
+
+/* Estilos para TODA a área logada dos Convidados */
+
+/* --- Layout Geral da Área do Convidado --- */
+.convidado-app {
+    /* Estilos base se houver um wrapper */
+}
+
+.convidado-header {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    padding: 20px;
+    text-align: center;
+}
+.convidado-header h1 { /* Nome do casal ou evento */
+    color: var(--light-text-color);
+    margin-bottom: 5px;
+    font-size: 2rem;
+}
+.convidado-header .nav-links a {
+    color: var(--light-text-color);
+    margin: 0 15px;
+    font-size: 1.1rem;
+}
+.convidado-header .nav-links a:hover,
+.convidado-header .nav-links a.active {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.convidado-main-content {
+    padding: 20px 0; /* Container interno cuidará do padding lateral */
+}
+
+
+/* --- Home Convidado (home-convidado.html) --- */
+#home-convidado-page .countdown-elaborado {
+    font-size: 2rem;
+    text-align: center;
+    padding: 30px 0;
+    margin-bottom: 30px;
+    /* Estilos mais elaborados para o countdown */
+    background: url('path/to/romantic-background.jpg') no-repeat center center/cover; /* Exemplo */
+    color: var(--light-text-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+#home-convidado-page .info-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+#home-convidado-page .info-card { /* Similar ao management-card dos noivos, mas para infos */
+    /* ... */
+}
+
+
+/* --- RVSP (rsvp.html) --- */
+#rsvp-page .rsvp-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 25px;
+    background-color: var(--bg-color-light);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#rsvp-page .rsvp-form h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+#rsvp-page .guest-member { /* Para quando há múltiplos membros no convite */
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+#rsvp-page .guest-member-name { font-weight: bold; }
+#rsvp-page .rsvp-options label { margin-right: 15px; }
+#rsvp-page .rsvp-buttons { text-align: center; margin-top: 20px; }
+
+
+/* --- Informações de Locais (informacoes-locais.html) --- */
+#locais-page .location-card {
+    margin-bottom: 30px;
+}
+#locais-page .location-card h3 { color: var(--secondary-color); }
+#locais-page .map-embed {
+    width: 100%;
+    height: 300px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+
+/* --- Infos de Passagens/Hospedagens (passagens-hospedagem-convidado.html) --- */
+/* ... estilos ... */
+
+/* --- Cardápio e Programação dos Eventos (cardapio-programacao.html) --- */
+#cardapio-programacao-page .event-schedule-item {
+    border-left: 3px solid var(--accent-color);
+    padding-left: 15px;
+    margin-bottom: 20px;
+}
+#cardapio-programacao-page .event-time { font-weight: bold; color: var(--primary-color); }
+#cardapio-programacao-page .event-title { font-size: 1.2rem; }
+
+/* --- Lista de Presentes (lista-presentes-convidado.html) --- */
+#presentes-convidado-page .gift-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+#presentes-convidado-page .gift-item {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--bg-color-light);
+    display: flex;
+    flex-direction: column;
+}
+#presentes-convidado-page .gift-item-image img {
+    width: 100%;
+    height: 200px; /* Altura fixa para imagem */
+    object-fit: cover;
+}
+#presentes-convidado-page .gift-item-info {
+    padding: 15px;
+    flex-grow: 1; /* Para o botão ficar no final */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#presentes-convidado-page .gift-item-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 5px; }
+#presentes-convidado-page .gift-item-description { font-size: 0.9rem; color: #555; margin-bottom: 10px; }
+#presentes-convidado-page .gift-item-price { font-weight: bold; color: var(--primary-color); margin-bottom: 15px; }
+
+
+/* --- Pós-Evento (pos-evento-convidado.html) --- */
+/* ... estilos para galeria de fotos, etc. ... */

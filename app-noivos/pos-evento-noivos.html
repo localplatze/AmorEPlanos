@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pós-Evento - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        /* Estilos da Documentação para Upload de Arquivo (reutilizados/adaptados) */
+        .media-upload-area {
+            border: 2px dashed var(--border-color);
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            background-color: var(--primary-color-light);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .media-upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: #f0e6ea;
+        }
+        .media-upload-area input[type="file"] { display: none; }
+        .media-upload-area .upload-icon { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 10px; }
+        .media-upload-area .upload-text { font-size: 1rem; color: var(--text-color-medium); }
+        
+        #media-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        #media-preview-container .preview-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border-color);
+            background-color: #f0f0f0; /* Fundo para previews */
+        }
+        #media-preview-container .preview-item img,
+        #media-preview-container .preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #media-preview-container .preview-item .remove-preview-btn {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 0.9rem; /* Tamanho do 'x' */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: background-color 0.2s;
+        }
+         #media-preview-container .preview-item .remove-preview-btn:hover {
+             background-color: rgba(200,0,0,0.8);
+         }
+
+
+        #media-upload-progress-container { margin-top:15px; display:none; }
+        #media-upload-progress-container progress { width: 100%; height: 8px; border-radius: 4px; }
+        #media-upload-progress-container progress::-webkit-progress-bar { background-color: #e9ecef; border-radius: 4px; }
+        #media-upload-progress-container progress::-webkit-progress-value { background-color: var(--primary-color); border-radius: 4px; transition: width 0.2s ease; }
+        #media-upload-progress-container progress::-moz-progress-bar { background-color: var(--primary-color); border-radius: 4px; transition: width 0.2s ease; }
+
+
+        .media-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); /* Ajustado para cards maiores */
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .media-gallery-item {
+            background-color: var(--card-bg);
+            border-radius: 12px; /* Mais arredondado */
+            box-shadow: 0 4px 12px var(--shadow-color); /* Sombra dos cards padrão */
+            overflow: hidden;
+            position:relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .media-gallery-item .media-content {
+            width: 100%;
+            height: 200px; /* Altura aumentada para o card */
+            overflow: hidden; /* Garante que a imagem/vídeo não ultrapasse */
+            background-color: #f0f0f0; /* Fundo para vídeos antes de carregar */
+            cursor: pointer; /* Indica que é clicável para lightbox */
+        }
+        .media-gallery-item .media-content img,
+        .media-gallery-item .media-content video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display:block;
+            transition: transform 0.3s ease;
+        }
+        .media-gallery-item:hover .media-content img,
+        .media-gallery-item:hover .media-content video {
+            transform: scale(1.05); /* Efeito de zoom sutil no hover */
+        }
+        .media-gallery-item .media-info {
+            padding: 15px;
+            flex-grow: 1; /* Empurra ações para baixo se a legenda for curta */
+            display: flex;
+            flex-direction: column;
+        }
+        .media-gallery-item .media-caption {
+            font-size:0.9rem;
+            color: var(--text-color-medium);
+            margin-bottom: 10px;
+            line-height: 1.4;
+            flex-grow: 1; /* Ocupa espaço disponível */
+        }
+        .media-gallery-item .media-item-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Lightbox Styles */
+        #media-lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9); /* Mais escuro */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #media-lightbox-overlay.active { display: flex; opacity: 1; }
+        #media-lightbox-content {
+            position:relative;
+            max-width:90vw;
+            max-height:90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        #media-lightbox-overlay.active #media-lightbox-content {
+            transform: scale(1);
+        }
+        #media-lightbox-content img,
+        #media-lightbox-content video {
+            display:block;
+            max-width:100%;
+            max-height:100%;
+            object-fit:contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        #media-lightbox-content video { outline: none; }
+        #close-lightbox-btn {
+            position:absolute;
+            top: -15px;
+            right: -15px;
+            font-size:1.5em; /* Ajustado */
+            color:white;
+            background-color:rgba(40,40,40,0.8);
+            border:none;
+            cursor:pointer;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #close-lightbox-btn:hover { background-color:rgba(0,0,0,0.9); transform: rotate(90deg); }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html" class="active"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Pós-Evento: Fotos e Mídias</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="pos-evento-page">
+                <section class="page-section upload-media-card">
+                    <div class="section-header" style="border-bottom: none; margin-bottom: 15px;">
+                        <h2><i class="fas fa-camera-retro" style="margin-right:10px; color: var(--primary-color);"></i>Compartilhe as Memórias</h2>
+                    </div>
+                    <form id="upload-media-form">
+                        <div class="form-group">
+                             <label for="media-file-upload" class="media-upload-area" id="media-upload-label">
+                                <div class="upload-icon"><i class="fas fa-images"></i></div>
+                                <div class="upload-text">Clique para selecionar ou arraste e solte fotos/vídeos</div>
+                                <input type="file" id="media-file-upload" name="media-file-upload" multiple accept="image/*,video/*">
+                            </label>
+                            <div id="media-preview-container"></div>
+                        </div>
+                         <div class="form-group">
+                            <label for="media-caption">Legenda para as mídias selecionadas (opcional):</label>
+                            <input type="text" id="media-caption" name="media-caption" placeholder="Ex: Nossa primeira dança!, Festa animada!, etc.">
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> Enviar Mídias</button>
+                        <div id="media-upload-progress-container">
+                            <progress value="0" max="100" id="media-upload-progress-bar"></progress>
+                            <span id="media-upload-progress-text" style="font-size:0.85em; margin-left: 10px;">0%</span>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="page-section media-gallery-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-images" style="margin-right:10px; color: var(--primary-color);"></i>Galeria do Casamento</h2>
+                        <div class="actions">
+                             <label for="filter-media-type" style="margin-right: 5px; font-weight: 500; font-size: 0.9rem;">Filtrar:</label>
+                             <select id="filter-media-type" class="form-group" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); min-width: 150px; font-size:0.9rem;">
+                                <option value="all">Todas</option>
+                                <option value="photos">Fotos</option>
+                                <option value="videos">Vídeos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="media-gallery-grid" id="wedding-gallery-container">
+                        <!-- Exemplo de Mídia (JS vai popular) -->
+                        <div class="media-gallery-item" data-media-id="media1" data-media-type="photo">
+                            <div class="media-content" onclick="openLightbox('https://via.placeholder.com/800x600/AA336A/FFFFFF?text=Foto+1+Grande', 'photo')">
+                                <img src="https://via.placeholder.com/300x200/AA336A/FFFFFF?text=Foto+1" alt="Nossa primeira dança!">
+                            </div>
+                            <div class="media-info">
+                                <p class="media-caption">Nossa primeira dança, momento inesquecível!</p>
+                                <div class="media-item-actions">
+                                    <button class="btn btn-danger btn-sm btn-icon btn-delete-media" title="Excluir" data-media-id="media1"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="media-gallery-item" data-media-id="media2" data-media-type="photo">
+                             <div class="media-content" onclick="openLightbox('https://via.placeholder.com/800x600/8c2b57/FFFFFF?text=Foto+2+Grande', 'photo')">
+                                <img src="https://via.placeholder.com/300x200/8c2b57/FFFFFF?text=Foto+2" alt="Bolo dos noivos">
+                            </div>
+                             <div class="media-info">
+                                <p class="media-caption">O bolo estava simplesmente divino!</p>
+                                <div class="media-item-actions">
+                                    <button class="btn btn-danger btn-sm btn-icon btn-delete-media" title="Excluir" data-media-id="media2"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="media-gallery-item" data-media-id="media3" data-media-type="video">
+                            <div class="media-content" onclick="openLightbox('../assets/videos/wedding-video-placeholder.mp4', 'video')">
+                                <video preload="metadata" poster="https://via.placeholder.com/300x200/2c3e50/FFFFFF?text=Video+Preview">
+                                    <source src="../assets/videos/wedding-video-placeholder.mp4#t=0.5" type="video/mp4">
+                                    Seu navegador não suporta o elemento de vídeo.
+                                </video>
+                            </div>
+                             <div class="media-info">
+                                <p class="media-caption">Melhores momentos da festa, pura animação!</p>
+                               <div class="media-item-actions">
+                                    <button class="btn btn-danger btn-sm btn-icon btn-delete-media" title="Excluir" data-media-id="media3"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Fim do Exemplo -->
+                    </div>
+                    <p id="no-media-message" class="no-items-message" style="display:none;">Nenhuma foto ou vídeo adicionado à galeria ainda.</p>
+                </section>
+
+                <section class="page-section thank-you-notes">
+                    <div class="section-header">
+                        <h2><i class="fas fa-heart" style="margin-right:10px; color: var(--primary-color);"></i>Mensagem de Agradecimento</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="thank-you-template">Modelo de Mensagem de Agradecimento (para compartilhar com os convidados):</label>
+                        <textarea id="thank-you-template" name="thank-you-template" rows="6" placeholder="Ex: Queridos amigos e familiares, palavras não podem expressar nossa gratidão por compartilharem conosco este dia tão especial. A presença de cada um de vocês tornou nosso casamento ainda mais mágico..."></textarea>
+                        <button class="btn btn-primary" id="save-thankyou-template-btn" style="margin-top:15px;"><i class="fas fa-save"></i> Salvar Modelo</button>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Visualizar Mídia em Tela Cheia (Lightbox) -->
+    <div id="media-lightbox-overlay">
+        <div id="media-lightbox-content">
+            <img id="lightbox-image-content" src="#" alt="Mídia em tela cheia" style="display:none;">
+            <video id="lightbox-video-content" controls style="display:none;"></video>
+            <button id="close-lightbox-btn" title="Fechar"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // Pós-Evento
+        const mediaUploadInput = document.getElementById('media-file-upload');
+        const mediaUploadLabel = document.getElementById('media-upload-label');
+        const mediaPreviewContainer = document.getElementById('media-preview-container');
+        let filesToUpload = [];
+
+        if (mediaUploadLabel && mediaUploadInput) {
+            mediaUploadLabel.addEventListener('click', () => mediaUploadInput.click());
+            mediaUploadInput.addEventListener('change', function(event) {
+                filesToUpload = Array.from(event.target.files);
+                renderMediaPreviews();
+            });
+        }
+
+        function renderMediaPreviews() {
+            mediaPreviewContainer.innerHTML = '';
+            filesToUpload.forEach((file, index) => {
+                const reader = new FileReader();
+                const previewItemDiv = document.createElement('div');
+                previewItemDiv.classList.add('preview-item');
+                
+                reader.onload = function(e) {
+                    let previewElement;
+                    if (file.type.startsWith('image/')) {
+                        previewElement = document.createElement('img');
+                        previewElement.src = e.target.result;
+                        previewElement.alt = file.name;
+                    } else if (file.type.startsWith('video/')) {
+                        previewElement = document.createElement('video');
+                        previewElement.src = e.target.result;
+                        previewElement.muted = true;
+                    }
+                    if (previewElement) {
+                        previewItemDiv.appendChild(previewElement);
+                    }
+                }
+                reader.readAsDataURL(file);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.classList.add('remove-preview-btn');
+                removeBtn.innerHTML = '×';
+                removeBtn.title = 'Remover este arquivo da seleção';
+                removeBtn.type = 'button';
+                removeBtn.onclick = () => {
+                    filesToUpload.splice(index, 1);
+                    renderMediaPreviews(); 
+                    mediaUploadInput.value = ""; 
+                };
+                previewItemDiv.appendChild(removeBtn);
+                mediaPreviewContainer.appendChild(previewItemDiv);
+            });
+        }
+        
+        const uploadMediaForm = document.getElementById('upload-media-form');
+        const mediaUploadProgressContainer = document.getElementById('media-upload-progress-container');
+        const mediaUploadProgressBar = document.getElementById('media-upload-progress-bar');
+        const mediaUploadProgressText = document.getElementById('media-upload-progress-text');
+
+        if(uploadMediaForm){
+            uploadMediaForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!filesToUpload.length) {
+                    alert('Por favor, selecione ao menos uma foto ou vídeo.');
+                    return;
+                }
+                mediaUploadProgressContainer.style.display = 'block';
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    mediaUploadProgressBar.value = progress;
+                    mediaUploadProgressText.textContent = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        alert(`Mídias enviadas com sucesso (simulação)! Foram ${filesToUpload.length} arquivos.`);
+                        mediaUploadProgressContainer.style.display = 'none';
+                        mediaUploadProgressBar.value = 0;
+                        mediaUploadProgressText.textContent = '0%';
+                        mediaPreviewContainer.innerHTML = '';
+                        filesToUpload = [];
+                        uploadMediaForm.reset();
+                        mediaUploadInput.value = "";
+                    }
+                }, 200 * Math.max(1, filesToUpload.length / 2)); // Ajusta o tempo de simulação
+            });
+        }
+
+        // Lightbox
+        const lightboxOverlay = document.getElementById('media-lightbox-overlay');
+        const lightboxImageEl = document.getElementById('lightbox-image-content');
+        const lightboxVideoEl = document.getElementById('lightbox-video-content');
+        const closeLightboxBtn = document.getElementById('close-lightbox-btn');
+
+        window.openLightbox = function(src, type) { // Tornando a função global para o onclick no HTML
+            if (type === 'photo') {
+                lightboxImageEl.src = src;
+                lightboxImageEl.style.display = 'block';
+                lightboxVideoEl.style.display = 'none';
+                lightboxVideoEl.pause(); lightboxVideoEl.currentTime = 0;
+            } else if (type === 'video') {
+                lightboxVideoEl.src = src;
+                lightboxVideoEl.style.display = 'block';
+                lightboxImageEl.style.display = 'none';
+                lightboxVideoEl.play();
+            }
+            lightboxOverlay.classList.add('active');
+        }
+
+        if(closeLightboxBtn) closeLightboxBtn.addEventListener('click', () => {
+            lightboxOverlay.classList.remove('active');
+            lightboxImageEl.src = '#'; // Limpa src para evitar carregar imagem antiga
+            lightboxVideoEl.src = '';
+            lightboxVideoEl.pause(); lightboxVideoEl.currentTime = 0;
+        });
+        if(lightboxOverlay) lightboxOverlay.addEventListener('click', (e) => { 
+            if(e.target === lightboxOverlay) closeLightboxBtn.click(); 
+        });
+        
+        document.querySelectorAll('.btn-delete-media').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evita que o clique no botão abra o lightbox
+                const mediaId = e.currentTarget.dataset.mediaId;
+                if(confirm(`Tem certeza que deseja excluir esta mídia (${mediaId})?`)){
+                    console.log(`Excluindo mídia ${mediaId}`);
+                    // TODO: Lógica de exclusão no Firebase e remover o card da UI
+                    e.currentTarget.closest('.media-gallery-item').remove();
+                    alert('Mídia excluída (simulação).');
+                }
+            });
+        });
+        
+        // TODO: JS para carregar mídias do Firebase e popular a galeria.
+        // TODO: JS para salvar o modelo de agradecimento.
+    </script>
+</body>
+</html>

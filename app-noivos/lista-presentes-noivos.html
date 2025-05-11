@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Presentes - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        .gift-list-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .gift-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow-color) 0px 2px 4px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .gift-card-image {
+            width: 100%;
+            height: 180px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color-light);
+        }
+        .gift-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gift-card-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .gift-card-content h4 {
+            font-size: 1.1rem;
+            color: var(--text-color-dark);
+            margin-bottom: 5px;
+        }
+        .gift-card-content .gift-price {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .gift-card-content .gift-description {
+            font-size: 0.85rem;
+            color: var(--text-color-medium);
+            margin-bottom: 15px;
+            flex-grow: 1;
+            line-height: 1.4;
+        }
+        .gift-card-actions {
+            display: flex;
+            gap: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+        .gift-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+        }
+        .gift-status.purchased {
+            background-color: #27ae60; /* Verde */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html" class="active"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Gerenciar Lista de Presentes</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                    <a href="#" id="logout-btn-header" class="logout-link" style="display: none;">Sair</a>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="lista-presentes-page">
+                <section class="page-section">
+                    <div class="section-header">
+                        <h2>Seus Itens de Presente</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="btnAdicionarPresente"><i class="fas fa-plus-circle"></i> Adicionar Presente</button>
+                        </div>
+                    </div>
+
+                     <div class="summary-cards-grid">
+                        <div class="summary-card-item">
+                            <h4>Total de Itens</h4>
+                            <span class="amount" id="totalItensPresentes">3</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Itens Comprados</h4>
+                            <span class="amount" id="itensComprados">1</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Valor Arrecadado (aprox.)</h4>
+                            <span class="amount" id="valorArrecadado">R$ 350,00</span>
+                        </div>
+                    </div>
+
+                    <div class="gift-list-container" id="giftListContainer" style="margin-top: 25px;">
+                        <!-- Exemplo de Card de Presente (JS vai popular) -->
+                        <div class="gift-card" data-gift-id="gift1">
+                            <div class="gift-card-image" style="position: relative;">
+                                <img src="https://via.placeholder.com/300x180/AA336A/FFFFFF?text=Jogo+Panelas" alt="Jogo de Panelas">
+                                <span class="gift-status purchased">Comprado por Tia Maria</span>
+                            </div>
+                            <div class="gift-card-content">
+                                <h4>Jogo de Panelas Premium</h4>
+                                <p class="gift-price">R$ 350,00</p>
+                                <p class="gift-description">Conjunto completo com 5 panelas antiaderentes para nossa nova cozinha.</p>
+                                <p class="gift-pix" style="font-size:0.8rem; color: var(--text-color-light);">PIX: chavepix@dominio.com</p>
+                                <div class="gift-card-actions">
+                                    <button class="btn btn-secondary btn-sm btn-editar-presente" data-gift-id="gift1"><i class="fas fa-edit"></i> Editar</button>
+                                    <button class="btn btn-danger btn-sm btn-excluir-presente" data-gift-id="gift1"><i class="fas fa-trash"></i> Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gift-card" data-gift-id="gift2">
+                            <div class="gift-card-image" style="position: relative;">
+                                <!-- <img src="path/to/image2.jpg" alt="Nome do Presente 2"> -->
+                                <span>Sem Imagem</span>
+                                <span class="gift-status">Disponível</span>
+                            </div>
+                            <div class="gift-card-content">
+                                <h4>Cota Lua de Mel - Paris</h4>
+                                <p class="gift-price">R$ 100,00 (valor da cota)</p>
+                                <p class="gift-description">Ajude-nos a realizar nosso sonho de conhecer Paris! Qualquer contribuição é bem-vinda.</p>
+                                <p class="gift-pix" style="font-size:0.8rem; color: var(--text-color-light);">PIX: pix.luademel@casal.com</p>
+                                <div class="gift-card-actions">
+                                    <button class="btn btn-secondary btn-sm btn-editar-presente" data-gift-id="gift2"><i class="fas fa-edit"></i> Editar</button>
+                                    <button class="btn btn-danger btn-sm btn-excluir-presente" data-gift-id="gift2"><i class="fas fa-trash"></i> Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Mais cards de presente -->
+                        <!-- <div class="no-items-message" style="grid-column: 1 / -1;">Sua lista de presentes está vazia. Clique em "Adicionar Presente".</div> -->
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Adicionar/Editar Presente -->
+    <div class="dialog-overlay" id="dialogAdicionarEditarPresente">
+        <div class="dialog-content">
+            <h3 id="dialogPresenteTitle">Adicionar Novo Presente</h3>
+            <form id="formPresente">
+                <input type="hidden" id="presenteId">
+                <div class="form-group">
+                    <label for="presenteNome">Nome do Presente</label>
+                    <input type="text" id="presenteNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="presenteDescricao">Descrição</label>
+                    <textarea id="presenteDescricao"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="presenteImagemUrl">URL da Imagem (opcional)</label>
+                    <input type="url" id="presenteImagemUrl" placeholder="https://exemplo.com/imagem.jpg">
+                    <!-- Ou um input type="file" para upload -->
+                </div>
+                <div class="form-group">
+                    <label for="presenteValor">Valor Estimado (R$)</label>
+                    <input type="number" id="presenteValor" step="0.01" min="0" placeholder="Ex: 150.00">
+                </div>
+                <div class="form-group">
+                    <label for="presentePix">Chave PIX (para presentes em dinheiro/cotas)</label>
+                    <input type="text" id="presentePix" placeholder="Sua chave PIX">
+                </div>
+                <div class="form-group">
+                     <input type="checkbox" id="presenteIsMonetary" style="width:auto; margin-right:5px;">
+                     <label for="presenteIsMonetary" class="checkbox-label">Este é um item monetário (cota)?</label>
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarDialogPresente">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Presente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Script básico do dashboard (toggle sidebar, user info)
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('noivosSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+        const userNameElement = document.getElementById('userName');
+        const userAvatarElement = document.getElementById('userAvatar');
+        const currentUser = { name: "Ana & Bruno", initials: "AB" };
+        if (currentUser && userNameElement && userAvatarElement) {
+            userNameElement.textContent = `Olá, ${currentUser.name}!`;
+            userAvatarElement.textContent = currentUser.initials;
+        }
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        function handleLogout() { console.log("Logout"); window.location.href = '../index.html'; }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        // Scripts específicos da página Lista de Presentes
+        const dialogAdicionarEditarPresente = document.getElementById('dialogAdicionarEditarPresente');
+        const btnAdicionarPresente = document.getElementById('btnAdicionarPresente');
+        const btnCancelarDialogPresente = document.getElementById('btnCancelarDialogPresente');
+        const formPresente = document.getElementById('formPresente');
+        const dialogPresenteTitle = document.getElementById('dialogPresenteTitle');
+        const presenteIdInput = document.getElementById('presenteId');
+
+        if(btnAdicionarPresente) {
+            btnAdicionarPresente.addEventListener('click', () => {
+                formPresente.reset();
+                presenteIdInput.value = '';
+                dialogPresenteTitle.textContent = 'Adicionar Novo Presente';
+                dialogAdicionarEditarPresente.classList.add('active');
+            });
+        }
+        if(btnCancelarDialogPresente) btnCancelarDialogPresente.addEventListener('click', () => dialogAdicionarEditarPresente.classList.remove('active'));
+
+        document.querySelectorAll('.btn-editar-presente').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const giftId = e.currentTarget.dataset.giftId;
+                // TODO: Popular o formulário com os dados do presente 'giftId' do Firebase
+                dialogPresenteTitle.textContent = 'Editar Presente';
+                presenteIdInput.value = giftId;
+                // Exemplo de como popular (simulado):
+                // document.getElementById('presenteNome').value = "Jogo de Panelas Premium";
+                // document.getElementById('presenteValor').value = "350.00";
+                dialogAdicionarEditarPresente.classList.add('active');
+            });
+        });
+
+        // TODO: Lógica para CRUD de presentes, upload de imagem, marcar como comprado.
+    </script>
+</body>
+</html>

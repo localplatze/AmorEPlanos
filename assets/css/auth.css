@@ -1,0 +1,93 @@
+/* assets/css/auth.css */
+
+/* Estilos específicos para as páginas de login-noivos, cadastro-noivos, login-convidado */
+
+body.auth-page { /* Adicionar class="auth-page" no body dessas páginas */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+}
+
+.auth-container {
+    background-color: var(--bg-color-light);
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 450px; /* Largura do formulário de autenticação */
+    text-align: center;
+}
+
+.auth-container .logo-container { /* Se houver um logo */
+    margin-bottom: 25px;
+}
+
+.auth-container .logo-container img {
+    max-width: 150px;
+    margin: 0 auto;
+}
+
+.auth-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.auth-form .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.auth-form label {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"],
+.auth-form input[type="tel"] {
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+.auth-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb, 170, 51, 106), 0.3);
+}
+
+
+.auth-form .btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.auth-links {
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.auth-links a {
+    color: var(--secondary-color);
+    margin: 0 5px;
+}
+
+.auth-links a:hover {
+    color: var(--primary-color);
+}
+
+.error-message {
+    color: var(--error-color);
+    background-color: rgba(var(--error-color-rgb, 231, 76, 60), 0.1);
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-align: left;
+    border: 1px solid var(--error-color);
+}

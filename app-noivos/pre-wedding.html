@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pré Wedding / Save The Date - NuptialLink Noivos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        .member-status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .member-status-item:last-child {
+            border-bottom: none;
+        }
+        .member-status-item select {
+            padding: 6px 10px;
+            min-width: 130px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="noivos-app">
+        <!-- Sidebar (Copie do dashboard.html e ajuste o link ativo) -->
+        <aside class="noivos-sidebar" id="noivosSidebar">
+            <div class="logo">
+                <a href="dashboard.html" class="logo-text">NuptialLink</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+                    <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
+                    <li><a href="convidados.html"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
+                    <li><a href="pre-wedding.html" class="active"><span class="nav-icon"><i class="fas fa-camera-retro"></i></span>Pré Wedding</a></li>
+                    <li><a href="convites-checkin.html"><span class="nav-icon"><i class="fas fa-envelope-open-text"></i></span>Convites/Check-In</a></li>
+                    <li><a href="divisao-papeis.html"><span class="nav-icon"><i class="fas fa-user-friends"></i></span>Divisão de Papéis</a></li>
+                    <li><a href="organizacao-mesas.html"><span class="nav-icon"><i class="fas fa-chair"></i></span>Organização de Mesas</a></li>
+                    <li><a href="lista-presentes-noivos.html"><span class="nav-icon"><i class="fas fa-gifts"></i></span>Lista de Presentes</a></li>
+                    <li><a href="mensagens-noivos.html"><span class="nav-icon"><i class="fas fa-comments"></i></span>Mensagens</a></li>
+                    <li><a href="passagens-hospedagem-noivos.html"><span class="nav-icon"><i class="fas fa-plane-departure"></i></span>Passagens/Hosp.</a></li>
+                    <li><a href="linha-do-tempo.html"><span class="nav-icon"><i class="fas fa-stream"></i></span>Linha do Tempo</a></li>
+                    <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
+                    <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
+                    <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
+                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="noivos-content-wrapper">
+            <!-- Header (Copie do dashboard.html) -->
+            <header class="noivos-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Pré Wedding / Save The Date</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <span id="userName">Olá, Noiva(o)!</span>
+                </div>
+            </header>
+
+            <main class="noivos-main-content" id="pre-wedding-page">
+                <section class="page-section save-the-date-info">
+                    <div class="section-header" style="border-bottom: none; padding-bottom: 0;">
+                        <h2><i class="fas fa-bullhorn" style="margin-right: 8px;"></i>Informações do Save The Date</h2>
+                        <div class="actions">
+                             <button class="btn btn-primary" id="configure-std-message-btn"><i class="fas fa-envelope-open-text"></i> Configurar Mensagem</button>
+                        </div>
+                    </div>
+                    <p>Configure a mensagem padrão do seu Save The Date, visualize como ficará para seus convidados e acompanhe as respostas.</p>
+                    <p style="font-size: 0.9em;"><strong>Data do Casamento:</strong> <span id="wedding-date-display" style="font-weight:bold;">[Data do Casamento - buscar de config]</span></p>
+                    <p style="font-size: 0.9em;"><strong>Local (Cidade):</strong> <span id="wedding-city-display" style="font-weight:bold;">[Cidade do Casamento - buscar de config]</span></p>
+                </section>
+
+                <section class="page-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-tasks" style="margin-right: 8px;"></i>Status dos Convidados (Save The Date)</h2>
+                    </div>
+                     <div class="filters-bar">
+                        <div class="filter-group">
+                            <label for="search-std-guest">Buscar Convidado:</label>
+                            <input type="text" id="search-std-guest" placeholder="Nome do convidado...">
+                        </div>
+                         <div class="filter-group">
+                            <label for="filter-std-status-page">Status:</label>
+                            <select id="filter-std-status-page">
+                                <option value="all">Todos</option>
+                                <option value="confirmado">Confirmado</option>
+                                <option value="pendente">Pendente</option>
+                                <option value="recusado">Recusado</option>
+                                <option value="nao_enviado">Não Enviado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="select-all-guests-std" title="Selecionar Todos"></th>
+                                <th>Grupo/Contato Principal</th>
+                                <th>Membros (Confirmados/Total)</th>
+                                <th>Status Geral</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guest-std-table-body">
+                            <tr>
+                                <td><input type="checkbox" name="selected_guest_std" value="guestId1"></td>
+                                <td>Família Silva (João Silva)</td>
+                                <td id="members-status-guestId1">
+                                    João S. (<span class="status-confirmado">Sim</span>), Maria S. (<span class="status-confirmado">Sim</span>), Pedro S. (<span class="status-recusado">Não</span>) <br>
+                                    (2/3)
+                                </td>
+                                <td><span class="status-confirmado"><i class="fas fa-check-circle status-dot" style="color: #27ae60;"></i>Confirmado Parcialmente</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-secondary btn-sm" onclick="updateStdStatusManually('guestId1')" title="Atualizar Status"><i class="fas fa-user-check"></i></button>
+                                    <button class="btn btn-secondary btn-sm" onclick="generateShareableText('guestId1')" title="Gerar Texto WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" name="selected_guest_std" value="guestId2"></td>
+                                <td>Carlos Alberto</td>
+                                <td id="members-status-guestId2">
+                                    Carlos A. (<span class="status-pendente">Pendente</span>) <br>
+                                    (0/1)
+                                </td>
+                                <td><span class="status-pendente"><i class="fas fa-hourglass-half status-dot" style="color: #f39c12;"></i>Pendente</span></td>
+                                <td class="actions-cell">
+                                    <button class="btn btn-secondary btn-sm" onclick="updateStdStatusManually('guestId2')" title="Atualizar Status"><i class="fas fa-user-check"></i></button>
+                                    <button class="btn btn-secondary btn-sm" onclick="generateShareableText('guestId2')" title="Gerar Texto WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p id="no-std-guests-message" class="no-items-message" style="display:none;">Nenhum convidado na lista para o Save The Date ainda.</p>
+                    <div class="table-actions-footer" style="margin-top: 20px;">
+                        <button class="btn btn-primary" id="send-std-selected-btn" disabled><i class="fas fa-share-square"></i> Enviar Texto/Link para Selecionados</button>
+                        <!-- Futuramente: <button class="btn btn-secondary" disabled>Marcar como Enviado Manualmente</button> -->
+                    </div>
+                </section>
+
+                <section class="page-section std-summary">
+                     <h2 style="margin-bottom: 15px;"><i class="fas fa-poll" style="margin-right: 8px;"></i>Resumo do Save The Date</h2>
+                     <div class="summary-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="summary-card-item">
+                            <h4>Convites Enviados</h4> <!-- Considerar como "disparados" -->
+                            <span class="amount" id="std-sent-count">0</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Confirmados</h4>
+                            <span class="amount" id="std-confirmed-count" style="color: #27ae60;">0</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Pendentes</h4>
+                            <span class="amount" id="std-pending-count" style="color: #f39c12;">0</span>
+                        </div>
+                        <div class="summary-card-item">
+                            <h4>Recusaram</h4>
+                            <span class="amount" id="std-declined-count" style="color: #e74c3c;">0</span>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dialog para Configurar Mensagem Padrão do Save The Date -->
+    <div id="std-message-dialog" class="dialog-overlay">
+        <div class="dialog-content" style="max-width: 600px;">
+            <h3><i class="fas fa-cogs" style="margin-right:8px;"></i>Configurar Mensagem Padrão do Save The Date</h3>
+            <form id="std-message-form">
+                <p style="font-size:0.9em; color:var(--text-color-medium); margin-bottom:15px;">Use placeholders como <code>[NomeConvidado]</code> (será o Contato Principal do Grupo), <code>[DataCasamentoFormatada]</code>, <code>[NomesNoivos]</code>, <code>[LinkConfirmacaoSTD]</code> (se houver).</p>
+                <div class="form-group">
+                    <label for="std-message-template">Modelo da Mensagem:</label>
+                    <textarea id="std-message-template" name="std-message-template" rows="6" placeholder="Ex: Olá [NomeConvidado]! 
+Com muita alegria, queremos que você reserve a data [DataCasamentoFormatada] para celebrar conosco o nosso casamento! 
+[NomesNoivos] 
+Confirme sua presença (Save The Date) em: [LinkConfirmacaoSTD]"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="std-include-names-auto" name="std-include-names-auto" checked>
+                    <label for="std-include-names-auto" class="checkbox-label">Incluir nomes dos noivos automaticamente no final?</label>
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-std-message-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Mensagem</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dialog para Gerar Texto Compartilhável Individual -->
+    <div id="shareable-text-dialog" class="dialog-overlay">
+        <div class="dialog-content" style="max-width: 550px;">
+            <h3 id="shareable-text-dialog-title">Gerar Texto para [NomeConvidado]</h3>
+             <p style="font-size:0.9em; color:var(--text-color-medium); margin-bottom:15px;">Este é o texto que será gerado usando o modelo configurado. Você pode copiar e enviar via WhatsApp ou outro meio.</p>
+            <div class="form-group">
+                <label for="generated-shareable-text">Texto Gerado:</label>
+                <textarea id="generated-shareable-text" rows="7" readonly style="background-color:#f8f9fa;"></textarea>
+            </div>
+            <div class="dialog-actions">
+                <button type="button" class="btn btn-secondary" id="close-shareable-text-dialog-btn">Fechar</button>
+                <button type="button" class="btn btn-primary" id="copy-shareable-text-btn"><i class="fas fa-copy"></i> Copiar Texto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog para Atualizar Status Manualmente -->
+    <div id="update-status-dialog" class="dialog-overlay">
+        <div class="dialog-content" style="max-width: 500px;">
+            <h3 id="update-status-dialog-title">Atualizar Status de [NomeConvidado]</h3>
+            <form id="update-status-form">
+                <p style="font-size:0.9em; color:var(--text-color-medium); margin-bottom:15px;">Marque o status de cada membro do grupo/convite para o Save The Date.</p>
+                <div id="guest-members-status-update-container" style="max-height: 300px; overflow-y: auto; padding-right: 10px;">
+                    <!-- JS vai popular isso -->
+                </div>
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-update-status-dialog-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <template id="member-status-update-template">
+        <div class="member-status-item">
+            <span class="member-name-placeholder">Nome do Membro</span>
+            <input type="hidden" name="member_id[]" value="">
+            <select name="member_status[]">
+                <option value="pendente">Pendente</option>
+                <option value="confirmado">Confirmado (VAI)</option>
+                <option value="recusado">Recusado (NÃO VAI)</option>
+            </select>
+        </div>
+    </template>
+
+
+    <script>
+        // Script da Sidebar e Header (copie do dashboard.html)
+        const mobileMenuTogglePre = document.getElementById('mobileMenuToggle');
+        const sidebarPre = document.getElementById('noivosSidebar');
+        const sidebarOverlayPre = document.getElementById('sidebarOverlay');
+        function toggleSidebarPreFn() {
+            sidebarPre.classList.toggle('active');
+            sidebarOverlayPre.classList.toggle('active');
+            const icon = mobileMenuTogglePre.querySelector('i');
+            if (sidebarPre.classList.contains('active')) {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+            }
+        }
+        if (mobileMenuTogglePre && sidebarPre && sidebarOverlayPre) {
+            mobileMenuTogglePre.addEventListener('click', toggleSidebarPreFn);
+            sidebarOverlayPre.addEventListener('click', toggleSidebarPreFn);
+        }
+        const userNameElementPre = document.getElementById('userName');
+        const userAvatarElementPre = document.getElementById('userAvatar');
+        const currentUserPre = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
+        if (currentUserPre && userNameElementPre && userAvatarElementPre) {
+            userNameElementPre.textContent = `Olá, ${currentUserPre.name}!`;
+            userAvatarElementPre.textContent = currentUserPre.initials;
+        }
+        // Fim script Sidebar/Header
+
+        // Script específico da página Pre-Wedding
+        document.addEventListener('DOMContentLoaded', () => {
+            const openStdMsgBtn = document.getElementById('configure-std-message-btn');
+            const stdMsgDialog = document.getElementById('std-message-dialog');
+            const cancelStdMsgBtn = document.getElementById('cancel-std-message-dialog-btn');
+            if (openStdMsgBtn) openStdMsgBtn.addEventListener('click', () => stdMsgDialog.classList.add('active'));
+            if (cancelStdMsgBtn) cancelStdMsgBtn.addEventListener('click', () => stdMsgDialog.classList.remove('active'));
+            if (stdMsgDialog) stdMsgDialog.addEventListener('click', (e) => { if (e.target === stdMsgDialog) stdMsgDialog.classList.remove('active'); });
+
+            const shareTextDialog = document.getElementById('shareable-text-dialog');
+            const closeShareTextBtn = document.getElementById('close-shareable-text-dialog-btn');
+            const copyShareTextBtn = document.getElementById('copy-shareable-text-btn');
+            if (closeShareTextBtn) closeShareTextBtn.addEventListener('click', () => shareTextDialog.classList.remove('active'));
+            if (shareTextDialog) shareTextDialog.addEventListener('click', (e) => { if (e.target === shareTextDialog) shareTextDialog.classList.remove('active'); });
+            if(copyShareTextBtn) copyShareTextBtn.addEventListener('click', () => {
+                const textToCopy = document.getElementById('generated-shareable-text');
+                textToCopy.select();
+                document.execCommand('copy');
+                alert('Texto copiado!'); // Ou use um toast/notificação mais elegante
+            });
+
+
+            const updateStatusDialog = document.getElementById('update-status-dialog');
+            const cancelUpdateStatusBtn = document.getElementById('cancel-update-status-dialog-btn');
+            if (cancelUpdateStatusBtn) cancelUpdateStatusBtn.addEventListener('click', () => updateStatusDialog.classList.remove('active'));
+            if (updateStatusDialog) updateStatusDialog.addEventListener('click', (e) => { if (e.target === updateStatusDialog) updateStatusDialog.classList.remove('active'); });
+
+            window.generateShareableText = function(guestId) { // Exemplo de como você chamaria
+                // Lógica para buscar dados do convidado e mensagem modelo, e preencher
+                document.getElementById('shareable-text-dialog-title').textContent = `Gerar Texto para Convidado X`;
+                document.getElementById('generated-shareable-text').value = `(JS preencheria o texto para o convidado ${guestId} aqui, usando o modelo salvo)`;
+                shareTextDialog.classList.add('active');
+            }
+
+            window.updateStdStatusManually = function(guestId) { // Exemplo
+                document.getElementById('update-status-dialog-title').textContent = `Atualizar Status de Convidado Y`;
+                const membersContainer = document.getElementById('guest-members-status-update-container');
+                membersContainer.innerHTML = ''; // Limpar antes de popular
+
+                // Simulação: buscaria membros do guestId do banco de dados
+                const members = [ {id: 'm1', name: 'Membro Exemplo 1', status: 'pendente'}, {id: 'm2', name: 'Membro Exemplo 2', status: 'confirmado'} ];
+                const template = document.getElementById('member-status-update-template');
+
+                members.forEach(member => {
+                    const clone = template.content.cloneNode(true);
+                    clone.querySelector('.member-name-placeholder').textContent = member.name;
+                    clone.querySelector('input[name="member_id[]"]').value = member.id;
+                    clone.querySelector('select[name="member_status[]"]').value = member.status;
+                    membersContainer.appendChild(clone);
+                });
+                updateStatusDialog.classList.add('active');
+            }
+
+            const selectAllCheckboxStd = document.getElementById('select-all-guests-std');
+            const guestCheckboxesStd = document.querySelectorAll('#guest-std-table-body input[name="selected_guest_std"]');
+            const sendSelectedBtnStd = document.getElementById('send-std-selected-btn');
+
+            function toggleSendStdButton() {
+                let anyCheckedStd = false;
+                guestCheckboxesStd.forEach(cb => { if (cb.checked) anyCheckedStd = true; });
+                if (sendSelectedBtnStd) sendSelectedBtnStd.disabled = !anyCheckedStd;
+            }
+
+            if (selectAllCheckboxStd) {
+                selectAllCheckboxStd.addEventListener('change', function() {
+                    guestCheckboxesStd.forEach(checkbox => checkbox.checked = this.checked);
+                    toggleSendStdButton();
+                });
+            }
+            guestCheckboxesStd.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    let allCheckedStd = true;
+                    guestCheckboxesStd.forEach(cb => { if (!cb.checked) allCheckedStd = false; });
+                    if (selectAllCheckboxStd) selectAllCheckboxStd.checked = allCheckedStd;
+                    toggleSendStdButton();
+                });
+            });
+            toggleSendStdButton(); // Initial state
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+/* assets/css/landing-page.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+    --primary-color: #AA336A; /* Sua cor principal */
+    --primary-color-dark: #8c2b57;
+    --secondary-color: #f4e7eC; /* Um rosa bem clarinho/bege rosado */
+    --accent-color: #D4AF37; /* Um dourado suave para detalhes */
+    --text-color-dark: #333;
+    --text-color-light: #f8f9fa;
+    --text-color-medium: #555;
+    --background-light: #FFFFFF;
+    --background-grey: #f8f9fa;
+    --border-color: #ddd;
+    --font-primary: 'Montserrat', sans-serif;
+    --font-headings: 'Playfair Display', serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-primary);
+    color: var(--text-color-dark);
+    line-height: 1.7;
+    background-color: var(--background-light);
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* --- Navigation --- */
+.navbar {
+    background-color: var(--background-light);
+    padding: 1rem 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo a {
+    font-family: var(--font-headings);
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    text-decoration: none;
+    font-weight: 700;
+}
+/* Você pode usar uma imagem para o logo:
+.nav-logo img { max-height: 40px; }
+*/
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color-medium);
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 5px 0;
+    position: relative;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--primary-color);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+.nav-links a:hover::after, .nav-links a.active::after {
+    width: 100%;
+}
+
+.nav-cta .btn {
+    margin-left: 20px;
+}
+
+.mobile-nav-toggle {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+
+/* --- Hero Section --- */
+.hero {
+    background-color: var(--secondary-color); /* Cor de fundo suave */
+    /* Para uma imagem de fundo:
+    background-image: linear-gradient(rgba(244, 231, 236, 0.8), rgba(244, 231, 236, 0.9)), url('link-para-imagem-de-casamento.jpg');
+    background-size: cover;
+    background-position: center;
+    */
+    padding: 160px 0 100px; /* Mais padding no topo por causa do navbar fixo */
+    text-align: center;
+    position: relative;
+    overflow: hidden; /* Para elementos decorativos, se houver */
+}
+
+.hero h1 {
+    font-family: var(--font-headings);
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5em;
+    line-height: 1.2;
+}
+
+.hero p.subtitle {
+    font-size: 1.25rem;
+    color: var(--text-color-medium);
+    max-width: 700px;
+    margin: 0 auto 1.5em;
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 50px; /* Mais arredondado */
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+.btn-secondary:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    transform: translateY(-2px);
+}
+
+.btn-light {
+    background-color: var(--background-light);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+.btn-light:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+}
+
+.cta-buttons .btn {
+    margin: 10px;
+}
+
+
+/* --- Section Styling --- */
+.section {
+    padding: 80px 0;
+}
+.section-bg {
+    background-color: var(--background-grey);
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+.section-title h2 {
+    font-family: var(--font-headings);
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+.section-title h2::after { /* Linha decorativa abaixo do título */
+    content: '';
+    position: absolute;
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--accent-color);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.section-title p {
+    color: var(--text-color-medium);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+/* --- Features Section --- */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.feature-item {
+    background-color: var(--background-light);
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.feature-item .icon {
+    font-size: 2.5rem; /* Para FontAwesome ou similar */
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: inline-block;
+    /* Se usar SVGs ou imagens:
+    width: 60px;
+    height: 60px;
+    */
+}
+
+.feature-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--text-color-dark);
+}
+.feature-item p {
+    font-size: 0.95rem;
+    color: var(--text-color-medium);
+}
+
+/* --- How It Works Section --- */
+.how-it-works-steps {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    text-align: center;
+}
+.step {
+    flex: 1;
+    max-width: 300px;
+}
+.step .step-number {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.step h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--text-color-dark);
+}
+.step p {
+    font-size: 0.95rem;
+    color: var(--text-color-medium);
+}
+
+
+/* --- Call to Action Section --- */
+.cta-section {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 60px 0;
+    text-align: center;
+}
+.cta-section h2 {
+    font-family: var(--font-headings);
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+}
+.cta-section p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+
+/* --- Footer --- */
+.footer {
+    background-color: #333; /* Um cinza escuro para o rodapé */
+    color: #aab;
+    padding: 50px 0 30px;
+    text-align: center;
+}
+.footer .container {
+    /* Pode adicionar colunas aqui futuramente para mais links */
+}
+.footer-logo a {
+    font-family: var(--font-headings);
+    color: var(--secondary-color); /* Cor clara no fundo escuro */
+    font-size: 1.8rem;
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+.footer p {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+.footer .social-links a {
+    color: #aab;
+    margin: 0 10px;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+.footer .social-links a:hover {
+    color: var(--primary-color);
+}
+.footer .copyright {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+
+/* --- Responsividade --- */
+@media (max-width: 992px) {
+    .hero h1 { font-size: 2.8rem; }
+    .hero p.subtitle { font-size: 1.1rem; }
+    .section-title h2 { font-size: 2.2rem; }
+
+    .how-it-works-steps {
+        flex-direction: column;
+        align-items: center;
+    }
+    .step {
+        margin-bottom: 30px;
+    }
+    .step:last-child { margin-bottom: 0; }
+}
+
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Esconder para mobile, mostrar com JS */
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 70px; /* Ajustar conforme altura do navbar */
+        left: 0;
+        background-color: var(--background-light);
+        padding: 10px 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    .nav-links.active {
+        display: flex;
+    }
+    .nav-links li {
+        margin: 10px 0;
+        text-align: center;
+    }
+    .nav-links a::after { display: none; } /* Remover underline animado no mobile menu */
+
+    .nav-cta { display: none; } /* Esconder CTAs principais no nav, colocar no menu mobile se quiser */
+    .mobile-nav-toggle { display: block; }
+
+    .hero { padding: 120px 0 60px; }
+    .hero h1 { font-size: 2.2rem; }
+    .hero p.subtitle { font-size: 1rem; }
+
+    .features-grid {
+        grid-template-columns: 1fr; /* Uma coluna */
+    }
+    .section { padding: 60px 0; }
+    .section-title { margin-bottom: 40px; }
+    .section-title h2 { font-size: 2rem; }
+
+    .cta-section h2 { font-size: 1.8rem; }
+    .cta-section p { font-size: 1rem; }
+}
