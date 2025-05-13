@@ -5,35 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Senha - NuptialLink</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/auth-moderno.css"> <!-- Ajuste o caminho se necessário -->
+    <link rel="stylesheet" href="../assets/css/auth-moderno.css">
     <style>
-        /* Estilos adicionais específicos para esta página, se necessário */
-        .success-message {
-            color: #27ae60; /* Verde para sucesso */
-            background-color: #e9f7ef;
-            border: 1px solid #27ae60;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 0.9em;
-            text-align: left;
-        }
+        /* Seus estilos adicionais para .success-message e .error-message já devem estar em auth-moderno.css */
         .message-area:empty {
             display: none;
         }
     </style>
 </head>
 <body>
-
-    <div class="auth-container login-container"> <!-- Usando login-container para manter o tamanho -->
+    <div class="auth-container login-container">
         <h1>Recuperar Senha</h1>
         <p class="subtitle">Esqueceu sua senha? Digite seu e-mail abaixo para receber instruções de como redefini-la.</p>
 
         <form id="recuperar-senha-form">
-            <div id="message-area" class="message-area">
+            <div id="recuperar-message" class="message-area" style="display: none;">
                 <!-- Mensagens de erro ou sucesso aparecerão aqui -->
-                <!-- <div class="error-message">Este é um erro de exemplo.</div> -->
-                <!-- <div class="success-message">E-mail enviado com sucesso! Verifique sua caixa de entrada.</div> -->
             </div>
 
             <div class="form-group">
@@ -41,7 +28,7 @@
                 <input type="email" id="email-recuperacao" name="email-recuperacao" required>
             </div>
 
-            <button type="submit">Enviar Instruções</button>
+            <button type="submit" id="recuperar-submit-button">Enviar Instruções</button>
         </form>
 
         <div class="auth-links">
@@ -50,29 +37,31 @@
         </div>
     </div>
 
-    <!--
-    <script src="https://www.gstatic.com/firebasejs/LATEST_VERSION/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/LATEST_VERSION/firebase-auth-compat.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database-compat.js"></script> <!-- Incluir por consistência, embora não usado diretamente aqui -->
     <script src="../assets/js/firebase-config.js"></script>
     <script>
-        // Lógica Firebase para recuperação de senha
-        // Se você já tem uma função em auth.js, pode chamá-la aqui
-        // ou implementar diretamente.
-
-        const auth = firebase.auth();
+        document.addEventListener('DOMContentLoaded', function () {
         const recuperarSenhaForm = document.getElementById('recuperar-senha-form');
         const emailInput = document.getElementById('email-recuperacao');
-        const messageArea = document.getElementById('message-area');
+        const messageArea = document.getElementById('recuperar-message'); // Atualizado o ID
+        const submitButton = document.getElementById('recuperar-submit-button');
 
         if (recuperarSenhaForm) {
             recuperarSenhaForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const email = emailInput.value;
-                messageArea.innerHTML = ''; // Limpa mensagens anteriores
+                const email = emailInput.value.trim();
+                messageArea.style.display = 'none';
+                messageArea.textContent = '';
+                messageArea.className = 'message-area';
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
 
                 auth.sendPasswordResetEmail(email)
                     .then(() => {
-                        messageArea.innerHTML = `<div class="success-message">E-mail de redefinição de senha enviado para ${email}. Verifique sua caixa de entrada (e spam).</div>`;
+                        showMessage(`E-mail de redefinição de senha enviado para ${email}. Verifique sua caixa de entrada (e spam).`, 'success');
                         recuperarSenhaForm.reset();
                     })
                     .catch((error) => {
@@ -83,11 +72,21 @@
                         } else if (error.code === 'auth/invalid-email') {
                             userMessage = "O formato do e-mail é inválido.";
                         }
-                        messageArea.innerHTML = `<div class="error-message">${userMessage}</div>`;
+                        showMessage(userMessage, 'error');
+                    })
+                    .finally(() => {
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Enviar Instruções';
                     });
             });
         }
+
+        function showMessage(message, type = 'info') {
+            messageArea.textContent = message;
+            messageArea.className = `message-area ${type}-message`;
+            messageArea.style.display = 'block';
+        }
+    });
     </script>
-    -->
 </body>
 </html>

@@ -7,17 +7,91 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        /* Estilos específicos para esta página */
+        .status-dot { margin-right: 5px; display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: middle; }
+        .status-confirmado { color: #27ae60; font-weight: 500; }
+        .status-pendente { color: #f39c12; font-weight: 500; }
+        .status-recusado { color: #e74c3c; font-weight: 500; }
+        .status-enviado { color: #3498db; font-weight: 500; }
+        .status-nao-definido { color: #7f8c8d; font-style: italic; }
+
+        /* Estilos para status agregado na tabela */
+        .aggregated-status span[title] { cursor: help; }
+        .aggregated-status .status-confirmado::before { content: ''; background-color: #27ae60; /* Cor do status-confirmado */ }
+        .aggregated-status .status-pendente::before { content: ''; background-color: #f39c12; /* Cor do status-pendente */ }
+        .aggregated-status .status-recusado::before { content: ''; background-color: #e74c3c; /* Cor do status-recusado */ }
+        .aggregated-status .status-nao-definido::before { content: ''; background-color: #7f8c8d; /* Cor do status-nao-definido */ }
+        .aggregated-status > span + span { margin-left: 8px; }
+
+
+        .dynamic-entry { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; background-color: #f9f9f9; }
+        .dynamic-entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .dynamic-entry-header h5 { margin: 0; font-size: 1.1em; }
+        .remove-btn { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 1.1em; }
+        .remove-btn:hover { color: #e74c3c; }
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255, 255, 255, 0.85); display: flex;
+            justify-content: center; align-items: center; z-index: 10060; /* Acima do dialog */
+            font-size: 1.2rem; color: #555; text-align: center;
+            padding: 20px; box-sizing: border-box; display: none;
+        }
+        .hidden { display: none !important; }
+
+        /* CSS para o Dialog (baseado na Opção A da nossa discussão anterior) */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10050;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease-in-out, visibility 0s linear 0.25s;
+        }
+        .dialog-overlay:not(.hidden) {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.25s ease-in-out, visibility 0s linear 0s;
+        }
+        .dialog-content {
+            background-color: var(--card-bg); /* Usando variável do seu noivos-dashboard.css */
+            padding: 25px 30px;
+            border-radius: 8px; /* Usando variável do seu noivos-dashboard.css */
+            box-shadow: 0 7px 20px rgba(0,0,0,0.25);
+            width: 100%;
+            max-width: 700px; /* Como estava no seu HTML original */
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.25s ease-in-out;
+        }
+        .dialog-overlay:not(.hidden) .dialog-content {
+            transform: scale(1);
+        }
+    </style>
 </head>
 <body>
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlayConv">
+        <i class="fas fa-spinner fa-spin" style="margin-right: 10px;"></i> Carregando Convidados...
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlayConv"></div>
     <div class="noivos-app">
-        <!-- Sidebar (Copie do dashboard.html e ajuste o link ativo) -->
-         <aside class="noivos-sidebar" id="noivosSidebar">
-            <div class="logo">
-                <a href="dashboard.html" class="logo-text">NuptialLink</a>
-            </div>
+        <!-- Sidebar -->
+         <aside class="noivos-sidebar" id="noivosSidebarConv">
+            <div class="logo"><a href="dashboard.html" class="logo-text">NuptialLink</a></div>
             <nav>
-                <ul>
+                 <ul>
                     <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
                     <li><a href="financeiro.html"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Financeiro</a></li>
                     <li><a href="convidados.html" class="active"><span class="nav-icon"><i class="fas fa-users"></i></span>Convidados</a></li>
@@ -32,23 +106,22 @@
                     <li><a href="documentacao.html"><span class="nav-icon"><i class="fas fa-file-alt"></i></span>Documentação</a></li>
                     <li><a href="pos-evento-noivos.html"><span class="nav-icon"><i class="fas fa-photo-video"></i></span>Pós-Evento</a></li>
                     <li><a href="configuracoes-perfil-publico.html"><span class="nav-icon"><i class="fas fa-cog"></i></span>Perfil Público</a></li>
-                    <li><a href="#" id="logout-btn-sidebar" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
+                    <li><a href="#" id="logout-btn-sidebar-conv" class="logout-btn-sidebar"><span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>Sair</a></li>
                 </ul>
             </nav>
         </aside>
 
         <div class="noivos-content-wrapper">
-            <!-- Header (Copie do dashboard.html) -->
+            <!-- Header -->
             <header class="noivos-header">
                 <div class="header-left">
-                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    <button class="mobile-menu-toggle" id="mobileMenuToggleConvPage" aria-label="Abrir menu"><i class="fas fa-bars"></i></button>
                     <h1>Gestão de Convidados</h1>
                 </div>
                 <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">N</div>
-                    <span id="userName">Olá, Noiva(o)!</span>
+                    <div class="user-avatar" id="userAvatarConvPage">N</div>
+                    <span id="userNameConvPage">Carregando...</span>
+                    <a href="#" id="logout-btn-header-conv" class="logout-link" title="Sair"><i class="fas fa-sign-out-alt"></i></a>
                 </div>
             </header>
 
@@ -57,39 +130,43 @@
                     <div class="section-header">
                         <h2><i class="fas fa-users-cog" style="margin-right: 8px;"></i>Lista de Convidados</h2>
                         <div class="actions">
-                            <button class="btn btn-secondary" id="import-guests-btn"><i class="fas fa-file-import"></i> Importar Lista</button>
-                            <button class="btn btn-primary" id="open-guest-dialog-btn"><i class="fas fa-user-plus"></i> Adicionar Convidado/Grupo</button>
+                            <button class="btn btn-secondary" id="import-guests-btn" disabled title="Funcionalidade futura"><i class="fas fa-file-import"></i> Importar</button>
+                            <button class="btn btn-primary" id="open-guest-dialog-btn"><i class="fas fa-user-plus"></i> Adicionar Grupo</button>
                         </div>
                     </div>
-
                     <div class="filters-bar">
                         <div class="filter-group">
-                            <label for="filter-guest-name">Buscar por Nome:</label>
-                            <input type="text" id="filter-guest-name" placeholder="Nome do convidado...">
+                            <label for="filter-guest-name">Buscar por Nome/Contato:</label>
+                            <input type="text" id="filter-guest-name" placeholder="Nome, grupo, contato...">
                         </div>
                         <div class="filter-group">
                             <label for="filter-guest-status-std">Status (Save The Date):</label>
                             <select id="filter-guest-status-std">
                                 <option value="all">Todos</option>
+                                <option value="nao_definido">Não Definido</option>
                                 <option value="confirmado">Confirmado</option>
                                 <option value="pendente">Pendente</option>
                                 <option value="recusado">Recusado</option>
-                                <option value="nao_enviado">Não Enviado</option>
+                                <option value="misto">Misto</option> <!-- Para filtro de status agregado -->
                             </select>
                         </div>
                          <div class="filter-group">
-                            <label for="filter-guest-status-invite">Status (Convite):</label>
-                            <select id="filter-guest-status-invite">
-                                <option value="all">Todos</option>
-                                <option value="confirmado">Confirmado</option>
-                                <option value="pendente">Pendente</option>
-                                <option value="recusado">Recusado</option>
-                                <option value="nao_enviado">Não Enviado</option>
-                                <option value="enviado">Enviado</option>
-                            </select>
+                            <label for="filter-guest-invitation-sent">Convite Enviado:</label>
+                             <select id="filter-guest-invitation-sent">
+                                 <option value="all">Todos</option>
+                                 <option value="sim">Sim</option>
+                                 <option value="nao">Não</option>
+                             </select>
                         </div>
+                        <div class="filter-group">
+                           <label for="filter-guest-other-city">De outra cidade?</label>
+                            <select id="filter-guest-other-city">
+                                <option value="all">Todos</option>
+                                <option value="sim">Sim</option>
+                                <option value="nao">Não</option>
+                            </select>
+                       </div>
                     </div>
-
                     <table class="styled-table">
                         <thead>
                             <tr>
@@ -97,66 +174,32 @@
                                 <th>Grupo/Contato Principal</th>
                                 <th>Membros (Total)</th>
                                 <th>Cidade (UF)</th>
-                                <th>Status Save The Date</th>
-                                <th>Status Convite</th>
+                                <th>Outra Cidade?</th>
+                                <th>Save The Date (Status)</th>
+                                <th>Convite Enviado</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="guest-table-body">
-                            <tr>
-                                <td><input type="checkbox" name="selected_guest_row"></td>
-                                <td>Família Silva (João Silva)</td>
-                                <td>João S., Maria S., Pedro S. (3)</td>
-                                <td>São Paulo (SP)</td>
-                                <td><span class="status-confirmado"><i class="fas fa-check-circle status-dot" style="color: #27ae60;"></i>Confirmado</span></td>
-                                <td><span class="status-enviado"><i class="fas fa-paper-plane status-dot" style="color: #3498db;"></i>Enviado</span></td>
-                                <td class="actions-cell">
-                                    <button class="btn btn-secondary btn-sm" onclick="viewGuestDetails('guestId1')" title="Ver"><i class="fas fa-eye"></i></button>
-                                    <button class="btn btn-secondary btn-sm" onclick="editGuest('guestId1')" title="Editar"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteGuest('guestId1')" title="Excluir"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" name="selected_guest_row"></td>
-                                <td>Carlos Alberto</td>
-                                <td>Carlos A. (1)</td>
-                                <td>Rio de Janeiro (RJ)</td>
-                                <td><span class="status-pendente"><i class="fas fa-hourglass-half status-dot" style="color: #f39c12;"></i>Pendente</span></td>
-                                <td>Não Enviado</td>
-                                <td class="actions-cell">
-                                    <button class="btn btn-secondary btn-sm" title="Ver"><i class="fas fa-eye"></i></button>
-                                    <button class="btn btn-secondary btn-sm" title="Editar"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-danger btn-sm" title="Excluir"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
+                            <!-- Linhas populadas pelo JS -->
                         </tbody>
                     </table>
-                    <p id="no-guests-message" class="no-items-message" style="display:none;">Nenhum convidado cadastrado ainda.</p>
+                    <p id="no-guests-message" class="no-items-message hidden" style="text-align:center; padding: 20px;">Nenhum convidado cadastrado.</p>
                      <div class="table-actions-footer" style="margin-top: 20px;">
-                        <button class="btn btn-secondary" id="bulk-action-std-btn" disabled><i class="fas fa-envelope"></i> Ação em Lote (Save The Date)</button>
-                        <button class="btn btn-secondary" id="bulk-action-invite-btn" disabled><i class="fas fa-envelope-open-text"></i> Ação em Lote (Convite)</button>
+                        <button class="btn btn-secondary" id="bulk-action-std-btn" disabled><i class="fas fa-calendar-check"></i> Marcar STD Membros (Lote)</button>
+                        <button class="btn btn-secondary" id="bulk-action-invite-btn" disabled><i class="fas fa-envelope-open-text"></i> Marcar Convite Enviado (Lote)</button>
+                        <button class="btn btn-danger" id="bulk-delete-guest-btn" disabled><i class="fas fa-trash"></i> Excluir Selecionados</button>
                     </div>
                 </section>
 
                 <section class="page-section summary-stats">
                     <h2 style="margin-bottom: 15px;"><i class="fas fa-chart-bar" style="margin-right: 8px;"></i>Resumo Geral</h2>
-                    <div class="summary-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-                        <div class="summary-card-item">
-                            <h4>Grupos/Convites</h4>
-                            <span class="amount" id="total-guest-groups">0</span>
-                        </div>
-                        <div class="summary-card-item">
-                            <h4>Pessoas Convidadas</h4>
-                            <span class="amount" id="total-invited-people">0</span>
-                        </div>
-                        <div class="summary-card-item">
-                            <h4>Confirmados (STD)</h4>
-                            <span class="amount" id="total-confirmed-std" style="color: #27ae60;">0</span>
-                        </div>
-                        <div class="summary-card-item">
-                            <h4>Confirmados (Convite)</h4>
-                            <span class="amount" id="total-confirmed-invite" style="color: #27ae60;">0</span>
-                        </div>
+                    <div class="summary-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px;">
+                        <div class="summary-card-item"><h4>Grupos</h4><span class="amount" id="total-guest-groups">0</span></div>
+                        <div class="summary-card-item"><h4>Pessoas</h4><span class="amount" id="total-invited-people">0</span></div>
+                        <div class="summary-card-item"><h4>Outra Cidade</h4><span class="amount" id="total-other-city">0</span></div>
+                        <div class="summary-card-item"><h4>STD Pessoas Conf.</h4><span class="amount" id="total-confirmed-std-people" style="color: #27ae60;">0</span></div>
+                        <div class="summary-card-item"><h4>Convites Env. (Grupos)</h4><span class="amount" id="total-invitations-sent" style="color: #3498db;">0</span></div>
                     </div>
                 </section>
             </main>
@@ -164,183 +207,793 @@
     </div>
 
     <!-- Dialog para Adicionar/Editar Convidado/Grupo -->
-    <div id="guest-dialog" class="dialog-overlay">
-        <div class="dialog-content" style="max-width: 700px;">
-            <h3 id="guest-dialog-title">Adicionar Novo Convidado/Grupo</h3>
+    <div id="guest-dialog" class="dialog-overlay hidden">
+        <div class="dialog-content">
+            <h3 id="guest-dialog-title">Adicionar Novo Grupo de Convidados</h3>
             <form id="guest-form">
-                <input type="hidden" id="guest-group-id" name="guest-group-id">
+                <input type="hidden" id="guest-group-id-form" name="guest-group-id">
+
                 <div class="form-group">
-                    <label for="guest-group-name">Nome do Grupo/Família (Opcional, para sua organização):</label>
-                    <input type="text" id="guest-group-name" name="guest-group-name" placeholder="Ex: Família Silva, Amigos do Trabalho">
+                    <label for="guest-group-generated-id">Identificador do Grupo:</label>
+                    <input type="text" id="guest-group-generated-id" name="guest-group-generated-id" readonly
+                        style="background-color: #e9ecef; font-weight: bold; color: var(--primary-color);"
+                        placeholder="Será gerado automaticamente">
                 </div>
+
+                <div class="form-group">
+                    <label for="guest-group-name">Nome do Grupo/Família (Opcional):</label>
+                    <input type="text" id="guest-group-name" name="guest-group-name" placeholder="Ex: Família Silva">
+                </div>
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div class="form-group">
-                        <label for="guest-main-contact-name">Nome do Contato Principal (para o envelope/convite):</label>
+                        <label for="guest-main-contact-name">Contato Principal (para envelope/referência):</label>
                         <input type="text" id="guest-main-contact-name" name="guest-main-contact-name" required>
+                        <small>Se não preenchido, o nome do primeiro membro será usado.</small>
                     </div>
                     <div class="form-group">
-                        <label for="guest-contact-id">Identificador Único (Telefone com DDD ou Código):</label>
-                        <input type="text" id="guest-contact-id" name="guest-contact-id" required placeholder="(XX)XXXXX-XXXX ou seu código">
+                        <label for="guest-optional-contact-info">Contato Adicional (Telefone/Email - Opcional):</label>
+                        <input type="text" id="guest-optional-contact-info" name="guest-optional-contact-info" placeholder="(XX)XXXXX-XXXX ou email@exemplo.com">
                     </div>
                 </div>
-                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
                     <div class="form-group">
                         <label for="guest-city">Cidade de Residência:</label>
-                        <input type="text" id="guest-city" name="guest-city" required>
+                        <input type="text" id="guest-city" name="guest-city">
                     </div>
                     <div class="form-group">
                         <label for="guest-state">Estado (UF):</label>
-                        <input type="text" id="guest-state" name="guest-state" required maxlength="2" placeholder="Ex: SP">
+                        <input type="text" id="guest-state" name="guest-state" maxlength="2" placeholder="SP">
                     </div>
                 </div>
-                <p style="font-size:0.85em; color: var(--text-color-light); margin-top:-10px; margin-bottom:20px;"><em>A marcação "De outra cidade?" será automática comparando com a cidade da cerimônia (configurada no Perfil Público).</em></p>
 
                 <hr style="margin: 20px 0;">
-                <h4><i class="fas fa-users" style="margin-right: 8px;"></i>Membros do Grupo/Convite:</h4>
-                <div id="guest-members-container">
-                    <!-- Membros adicionados dinamicamente -->
+                 <div class="form-group"> <!-- Status padrão para novos membros -->
+                    <label for="default-new-member-std-status">Status Padrão (Save The Date) para Novos Membros:</label>
+                    <select id="default-new-member-std-status" name="default-new-member-std-status">
+                        <option value="nao_definido">Não Definido</option>
+                        <option value="pendente">Pendente</option>
+                    </select>
+                    <small>Este status será aplicado a novos membros adicionados a este grupo.</small>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" id="add-guest-member-btn" style="margin-bottom:15px;"><i class="fas fa-plus"></i> Adicionar Membro ao Grupo</button>
+
+                <h4><i class="fas fa-users" style="margin-right: 8px;"></i>Membros do Grupo:</h4>
+                <div id="guest-members-container">
+                    <!-- Membros adicionados dinamicamente aqui -->
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-guest-member-btn" style="margin-bottom:15px;"><i class="fas fa-plus"></i> Adicionar Membro</button>
+                <p id="guest-member-error" class="error-message" style="display: none; color: red; font-size: 0.8em; margin-top: -10px;">Adicione pelo menos um membro com nome.</p>
+
+                <hr style="margin: 20px 0;">
+                <!-- O status Save The Date geral do grupo foi removido daqui, pois agora é por membro -->
+                <div class="form-group" style="display: flex; align-items: center; padding-top: 5px;">
+                    <input type="checkbox" id="guest-invitation-sent-dialog" name="guest-invitation-sent" style="width:auto; margin-right:10px;">
+                    <label for="guest-invitation-sent-dialog" class="checkbox-label">Convite (do grupo) já foi enviado?</label>
+                </div>
 
                 <div class="dialog-actions">
                     <button type="button" class="btn btn-secondary" id="cancel-guest-dialog-btn">Cancelar</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Convidado/Grupo</button>
+                    <button type="submit" class="btn btn-primary" id="save-guest-btn"><i class="fas fa-save"></i> Salvar Grupo</button>
                 </div>
+                 <p id="guest-save-error" class="error-message" style="display: none; color: red; font-size: 0.9em; text-align: right; margin-top: 10px;"></p>
             </form>
         </div>
     </div>
 
     <!-- Template para Membro do Convidado -->
     <template id="guest-member-template">
-        <div class="dynamic-entry guest-member-entry">
+        <div class="dynamic-entry guest-member-entry" data-member-id=""> <!-- data-member-id será preenchido pelo JS -->
             <div class="dynamic-entry-header">
-                 <h5>Detalhes do Membro</h5>
-                 <button type="button" class="btn remove-btn remove-guest-member-btn"><i class="fas fa-times"></i> Remover</button>
+                <h5>Detalhes do Membro</h5>
+                <button type="button" class="btn remove-btn remove-guest-member-btn"><i class="fas fa-times"></i></button>
             </div>
             <div class="form-group">
-                <label>Nome Completo do Membro:</label>
-                <input type="text" name="member_name[]" required>
+                <label>Nome Completo:</label>
+                <input type="text" class="member_name" required>
             </div>
             <div class="form-group">
-                <input type="checkbox" name="member_is_child[]" id="member_is_child_dynamic_id_placeholder" style="width:auto; margin-right: 5px;">
-                <label for="member_is_child_dynamic_id_placeholder" class="checkbox-label">É criança?</label>
+                <label>Status Save The Date:</label>
+                <select class="member_save_the_date_status">
+                    <option value="nao_definido" selected>Não Definido</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="recusado">Recusado</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; margin-bottom: 10px;">
+                <input type="checkbox" class="member_is_child" style="width:auto; margin-right: 8px;">
+                <label class="checkbox-label" style="margin-bottom:0;">É criança?</label>
             </div>
             <div class="form-group">
-                 <label>Papel (Opcional - para organização interna):</label>
-                 <select name="member_role[]">
-                    <option value="">Nenhum</option>
-                    <option value="padrinho">Padrinho</option>
-                    <option value="madrinha">Madrinha</option>
-                    <option value="pajem">Pajem</option>
-                    <option value="daminha">Daminha</option>
-                    <option value="avo_noivo">Avô do Noivo</option>
-                    <option value="avo_noiva">Avó da Noiva</option>
-                    <!-- Adicionar mais papéis conforme necessário -->
+                 <label>Papel (Opcional):</label>
+                 <select class="member_role">
+                    <option value="">Convidado</option>
+                    <option value="Padrinho">Padrinho</option><option value="Madrinha">Madrinha</option>
+                    <option value="Pajem">Pajem</option><option value="Daminha">Daminha</option>
+                    <option value="Pai do Noivo">Pai do Noivo</option><option value="Mãe do Noivo">Mãe do Noivo</option>
+                    <option value="Pai da Noiva">Pai da Noiva</option><option value="Mãe da Noiva">Mãe da Noiva</option>
+                    <option value="Avô/Avó">Avô/Avó</option>
                  </select>
+            </div>
+            <div class="form-group">
+                <label>Responsabilidades (Opcional):</label>
+                <input type="text" class="member_responsibilities" placeholder="Ex: Levar alianças">
             </div>
         </div>
     </template>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+
     <script>
-        // Script da Sidebar e Header (copie do dashboard.html)
-        const mobileMenuToggleConv = document.getElementById('mobileMenuToggle'); // Renomeado
-        const sidebarConv = document.getElementById('noivosSidebar'); // Renomeado
-        const sidebarOverlayConv = document.getElementById('sidebarOverlay'); // Renomeado
-        function toggleSidebarConvFn() {
-            sidebarConv.classList.toggle('active');
-            sidebarOverlayConv.classList.toggle('active');
-            const icon = mobileMenuToggleConv.querySelector('i');
-            if (sidebarConv.classList.contains('active')) {
-                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
-            }
-        }
-        if (mobileMenuToggleConv && sidebarConv && sidebarOverlayConv) {
-            mobileMenuToggleConv.addEventListener('click', toggleSidebarConvFn);
-            sidebarOverlayConv.addEventListener('click', toggleSidebarConvFn);
-        }
-        const userNameElementConv = document.getElementById('userName'); // Renomeado
-        const userAvatarElementConv = document.getElementById('userAvatar'); // Renomeado
-        const currentUserConv = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
-        if (currentUserConv && userNameElementConv && userAvatarElementConv) {
-            userNameElementConv.textContent = `Olá, ${currentUserConv.name}!`;
-            userAvatarElementConv.textContent = currentUserConv.initials;
-        }
-        // Fim script Sidebar/Header
-
-        // Script específico da página Convidados
         document.addEventListener('DOMContentLoaded', () => {
-            const openBtn = document.getElementById('open-guest-dialog-btn');
-            const dialog = document.getElementById('guest-dialog');
-            const cancelBtn = document.getElementById('cancel-guest-dialog-btn');
+            // --- Elementos da UI ---
+            const loadingOverlay = document.getElementById('loadingOverlayConv');
+            const mobileMenuToggle = document.getElementById('mobileMenuToggleConvPage');
+            const sidebar = document.getElementById('noivosSidebarConv');
+            const sidebarOverlay = document.getElementById('sidebarOverlayConv');
+            const userNameElement = document.getElementById('userNameConvPage');
+            const userAvatarElement = document.getElementById('userAvatarConvPage');
+            const logoutBtnSidebar = document.getElementById('logout-btn-sidebar-conv');
+            const logoutBtnHeader = document.getElementById('logout-btn-header-conv');
 
-            if (openBtn) openBtn.addEventListener('click', () => dialog.classList.add('active'));
-            if (cancelBtn) cancelBtn.addEventListener('click', () => dialog.classList.remove('active'));
-            if (dialog) dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('active'); });
+            const guestTableBody = document.getElementById('guest-table-body');
+            const noGuestsMessage = document.getElementById('no-guests-message');
+            const totalGuestGroupsEl = document.getElementById('total-guest-groups');
+            const totalInvitedPeopleEl = document.getElementById('total-invited-people');
+            const totalOtherCityEl = document.getElementById('total-other-city');
+            const totalConfirmedStdPeopleEl = document.getElementById('total-confirmed-std-people'); // Alterado
+            const totalInvitationsSentEl = document.getElementById('total-invitations-sent');
 
-            const addMemberBtn = document.getElementById('add-guest-member-btn');
-            const membersContainer = document.getElementById('guest-members-container');
-            const memberTemplate = document.getElementById('guest-member-template');
-            let memberIdCounter = 0;
+            const filterGuestNameInput = document.getElementById('filter-guest-name');
+            const filterGuestStatusStdSelect = document.getElementById('filter-guest-status-std'); // Para filtro agregado
+            const filterGuestInvitationSentSelect = document.getElementById('filter-guest-invitation-sent');
+            const filterGuestOtherCitySelect = document.getElementById('filter-guest-other-city');
 
-            const addInitialMember = () => {
-                if (membersContainer.children.length === 0) {
-                    addMemberToForm();
+            // Elementos do Dialog de Convidado
+            const openGuestDialogBtn = document.getElementById('open-guest-dialog-btn');
+            const guestDialog = document.getElementById('guest-dialog');
+            const cancelGuestDialogBtn = document.getElementById('cancel-guest-dialog-btn');
+            const guestForm = document.getElementById('guest-form');
+            const guestDialogTitle = document.getElementById('guest-dialog-title');
+            const guestGroupIdFormInput = document.getElementById('guest-group-id-form');
+            const guestGroupGeneratedIdDisplay = document.getElementById('guest-group-generated-id');
+            const guestOptionalContactInfoInput = document.getElementById('guest-optional-contact-info');
+            const guestGroupNameInput = document.getElementById('guest-group-name');
+            const guestMainContactNameInput = document.getElementById('guest-main-contact-name');
+            const guestCityInput = document.getElementById('guest-city');
+            const guestStateInput = document.getElementById('guest-state');
+            // const guestSaveTheDateStatusSelect = document.getElementById('guest-save-the-date-status'); // Removido - agora por membro
+            const defaultNewMemberStdStatusSelect = document.getElementById('default-new-member-std-status'); // Adicionado
+            const guestInvitationSentDialogCheckbox = document.getElementById('guest-invitation-sent-dialog');
+            const guestMembersContainer = document.getElementById('guest-members-container');
+            const addGuestMemberBtn = document.getElementById('add-guest-member-btn');
+            const guestMemberTemplate = document.getElementById('guest-member-template');
+            const guestMemberError = document.getElementById('guest-member-error');
+            const guestSaveError = document.getElementById('guest-save-error');
+            const saveGuestBtn = document.getElementById('save-guest-btn');
+
+            // Elementos para Ações em Lote
+            const selectAllGuestsTableCheckbox = document.getElementById('select-all-guests-table');
+            const bulkStdBtn = document.getElementById('bulk-action-std-btn');
+            const bulkInviteBtn = document.getElementById('bulk-action-invite-btn');
+            const bulkDeleteBtn = document.getElementById('bulk-delete-guest-btn');
+
+            let currentWeddingId = null;
+            let ceremonyCity = "";
+            let allGuestData = {}; // Armazena todos os grupos de convidados
+            let tempMemberIdCounter = 0; // Para IDs temporários de novos membros no formulário
+
+            // --- Funções Utilitárias ---
+            const showLoading = (show) => {
+                if (loadingOverlay) loadingOverlay.style.display = show ? 'flex' : 'none';
+            };
+            const showDialogError = (message) => {
+                if (guestSaveError) {
+                    guestSaveError.textContent = message;
+                    guestSaveError.style.display = 'block';
                 }
             };
-            if (openBtn) openBtn.addEventListener('click', addInitialMember);
-
-            function addMemberToForm() {
-                const clone = memberTemplate.content.cloneNode(true);
-                const checkbox = clone.querySelector('input[type="checkbox"]');
-                const label = clone.querySelector('label[for="member_is_child_dynamic_id_placeholder"]');
-                const newId = `member_is_child_${memberIdCounter++}`;
-                if(checkbox && label) {
-                    checkbox.id = newId;
-                    label.setAttribute('for', newId);
+            const hideDialogError = () => {
+                if (guestSaveError) {
+                    guestSaveError.style.display = 'none';
+                    guestSaveError.textContent = '';
                 }
-                membersContainer.appendChild(clone);
+            };
+            const showMemberError = (show, message = "Adicione pelo menos um membro com nome.") => {
+                if (guestMemberError) {
+                    guestMemberError.textContent = message;
+                    guestMemberError.style.display = show ? 'block' : 'none';
+                }
+            };
+
+            // --- Lógica da Sidebar e Header ---
+            function toggleSidebarConvFnUnique() {
+                if (sidebar && sidebarOverlay && mobileMenuToggle) {
+                    sidebar.classList.toggle('active');
+                    sidebarOverlay.classList.toggle('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    if (icon) {
+                        icon.classList.toggle('fa-bars');
+                        icon.classList.toggle('fa-times');
+                    }
+                }
+            }
+            if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', toggleSidebarConvFnUnique);
+            if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebarConvFnUnique);
+
+            function handleLogoutConvFnUnique() {
+                showLoading(true);
+                auth.signOut().then(() => { window.location.href = '../auth/login-noivos.html'; })
+                    .catch(error => { console.error("Logout Error:", error); alert("Erro ao sair."); showLoading(false); });
+            }
+            if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogoutConvFnUnique(); });
+            if (logoutBtnHeader) logoutBtnHeader.addEventListener('click', (e) => { e.preventDefault(); handleLogoutConvFnUnique(); });
+
+            function populateHeaderConvFnUnique(coupleNames) {
+                if (userNameElement && userAvatarElement) {
+                    if (coupleNames && coupleNames.length > 0) {
+                        const name1 = coupleNames[0] || ""; const name2 = coupleNames[1] || "";
+                        userNameElement.textContent = `Olá, ${name1} & ${name2}!`;
+                        userAvatarElement.textContent = `${name1.charAt(0)}${name2.charAt(0)}`.toUpperCase();
+                    } else {
+                        userNameElement.textContent = 'Olá, Noivos!'; userAvatarElement.textContent = 'N';
+                    }
+                }
             }
 
-            if (addMemberBtn && membersContainer && memberTemplate) {
-                addMemberBtn.addEventListener('click', addMemberToForm);
-                membersContainer.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('remove-guest-member-btn') || e.target.closest('.remove-guest-member-btn')) {
-                        (e.target.closest('.remove-guest-member-btn') || e.target).closest('.guest-member-entry').remove();
+            function generateUniqueNumericGuestId(length = 6) {
+                let attempts = 0;
+                const maxAttempts = 100;
+                while (attempts < maxAttempts) {
+                    let id = '';
+                    for (let i = 0; i < length; i++) {
+                        id += Math.floor(Math.random() * 10);
+                    }
+                    if (!allGuestData || !allGuestData[id]) {
+                        return id;
+                    }
+                    attempts++;
+                }
+                console.warn("Não foi possível gerar um ID numérico único após várias tentativas.");
+                return `ERR${Date.now().toString().slice(-7)}`;
+            }
+
+            // --- Lógica do Firebase ---
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    showLoading(true);
+                    try {
+                        const userSnapshot = await db.ref(`users/${user.uid}`).once('value');
+                        if (!userSnapshot.exists() || !userSnapshot.val().managingWeddingId) throw new Error("Usuário sem casamento associado.");
+                        currentWeddingId = userSnapshot.val().managingWeddingId;
+
+                        const weddingSnapshot = await db.ref(`weddings/${currentWeddingId}`).once('value');
+                        if (!weddingSnapshot.exists()) throw new Error("Dados do casamento não encontrados.");
+                        const weddingData = weddingSnapshot.val();
+                        populateHeaderConvFnUnique(weddingData.coupleNames);
+                        ceremonyCity = weddingData.travelAccommodation?.ceremonyCity?.toLowerCase() || "";
+
+                        loadGuestData();
+                    } catch (error) {
+                        console.error("Erro inicial:", error);
+                        alert(`Erro ao carregar dados: ${error.message}. Redirecionando para login.`);
+                        handleLogoutConvFnUnique();
+                    }
+                } else {
+                    window.location.href = '../auth/login-noivos.html';
+                }
+            });
+
+            function loadGuestData() {
+                if (!currentWeddingId) return;
+                const guestsRef = db.ref(`weddings/${currentWeddingId}/guestManagement`);
+                guestsRef.on('value', (snapshot) => {
+                    allGuestData = snapshot.val() || {};
+                    renderGuestTable();
+                    updateGuestSummary();
+                    showLoading(false);
+                }, (error) => {
+                    console.error("Erro ao carregar convidados:", error);
+                    alert("Erro ao buscar lista de convidados.");
+                    showLoading(false);
+                });
+            }
+            function getAggregatedStdStatus(members) {
+                if (!members || Object.keys(members).length === 0) return { text: renderStatusHTML('nao_definido'), filterValue: 'nao_definido' };
+
+                const memberArray = Object.values(members);
+                let confirmedCount = 0, pendingCount = 0, declinedCount = 0, notDefinedCount = 0;
+
+                memberArray.forEach(m => {
+                    switch (m.saveTheDateStatus) {
+                        case 'confirmado': confirmedCount++; break;
+                        case 'pendente': pendingCount++; break;
+                        case 'recusado': declinedCount++; break;
+                        default: notDefinedCount++; break;
+                    }
+                });
+
+                const totalResponded = confirmedCount + pendingCount + declinedCount;
+                const totalMembers = memberArray.length;
+
+                if (totalMembers === 0) return { text: renderStatusHTML('nao_definido'), filterValue: 'nao_definido' };
+
+                // Para filtro
+                let filterValue = 'nao_definido';
+                if (confirmedCount === totalMembers) filterValue = 'confirmado';
+                else if (declinedCount === totalMembers) filterValue = 'recusado';
+                else if (pendingCount > 0 && confirmedCount === 0 && declinedCount === 0 && notDefinedCount === 0) filterValue = 'pendente'; // Todos pendentes
+                else if (totalResponded === 0 && notDefinedCount === totalMembers) filterValue = 'nao_definido';
+                else filterValue = 'misto';
+
+
+                // Para exibição
+                let statusTextParts = [];
+                if (confirmedCount > 0) statusTextParts.push(`<span class="status-confirmado" title="${confirmedCount} Confirmado(s)"><i class="fas fa-check-circle status-dot"></i> ${confirmedCount}</span>`);
+                if (pendingCount > 0) statusTextParts.push(`<span class="status-pendente" title="${pendingCount} Pendente(s)"><i class="fas fa-hourglass-half status-dot"></i> ${pendingCount}</span>`);
+                if (declinedCount > 0) statusTextParts.push(`<span class="status-recusado" title="${declinedCount} Recusado(s)"><i class="fas fa-times-circle status-dot"></i> ${declinedCount}</span>`);
+                if (notDefinedCount > 0 && totalMembers > totalResponded) {
+                     statusTextParts.push(`<span class="status-nao-definido" title="${notDefinedCount} Não Definido(s)"><i class="fas fa-question-circle status-dot"></i> ${notDefinedCount}</span>`);
+                }
+
+
+                if (statusTextParts.length === 0) return { text: renderStatusHTML('nao_definido'), filterValue: 'nao_definido' };
+                if (statusTextParts.length === 1 && totalMembers === 1) { // Se só um membro, mostra o status dele
+                    if (confirmedCount === 1) return { text: renderStatusHTML('confirmado'), filterValue: 'confirmado' };
+                    if (pendingCount === 1) return { text: renderStatusHTML('pendente'), filterValue: 'pendente' };
+                    if (declinedCount === 1) return { text: renderStatusHTML('recusado'), filterValue: 'recusado' };
+                }
+
+                return { text: `<div class="aggregated-status">${statusTextParts.join(' ')}</div>`, filterValue };
+            }
+
+
+            function renderGuestTable() {
+                if (!guestTableBody || !noGuestsMessage) return;
+                guestTableBody.innerHTML = '';
+                const guestArray = Object.entries(allGuestData).map(([id, data]) => ({ id, ...data }));
+
+                const nameFilter = filterGuestNameInput.value.toLowerCase();
+                const stdStatusFilter = filterGuestStatusStdSelect.value;
+                const inviteSentFilter = filterGuestInvitationSentSelect.value;
+                const otherCityFilter = filterGuestOtherCitySelect.value;
+
+                const filteredGuests = guestArray.filter(guest => {
+                    const nameMatch = nameFilter === "" ||
+                                    guest.id.toLowerCase().includes(nameFilter) ||
+                                    (guest.mainContactName || "").toLowerCase().includes(nameFilter) ||
+                                    (guest.groupName || "").toLowerCase().includes(nameFilter) ||
+                                    (guest.members && Object.values(guest.members).some(m => m.name?.toLowerCase().includes(nameFilter)));
+
+                    const aggregatedStatus = getAggregatedStdStatus(guest.members);
+                    const stdMatch = stdStatusFilter === 'all' || aggregatedStatus.filterValue === stdStatusFilter;
+
+                    const inviteSentVal = guest.invitationSent ? 'sim' : 'nao';
+                    const inviteMatch = inviteSentFilter === 'all' || inviteSentVal === inviteSentFilter;
+                    const isFromOtherCity = ceremonyCity && guest.city && guest.city.toLowerCase() !== ceremonyCity;
+                    const otherCityVal = isFromOtherCity ? 'sim' : 'nao';
+                    const otherCityMatch = otherCityFilter === 'all' || otherCityVal === otherCityFilter;
+                    return nameMatch && stdMatch && inviteMatch && otherCityMatch;
+                });
+
+                if (filteredGuests.length === 0) {
+                    noGuestsMessage.textContent = nameFilter || stdStatusFilter !== 'all' || inviteSentFilter !== 'all' || otherCityFilter !== 'all'
+                        ? "Nenhum convidado encontrado com os filtros atuais."
+                        : "Nenhum convidado cadastrado ainda.";
+                    noGuestsMessage.classList.remove('hidden');
+                } else {
+                    noGuestsMessage.classList.add('hidden');
+                    filteredGuests.forEach(guest => {
+                        const members = guest.members ? Object.values(guest.members) : [];
+                        const memberNames = members.map(m => m.name.split(' ')[0]).slice(0, 3).join(', ') + (members.length > 3 ? '...' : '');
+                        const totalInvited = members.length;
+                        const isFromOtherCity = ceremonyCity && guest.city && guest.city.toLowerCase() !== ceremonyCity;
+                        const aggregatedStatusDisplay = getAggregatedStdStatus(guest.members).text;
+
+                        const row = guestTableBody.insertRow();
+                        row.dataset.guestId = guest.id;
+                        row.innerHTML = `
+                            <td><input type="checkbox" name="selected_guest_row" value="${guest.id}"></td>
+                            <td>${guest.mainContactName || guest.id}${guest.groupName ? `<br><small style="color: #777;"><i>Grupo: ${guest.groupName}</i></small>` : ''}</td>
+                            <td>${memberNames || '-'} (${totalInvited})</td>
+                            <td>${guest.city || '-'} (${guest.state || '-'})</td>
+                            <td>${isFromOtherCity ? '<span style="color:orange;"><i class="fas fa-city"></i> Sim</span>' : 'Não'}</td>
+                            <td>${aggregatedStatusDisplay}</td>
+                            <td>${guest.invitationSent ? '<span class="status-enviado"><i class="fas fa-check-circle status-dot"></i> Sim</span>' : 'Não'}</td>
+                            <td class="actions-cell">
+                                <button class="btn btn-secondary btn-sm btn-edit-guest" data-id="${guest.id}" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger btn-sm btn-delete-guest" data-id="${guest.id}" title="Excluir"><i class="fas fa-trash"></i></button>
+                            </td>
+                        `;
+                    });
+                }
+                attachGuestTableActionListeners();
+                toggleBulkActionButtons();
+            }
+
+            function attachGuestTableActionListeners() {
+                document.querySelectorAll('.btn-edit-guest').forEach(btn => btn.onclick = () => handleEditGuest(btn.dataset.id));
+                document.querySelectorAll('.btn-delete-guest').forEach(btn => btn.onclick = () => handleDeleteGuest(btn.dataset.id));
+                document.querySelectorAll('#guest-table-body input[name="selected_guest_row"]').forEach(cb => {
+                    cb.removeEventListener('change', toggleBulkActionButtons); // Evitar múltiplos listeners
+                    cb.addEventListener('change', toggleBulkActionButtons);
+                });
+            }
+
+            function renderStatusHTML(statusKey) { // Renomeado de renderStatus para evitar conflito com lógica de status
+                statusKey = statusKey || 'nao_definido';
+                switch (statusKey) {
+                    case 'confirmado': return '<span class="status-confirmado"><i class="fas fa-check-circle status-dot"></i> Confirmado</span>';
+                    case 'pendente': return '<span class="status-pendente"><i class="fas fa-hourglass-half status-dot"></i> Pendente</span>';
+                    case 'recusado': return '<span class="status-recusado"><i class="fas fa-times-circle status-dot"></i> Recusado</span>';
+                    default: return '<span class="status-nao-definido"><i class="fas fa-question-circle status-dot"></i> Não Definido</span>';
+                }
+            }
+
+            function updateGuestSummary() {
+                if (!totalGuestGroupsEl || !totalInvitedPeopleEl || !totalOtherCityEl || !totalConfirmedStdPeopleEl || !totalInvitationsSentEl) return;
+                const guestArray = Object.values(allGuestData);
+                let totalPeople = 0;
+                let stdConfirmedPeople = 0;
+                let invitesSentToGroups = 0;
+                let otherCityCount = 0;
+
+                guestArray.forEach(g => {
+                    const membersCount = g.members ? Object.keys(g.members).length : 0;
+                    totalPeople += membersCount;
+                    if (g.members) {
+                        Object.values(g.members).forEach(member => {
+                            if (member.saveTheDateStatus === 'confirmado') {
+                                stdConfirmedPeople++;
+                            }
+                        });
+                    }
+                    if (g.invitationSent) invitesSentToGroups++;
+                    if (ceremonyCity && g.city && g.city.toLowerCase() !== ceremonyCity) otherCityCount++;
+                });
+                totalGuestGroupsEl.textContent = guestArray.length;
+                totalInvitedPeopleEl.textContent = totalPeople;
+                totalOtherCityEl.textContent = otherCityCount;
+                totalConfirmedStdPeopleEl.textContent = stdConfirmedPeople;
+                totalInvitationsSentEl.textContent = invitesSentToGroups;
+            }
+
+            if (filterGuestNameInput) filterGuestNameInput.addEventListener('input', renderGuestTable);
+            if (filterGuestStatusStdSelect) filterGuestStatusStdSelect.addEventListener('change', renderGuestTable);
+            if (filterGuestInvitationSentSelect) filterGuestInvitationSentSelect.addEventListener('change', renderGuestTable);
+            if (filterGuestOtherCitySelect) filterGuestOtherCitySelect.addEventListener('change', renderGuestTable);
+
+            // --- Lógica do Dialog de Convidado ---
+            function openGuestDialog(guestDataToEdit = null) {
+                if (!guestForm || !guestMembersContainer || !saveGuestBtn || !guestDialogTitle || !guestDialog ||
+                    !guestGroupIdFormInput || !guestGroupGeneratedIdDisplay || !guestOptionalContactInfoInput ||
+                    !defaultNewMemberStdStatusSelect) {
+                    console.error("Erro: Elementos do dialog não encontrados para abrir.");
+                    return;
+                }
+
+                guestForm.reset();
+                guestMembersContainer.innerHTML = '';
+                tempMemberIdCounter = 0; // Resetar contador de ID temporário
+                hideDialogError();
+                showMemberError(false);
+                saveGuestBtn.disabled = false;
+                saveGuestBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Grupo';
+
+                const defaultStdForNewMembers = defaultNewMemberStdStatusSelect.value;
+
+                if (guestDataToEdit) { // Modo Edição
+                    guestDialogTitle.textContent = 'Editar Grupo de Convidados';
+                    guestGroupIdFormInput.value = guestDataToEdit.id;
+                    guestGroupGeneratedIdDisplay.value = guestDataToEdit.id;
+                    guestGroupNameInput.value = guestDataToEdit.groupName || '';
+                    guestMainContactNameInput.value = guestDataToEdit.mainContactName || '';
+                    guestOptionalContactInfoInput.value = guestDataToEdit.optionalContactInfo || '';
+                    guestCityInput.value = guestDataToEdit.city || '';
+                    guestStateInput.value = guestDataToEdit.state || '';
+                    guestInvitationSentDialogCheckbox.checked = guestDataToEdit.invitationSent || false;
+                    // defaultNewMemberStdStatusSelect.value permanece como está (o padrão global)
+
+                    if (guestDataToEdit.members) {
+                        Object.entries(guestDataToEdit.members).forEach(([memberId, memberData]) => {
+                            addMemberToForm({ ...memberData, id: memberId }); // Passa o ID do membro
+                        });
+                    }
+                    if (guestMembersContainer.children.length === 0) {
+                        addMemberToForm({}, defaultStdForNewMembers);
+                    }
+                } else { // Modo Adição
+                    guestDialogTitle.textContent = 'Adicionar Novo Grupo de Convidados';
+                    const newGroupId = generateUniqueNumericGuestId();
+                    guestGroupIdFormInput.value = newGroupId;
+                    guestGroupGeneratedIdDisplay.value = newGroupId;
+                    addMemberToForm({}, defaultStdForNewMembers); // Adiciona um membro em branco com status padrão
+                }
+                guestDialog.classList.remove('hidden');
+            }
+
+            if (openGuestDialogBtn) {
+                openGuestDialogBtn.addEventListener('click', () => openGuestDialog());
+            }
+
+            if (cancelGuestDialogBtn && guestDialog) {
+                cancelGuestDialogBtn.addEventListener('click', () => guestDialog.classList.add('hidden'));
+            }
+            if (guestDialog) {
+                guestDialog.addEventListener('click', (e) => {
+                    if (e.target === guestDialog) guestDialog.classList.add('hidden');
+                });
+            }
+
+            if (guestForm) {
+                guestForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    hideDialogError();
+                    showMemberError(false);
+                    saveGuestBtn.disabled = true;
+                    saveGuestBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+
+                    const guestIdForDB = guestGroupIdFormInput.value.trim();
+                    if (!guestIdForDB) {
+                        showDialogError("Erro: Identificador do Grupo não foi gerado.");
+                        saveGuestBtn.disabled = false; saveGuestBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Grupo'; return;
+                    }
+
+                    const membersData = {};
+                    let totalInvitedCount = 0;
+                    let hasAtLeastOneValidMember = false;
+                    let firstMemberName = '';
+
+                    document.querySelectorAll('#guest-members-container .guest-member-entry').forEach((entry, index) => {
+                        const memberNameInput = entry.querySelector('.member_name');
+                        const memberName = memberNameInput ? memberNameInput.value.trim() : "";
+
+                        if (memberName) {
+                            if (index === 0) { firstMemberName = memberName; }
+                            hasAtLeastOneValidMember = true;
+
+                            let memberId = entry.dataset.memberId;
+                            if (!memberId || memberId.startsWith('new_')) { // Se for novo membro
+                                memberId = db.ref().push().key;
+                            }
+
+                            membersData[memberId] = {
+                                name: memberName,
+                                saveTheDateStatus: entry.querySelector('.member_save_the_date_status').value,
+                                isChild: entry.querySelector('.member_is_child').checked,
+                                role: entry.querySelector('.member_role').value || "Convidado",
+                                responsibilities: entry.querySelector('.member_responsibilities').value.trim() || ""
+                            };
+                            totalInvitedCount++;
+                        }
+                    });
+
+                    if (!hasAtLeastOneValidMember) {
+                        showMemberError(true); showDialogError("Adicione pelo menos um membro com nome.");
+                        saveGuestBtn.disabled = false; saveGuestBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Grupo'; return;
+                    }
+
+                    let mainContactFinalName = guestMainContactNameInput.value.trim();
+                    if (!mainContactFinalName && firstMemberName) {
+                        mainContactFinalName = firstMemberName;
+                    }
+                    if (!mainContactFinalName) {
+                         showDialogError("O Contato Principal é obrigatório (ou adicione um membro).");
+                         guestMainContactNameInput.focus();
+                         saveGuestBtn.disabled = false; saveGuestBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Grupo'; return;
+                    }
+
+                    const guestDataToSave = {
+                        mainContactName: mainContactFinalName,
+                        groupName: guestGroupNameInput.value.trim(),
+                        optionalContactInfo: guestOptionalContactInfoInput.value.trim(),
+                        city: guestCityInput.value.trim(),
+                        state: guestStateInput.value.trim().toUpperCase(),
+                        totalInvited: totalInvitedCount,
+                        members: membersData,
+                        invitationSent: guestInvitationSentDialogCheckbox.checked,
+                        lastUpdated: firebase.database.ServerValue.TIMESTAMP
+                    };
+
+                    const isEditing = !!allGuestData[guestIdForDB];
+                    if (!isEditing) {
+                        guestDataToSave.createdAt = firebase.database.ServerValue.TIMESTAMP;
+                    }
+
+                    try {
+                        await db.ref(`weddings/${currentWeddingId}/guestManagement/${guestIdForDB}`).set(guestDataToSave);
+                        if(guestDialog) guestDialog.classList.add('hidden');
+                    } catch (error) {
+                        console.error("Erro ao salvar convidado:", error);
+                        showDialogError(`Erro ao salvar: ${error.message}`);
+                    } finally {
+                        saveGuestBtn.disabled = false;
+                        saveGuestBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Grupo';
                     }
                 });
             }
 
-            // Lógica para select all e botões de ação em lote
-            const selectAllTableCheckbox = document.getElementById('select-all-guests-table');
-            const rowCheckboxes = document.querySelectorAll('#guest-table-body input[name="selected_guest_row"]');
-            const bulkStdBtn = document.getElementById('bulk-action-std-btn');
-            const bulkInviteBtn = document.getElementById('bulk-action-invite-btn');
-
-            function toggleBulkButtons() {
-                let anyChecked = false;
-                rowCheckboxes.forEach(cb => { if(cb.checked) anyChecked = true; });
-                if (bulkStdBtn) bulkStdBtn.disabled = !anyChecked;
-                if (bulkInviteBtn) bulkInviteBtn.disabled = !anyChecked;
+            function handleEditGuest(guestId) {
+                const guestToEdit = allGuestData[guestId];
+                if (guestToEdit) {
+                    openGuestDialog({ id: guestId, ...guestToEdit });
+                } else {
+                    alert("Erro: Convidado não encontrado para edição.");
+                }
             }
 
-            if (selectAllTableCheckbox) {
-                selectAllTableCheckbox.addEventListener('change', function() {
-                    rowCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
-                    toggleBulkButtons();
+            async function handleDeleteGuest(guestId) {
+                const guestName = allGuestData[guestId]?.mainContactName || allGuestData[guestId]?.groupName || guestId;
+                if (confirm(`Tem certeza que deseja excluir o grupo "${guestName}" e todos os seus membros?`)) {
+                    showLoading(true);
+                    try {
+                        await db.ref(`weddings/${currentWeddingId}/guestManagement/${guestId}`).remove();
+                    } catch (error) {
+                        console.error("Erro ao excluir convidado:", error);
+                        alert(`Erro ao excluir convidado: ${error.message}`);
+                    } finally {
+                        showLoading(false);
+                    }
+                }
+            }
+
+            if (addGuestMemberBtn) {
+                addGuestMemberBtn.addEventListener('click', () => {
+                    const defaultStd = defaultNewMemberStdStatusSelect ? defaultNewMemberStdStatusSelect.value : 'nao_definido';
+                    addMemberToForm({}, defaultStd);
+                    showMemberError(false);
                 });
             }
-            rowCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    let allChecked = true;
-                    rowCheckboxes.forEach(cb => { if(!cb.checked) allChecked = false; });
-                    if (selectAllTableCheckbox) selectAllTableCheckbox.checked = allChecked;
-                    toggleBulkButtons();
+
+            if (guestMembersContainer) {
+                guestMembersContainer.addEventListener('click', (e) => {
+                    const removeButton = e.target.closest('.remove-guest-member-btn');
+                    if (removeButton) {
+                        if (guestMembersContainer.querySelectorAll('.guest-member-entry').length > 1) {
+                            removeButton.closest('.guest-member-entry').remove();
+                        } else {
+                            showMemberError(true, "É necessário pelo menos um membro no grupo.");
+                        }
+                    }
                 });
-            });
-            toggleBulkButtons(); // Initial state
-        });
+            }
+
+            function addMemberToForm(memberData = {}, defaultStdStatus = 'nao_definido') {
+                if (!guestMemberTemplate || !guestMembersContainer) return;
+                showMemberError(false);
+                const clone = guestMemberTemplate.content.cloneNode(true);
+                const memberEntryDiv = clone.querySelector('.guest-member-entry');
+
+                const memberId = memberData.id || `new_${tempMemberIdCounter++}`;
+                memberEntryDiv.dataset.memberId = memberId;
+
+                clone.querySelector('.member_name').value = memberData.name || '';
+                clone.querySelector('.member_save_the_date_status').value = memberData.saveTheDateStatus || defaultStdStatus;
+                clone.querySelector('.member_is_child').checked = memberData.isChild || false;
+                clone.querySelector('.member_role').value = memberData.role || '';
+                clone.querySelector('.member_responsibilities').value = memberData.responsibilities || '';
+
+                guestMembersContainer.appendChild(clone);
+            }
+
+            // --- Ações em Lote ---
+            if(selectAllGuestsTableCheckbox) {
+                selectAllGuestsTableCheckbox.addEventListener('change', function() {
+                    document.querySelectorAll('#guest-table-body input[name="selected_guest_row"]').forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    toggleBulkActionButtons();
+                });
+            }
+
+            function getSelectedGuestIds() {
+                return Array.from(document.querySelectorAll('#guest-table-body input[name="selected_guest_row"]:checked')).map(cb => cb.value);
+            }
+
+            function toggleBulkActionButtons() {
+                const selectedIds = getSelectedGuestIds();
+                const hasSelection = selectedIds.length > 0;
+                if (bulkStdBtn) bulkStdBtn.disabled = !hasSelection;
+                if (bulkInviteBtn) bulkInviteBtn.disabled = !hasSelection;
+                if (bulkDeleteBtn) bulkDeleteBtn.disabled = !hasSelection;
+
+                const allRowCheckboxes = document.querySelectorAll('#guest-table-body input[name="selected_guest_row"]');
+                if (selectAllGuestsTableCheckbox) {
+                    if (allRowCheckboxes.length === 0) {
+                        selectAllGuestsTableCheckbox.checked = false;
+                        selectAllGuestsTableCheckbox.disabled = true;
+                    } else {
+                        selectAllGuestsTableCheckbox.disabled = false;
+                        selectAllGuestsTableCheckbox.checked = hasSelection && selectedIds.length === allRowCheckboxes.length;
+                    }
+                }
+            }
+
+            async function performBulkUpdate(updateType, promptMessage, valueGetter) {
+                const selectedGroupIds = getSelectedGuestIds();
+                if (selectedGroupIds.length === 0) return;
+
+                const newValue = valueGetter(); // Para STD, este será o status; para convite, será true/false
+                 if (newValue === null || (typeof newValue === 'undefined' && updateType !== 'invitationSent' && typeof newValue !== 'boolean') ) {
+                    return; // Usuário cancelou o prompt ou valor inválido
+                }
+
+                if (!confirm(`${promptMessage} para ${selectedGroupIds.length} grupo(s) selecionados?`)) return;
+
+                showLoading(true);
+                const updates = {};
+                selectedGroupIds.forEach(groupId => {
+                    const group = allGuestData[groupId];
+                    if (updateType === 'saveTheDateStatusForAllMembers') {
+                        if (group && group.members) {
+                            Object.keys(group.members).forEach(memberId => {
+                                updates[`weddings/${currentWeddingId}/guestManagement/${groupId}/members/${memberId}/saveTheDateStatus`] = newValue;
+                            });
+                            updates[`weddings/${currentWeddingId}/guestManagement/${groupId}/lastUpdated`] = firebase.database.ServerValue.TIMESTAMP;
+                        }
+                    } else if (updateType === 'invitationSent') {
+                        updates[`weddings/${currentWeddingId}/guestManagement/${groupId}/invitationSent`] = newValue;
+                        updates[`weddings/${currentWeddingId}/guestManagement/${groupId}/lastUpdated`] = firebase.database.ServerValue.TIMESTAMP;
+                    }
+                });
+
+                try {
+                    await db.ref().update(updates);
+                } catch (error) { console.error("Erro na ação em lote:", error); alert("Erro ao atualizar em lote."); }
+                finally {
+                    showLoading(false);
+                    if (selectAllGuestsTableCheckbox) selectAllGuestsTableCheckbox.checked = false;
+                    document.querySelectorAll('#guest-table-body input[name="selected_guest_row"]:checked').forEach(cb => cb.checked = false);
+                    toggleBulkActionButtons();
+                }
+            }
+
+            if (bulkStdBtn) {
+                bulkStdBtn.addEventListener('click', () => {
+                    performBulkUpdate('saveTheDateStatusForAllMembers', 'Definir o status do Save The Date para TODOS OS MEMBROS dos grupos selecionados como', () => {
+                        const status = prompt("Status para TODOS os membros (confirmado, pendente, recusado, nao_definido):")?.trim().toLowerCase();
+                        if (status && ['confirmado', 'pendente', 'recusado', 'nao_definido'].includes(status)) {
+                            return status;
+                        } else if (status !== null && status !== '') { //  status !== '' para permitir cancelar o prompt
+                            alert("Status inválido.");
+                        }
+                        return null;
+                    });
+                });
+            }
+            if (bulkInviteBtn) { // Esta ação em lote continua a nível de grupo
+                bulkInviteBtn.addEventListener('click', () => {
+                    performBulkUpdate('invitationSent', 'Marcar convites (do grupo) como ENVIADOS (OK) ou NÃO ENVIADOS (Cancelar)', () => {
+                        return confirm("Marcar convites (dos grupos selecionados) como ENVIADOS?");
+                    });
+                });
+            }
+            if (bulkDeleteBtn) {
+                bulkDeleteBtn.addEventListener('click', async () => {
+                    const selectedIds = getSelectedGuestIds();
+                    if (selectedIds.length === 0) return;
+                    if (!confirm(`Tem certeza que deseja excluir ${selectedIds.length} grupo(s) selecionados?`)) return;
+
+                    showLoading(true);
+                    const updates = {};
+                    selectedIds.forEach(id => { updates[`weddings/${currentWeddingId}/guestManagement/${id}`] = null; });
+                    try {
+                        await db.ref().update(updates);
+                    } catch (error) { console.error("Erro ao excluir em lote:", error); alert("Erro ao excluir em lote."); }
+                    finally {
+                        showLoading(false);
+                        if (selectAllGuestsTableCheckbox) selectAllGuestsTableCheckbox.checked = false;
+                        toggleBulkActionButtons(); // Reavalia o estado dos botões
+                    }
+                });
+            }
+
+        }); // Fim do DOMContentLoaded
     </script>
 </body>
 </html>

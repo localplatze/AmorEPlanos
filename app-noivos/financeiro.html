@@ -8,23 +8,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
     <style>
-        /* Estilos específicos para esta página podem ir aqui ou no CSS principal */
-        .pizza-chart-container {
-            min-height: 300px; /* Garante espaço para o gráfico */
+        .pizza-chart-container { min-height: 300px; }
+        .payment-calendar { min-height: 200px; }
+        .progress-bar-container { background-color: #e0e0e0; border-radius: 4px; height: 10px; margin-bottom: 3px; }
+        .progress-bar-fill { background-color: #27ae60; height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+        .progress-bar-text { font-size: 0.8em; color: #555; }
+        .dynamic-entry { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; background-color: #f9f9f9; }
+        .dynamic-entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .dynamic-entry-header h5 { margin: 0; font-size: 1.1em; }
+        .remove-btn { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 1.1em; }
+        .remove-btn:hover { color: #e74c3c; }
+        .upcoming-payments-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            align-items: flex-start; /* Alinha os itens ao topo */
         }
-        .payment-calendar {
-             min-height: 200px;
+
+        .upcoming-list-column, .payment-outlook-chart-column {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: 250px; /* Garante uma altura mínima */
         }
+        .upcoming-list-column h3, .payment-outlook-chart-column h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        #upcoming-payments-list {
+            list-style-type: none;
+            padding-left: 0;
+            max-height: 300px; /* Limita a altura e permite scroll se necessário */
+            overflow-y: auto; /* Adiciona scroll se a lista for muito grande */
+        }
+        #upcoming-payments-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            font-size: 0.9em;
+        }
+        #upcoming-payments-list li:last-child {
+            border-bottom: none;
+        }
+        
     </style>
 </head>
 <body>
+    <div class="loading-overlay" id="loadingOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; font-size: 1.2rem; color: #555; text-align: center; padding: 20px; box-sizing: border-box; display: none;">
+        Carregando...
+    </div>
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="noivos-app">
-        <!-- Sidebar (Copie do dashboard.html e ajuste o link ativo) -->
+        <!-- Sidebar -->
         <aside class="noivos-sidebar" id="noivosSidebar">
-            <div class="logo">
-                <a href="dashboard.html" class="logo-text">NuptialLink</a>
-            </div>
+            <div class="logo"><a href="dashboard.html" class="logo-text">NuptialLink</a></div>
             <nav>
                 <ul>
                     <li><a href="dashboard.html"><span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
@@ -47,17 +89,16 @@
         </aside>
 
         <div class="noivos-content-wrapper">
-            <!-- Header (Copie do dashboard.html) -->
+            <!-- Header -->
             <header class="noivos-header">
                 <div class="header-left">
-                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menu">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    <button class="mobile-menu-toggle" id="mobileMenuToggleFin" aria-label="Abrir menu"><i class="fas fa-bars"></i></button>
                     <h1>Gerenciamento Financeiro</h1>
                 </div>
                 <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">N</div>
-                    <span id="userName">Olá, Noiva(o)!</span>
+                    <div class="user-avatar" id="userAvatarFin">N</div>
+                    <span id="userNameFin">Carregando...</span>
+                    <a href="#" id="logout-btn-header" class="logout-link" title="Sair"><i class="fas fa-sign-out-alt"></i></a>
                 </div>
             </header>
 
@@ -80,8 +121,7 @@
                 <section class="page-section pizza-chart-container">
                     <h2><i class="fas fa-chart-pie" style="margin-right: 8px;"></i>Custos por Categoria</h2>
                     <div class="chart-placeholder">
-                         <canvas id="costsChart" style="max-height: 300px;"></canvas> <!-- Chart.js será renderizado aqui -->
-                        <!-- <p>Gráfico de Pizza aparecerá aqui.</p> -->
+                         <canvas id="costsChart" style="max-height: 300px;"></canvas>
                     </div>
                 </section>
 
@@ -92,26 +132,24 @@
                             <button class="btn btn-primary" id="open-expense-dialog-btn"><i class="fas fa-plus"></i> Adicionar Despesa</button>
                         </div>
                     </div>
-
                     <div class="filters-bar">
                         <div class="filter-group">
                             <label for="filter-category">Categoria:</label>
                             <select id="filter-category" name="filter-category">
                                 <option value="all">Todas</option>
-                                <!-- JS popula -->
+                                <!-- JS popula categorias do Firebase + padrão -->
                             </select>
                         </div>
                          <div class="filter-group">
                             <label for="filter-payment-status">Status Pag.:</label>
                             <select id="filter-payment-status" name="filter-payment-status">
                                 <option value="all">Todos</option>
-                                <option value="pago">Pago</option>
+                                <option value="pago_total">Pago Totalmente</option>
                                 <option value="parcial">Parcialmente Pago</option>
                                 <option value="pendente">Pendente</option>
                             </select>
                         </div>
                     </div>
-
                     <table class="styled-table">
                         <thead>
                             <tr>
@@ -124,33 +162,29 @@
                             </tr>
                         </thead>
                         <tbody id="expense-table-body">
-                            <tr>
-                                <td>Decoração Igreja</td>
-                                <td>Decoração</td>
-                                <td>R$ 5.000,00</td>
-                                <td>R$ 4.800,00</td>
-                                <td>
-                                    <div class="progress-bar-container">
-                                        <div class="progress-bar-fill" style="width: 100%; background-color: #27ae60;"></div>
-                                    </div>
-                                    <span class="progress-bar-text">R$ 4.800,00 / R$ 4.800,00 (100%)</span>
-                                </td>
-                                <td class="actions-cell">
-                                    <button class="btn btn-secondary btn-sm" onclick="viewExpenseDetails('expenseId1')" title="Detalhes"><i class="fas fa-eye"></i></button>
-                                    <button class="btn btn-secondary btn-sm" onclick="editExpense('expenseId1')" title="Editar"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteExpense('expenseId1')" title="Excluir"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <!-- Mais despesas aqui -->
+                            <!-- Linhas de despesas serão populadas pelo JS -->
                         </tbody>
                     </table>
                     <p id="no-expenses-message" class="no-items-message" style="display:none;">Nenhuma despesa cadastrada ainda.</p>
                 </section>
 
-                <section class="page-section payment-calendar">
-                    <h2><i class="fas fa-calendar-alt" style="margin-right: 8px;"></i>Calendário de Pagamentos Futuros</h2>
-                    <div id="payment-timeline" class="chart-placeholder">
-                        <p>Visualização do calendário de pagamentos virá aqui.</p>
+                <section class="page-section"> <!-- Removida a classe payment-calendar daqui -->
+                    <h2><i class="fas fa-calendar-check" style="margin-right: 8px;"></i>Próximos Pagamentos & Previsão</h2>
+                    <div class="upcoming-payments-container">
+                        <div class="upcoming-list-column">
+                            <h3><i class="fas fa-list-ol" style="margin-right: 5px;"></i>Pagamentos Imediatos</h3>
+                            <ul id="upcoming-payments-list">
+                                <!-- JS will populate this -->
+                            </ul>
+                            <p id="no-upcoming-payments-message" style="display:none; padding-top: 15px; text-align: center; color: #777;">Nenhum pagamento pendente para os próximos dias.</p>
+                        </div>
+                        <div class="payment-outlook-chart-column">
+                            <h3><i class="fas fa-chart-bar" style="margin-right: 5px;"></i>Previsão Mensal de Pagamentos</h3>
+                            <div class="chart-placeholder" style="min-height: 250px; position: relative;"> <!-- Adicionado position: relative para o canvas -->
+                                 <canvas id="paymentOutlookChart"></canvas> <!-- Novo canvas para o gráfico de previsão -->
+                                 <p id="no-payment-outlook-data" style="display:none; text-align:center; padding-top:20px;">Sem dados para exibir a previsão de pagamentos.</p>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </main>
@@ -158,8 +192,8 @@
     </div>
 
     <!-- Dialog para Adicionar/Editar Despesa -->
-    <div id="expense-dialog" class="dialog-overlay">
-        <div class="dialog-content" style="max-width: 750px;"> <!-- Aumentado para acomodar mais campos -->
+    <div id="expense-dialog" class="dialog-overlay hidden">
+        <div class="dialog-content" style="max-width: 750px;">
             <h3 id="expense-dialog-title">Adicionar Nova Despesa</h3>
             <form id="expense-form">
                 <input type="hidden" id="expense-id" name="expense-id">
@@ -170,16 +204,11 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
                     <div class="form-group">
                         <label for="expense-category">Categoria:</label>
-                        <select id="expense-category" name="expense-category" required>
-                            <option value="">Selecione uma categoria</option>
-                            <option value="Buffet">Buffet</option>
-                            <option value="Decoração">Decoração</option>
-                            <option value="Fotografia">Fotografia</option>
-                            <option value="Música">Música</option>
-                            <option value="Trajes">Trajes</option>
-                            <option value="Local">Local</option>
-                            <option value="Outros">Outros</option>
+                        <select id="expense-category-dialog" name="expense-category" required>
+                            <option value="">Selecione ou digite nova</option>
+                            <!-- Opções padrão e do DB -->
                         </select>
+                        <input type="text" id="expense-category-new" name="expense-category-new" placeholder="Ou digite nova categoria" style="margin-top: 5px; display:none;">
                     </div>
                     <div class="form-group">
                         <label for="expense-estimated-cost">Custo Estimado (R$):</label>
@@ -190,27 +219,19 @@
                         <input type="number" id="expense-actual-cost" name="expense-actual-cost" step="0.01" placeholder="0.00">
                     </div>
                 </div>
-
                 <hr style="margin: 25px 0;">
                 <h4><i class="fas fa-handshake" style="margin-right: 8px;"></i>Fornecedores Associados</h4>
-                <div id="suppliers-container">
-                    <!-- Fornecedores adicionados dinamicamente -->
-                </div>
+                <div id="suppliers-container"></div>
                 <button type="button" class="btn btn-secondary btn-sm" id="add-supplier-btn" style="margin-bottom:20px;"><i class="fas fa-plus"></i> Adicionar Fornecedor</button>
-
                 <hr style="margin: 25px 0;">
                 <h4><i class="fas fa-tasks" style="margin-right: 8px;"></i>Cronograma de Pagamentos</h4>
-                <div id="payments-container">
-                    <!-- Pagamentos adicionados dinamicamente -->
-                </div>
+                <div id="payments-container"></div>
                 <button type="button" class="btn btn-secondary btn-sm" id="add-payment-schedule-btn" style="margin-bottom:20px;"><i class="fas fa-plus"></i> Adicionar Parcela</button>
-
                 <hr style="margin: 25px 0;">
                 <div class="form-group">
                     <label for="expense-notes">Observações Importantes:</label>
                     <textarea id="expense-notes" name="expense-notes" rows="3"></textarea>
                 </div>
-
                 <div class="dialog-actions">
                     <button type="button" class="btn btn-secondary" id="cancel-expense-dialog-btn">Cancelar</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Despesa</button>
@@ -222,45 +243,24 @@
     <!-- Template para Fornecedor -->
     <template id="supplier-template">
         <div class="dynamic-entry supplier-entry">
-            <div class="dynamic-entry-header">
-                <h5>Detalhes do Fornecedor</h5>
-                <button type="button" class="btn remove-btn remove-supplier-btn"><i class="fas fa-times"></i> Remover</button>
-            </div>
-            <div class="form-group">
-                <label>Nome do Fornecedor:</label> <input type="text" name="supplier_name[]" placeholder="Nome">
-            </div>
-            <div class="form-group">
-                <label>Contato (Telefone/Email):</label> <input type="text" name="supplier_contact[]" placeholder="Contato">
-            </div>
-            <div class="form-group">
-                <label>Preço Proposto (R$):</label> <input type="number" name="supplier_price[]" step="0.01" placeholder="0.00">
-            </div>
-            <div class="form-group">
-                <label>Observação:</label> <textarea name="supplier_observation[]" rows="2"></textarea>
-            </div>
+            <div class="dynamic-entry-header"><h5>Detalhes do Fornecedor</h5><button type="button" class="btn remove-btn remove-supplier-btn"><i class="fas fa-times"></i></button></div>
+            <div class="form-group"><label>Nome:</label> <input type="text" class="supplier_name" placeholder="Nome"></div>
+            <div class="form-group"><label>Contato:</label> <input type="text" class="supplier_contact" placeholder="Contato"></div>
+            <div class="form-group"><label>Preço (R$):</label> <input type="number" class="supplier_price" step="0.01" placeholder="0.00"></div>
+            <div class="form-group"><label>Observação:</label> <textarea class="supplier_observation" rows="2"></textarea></div>
         </div>
     </template>
-
     <!-- Template para Parcela de Pagamento -->
     <template id="payment-schedule-template">
         <div class="dynamic-entry payment-entry">
-             <div class="dynamic-entry-header">
-                <h5>Detalhes da Parcela</h5>
-                <button type="button" class="btn remove-btn remove-payment-btn"><i class="fas fa-times"></i> Remover</button>
-            </div>
+             <div class="dynamic-entry-header"><h5>Detalhes da Parcela</h5><button type="button" class="btn remove-btn remove-payment-btn"><i class="fas fa-times"></i></button></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="form-group">
-                    <label>Título/Descrição:</label> <input type="text" name="payment_title[]" placeholder="Ex: Sinal Buffet">
-                </div>
-                <div class="form-group">
-                    <label>Data de Vencimento:</label> <input type="date" name="payment_due_date[]">
-                </div>
-                <div class="form-group">
-                    <label>Valor (R$):</label> <input type="number" name="payment_amount[]" step="0.01" placeholder="0.00">
-                </div>
+                <div class="form-group"><label>Título:</label> <input type="text" class="payment_title" placeholder="Ex: Sinal Buffet"></div>
+                <div class="form-group"><label>Vencimento:</label> <input type="date" class="payment_due_date"></div>
+                <div class="form-group"><label>Valor (R$):</label> <input type="number" class="payment_amount" step="0.01" placeholder="0.00"></div>
                 <div class="form-group">
                     <label>Status:</label>
-                    <select name="payment_status[]">
+                    <select class="payment_status">
                         <option value="pendente">Pendente</option>
                         <option value="pago">Pago</option>
                         <option value="atrasado">Atrasado</option>
@@ -269,137 +269,741 @@
             </div>
             <div class="form-group">
                 <label>Pago por:</label>
-                <select name="payment_paid_by[]" class="payment-paid-by-select">
+                <select class="payment_paid_by payment-paid-by-select">
                     <option value="noivos">Noivos</option>
-                    <option value="externo">Externo (Outra pessoa)</option>
-                    <option value="dividido">Dividido (Detalhar em obs.)</option>
+                    <option value="externo">Externo</option>
+                    <option value="dividido">Dividido (Obs.)</option>
                 </select>
             </div>
             <div class="form-group external-payer-name-group" style="display:none;">
-                <label>Nome do Pagador Externo:</label> <input type="text" name="payment_external_payer_name[]">
-            </div>
-            <div class="form-group">
-                <label>Observação da Parcela:</label> <textarea name="payment_observation[]" rows="2"></textarea>
+                <label>Nome Pagador Externo:</label> <input type="text" class="payment_external_payer_name">
             </div>
         </div>
     </template>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+
     <script>
-        // Script da Sidebar e Header (copie do dashboard.html)
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Elementos da UI ---
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggleFin');
         const sidebar = document.getElementById('noivosSidebar');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
-        function toggleSidebarFn() { // Renomeado para evitar conflito se copiado
+        const userNameElement = document.getElementById('userNameFin');
+        const userAvatarElement = document.getElementById('userAvatarFin');
+        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+        const logoutBtnHeader = document.getElementById('logout-btn-header');
+
+        const totalEstimadoEl = document.getElementById('total-estimado');
+        const totalPagoEl = document.getElementById('total-pago');
+        const totalRestanteEl = document.getElementById('total-restante');
+        const costsChartCanvas = document.getElementById('costsChart');
+        const expenseTableBody = document.getElementById('expense-table-body');
+        const noExpensesMessage = document.getElementById('no-expenses-message');
+        const upcomingPaymentsList = document.getElementById('upcoming-payments-list');
+        const filterCategorySelect = document.getElementById('filter-category');
+        const filterPaymentStatusSelect = document.getElementById('filter-payment-status');
+
+        // Dialog de Despesa
+        const openExpenseDialogBtn = document.getElementById('open-expense-dialog-btn');
+        const expenseDialog = document.getElementById('expense-dialog');
+        const cancelExpenseDialogBtn = document.getElementById('cancel-expense-dialog-btn');
+        const expenseForm = document.getElementById('expense-form');
+        const expenseDialogTitle = document.getElementById('expense-dialog-title');
+        const expenseIdInput = document.getElementById('expense-id');
+        const expenseNameInput = document.getElementById('expense-name');
+        const expenseCategoryDialogSelect = document.getElementById('expense-category-dialog');
+        const expenseCategoryNewInput = document.getElementById('expense-category-new');
+        const expenseEstimatedCostInput = document.getElementById('expense-estimated-cost');
+        const expenseActualCostInput = document.getElementById('expense-actual-cost');
+        const expenseNotesInput = document.getElementById('expense-notes');
+        const suppliersContainer = document.getElementById('suppliers-container');
+        const addSupplierBtn = document.getElementById('add-supplier-btn');
+        const supplierTemplate = document.getElementById('supplier-template');
+        const paymentsContainer = document.getElementById('payments-container');
+        const addPaymentBtn = document.getElementById('add-payment-schedule-btn');
+        const paymentTemplate = document.getElementById('payment-schedule-template');
+
+        const noUpcomingPaymentsMessage = document.getElementById('no-upcoming-payments-message'); // Novo
+        const paymentOutlookChartCanvas = document.getElementById('paymentOutlookChart'); // Novo
+        const noPaymentOutlookDataMessage = document.getElementById('no-payment-outlook-data');
+
+        let currentWeddingId = null;
+        let allExpensesData = {}; // Para armazenar todas as despesas carregadas
+        let financialCategories = []; // Categorias do DB
+        let costsChartInstance = null;
+        let paymentOutlookChartInstance = null;
+
+        // --- Funções Utilitárias ---
+        const showLoading = (show) => loadingOverlay.style.display = show ? 'flex' : 'none';
+        const formatCurrency = (value) => typeof value === 'number' ? `R$ ${value.toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+        const formatDate = (isoDateString) => {
+            if (!isoDateString) return '-';
+            // Corrigindo para lidar com YYYY-MM-DD que o input date produz
+            const parts = isoDateString.split('-');
+            if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) -1; // Mês é 0-indexado no JS Date
+                const day = parseInt(parts[2], 10);
+                const date = new Date(year, month, day);
+                return date.toLocaleDateString('pt-BR', { timeZone: 'UTC' }); // Adiciona UTC para consistência
+            }
+            // Fallback para outros formatos, se houver
+            const date = new Date(isoDateString);
+            date.setDate(date.getDate() + 1); // Mantém seu ajuste original como fallback
+            return date.toLocaleDateString('pt-BR');
+        }
+
+
+        // --- Lógica da Sidebar e Header ---
+        function toggleSidebar() {
             sidebar.classList.toggle('active');
             sidebarOverlay.classList.toggle('active');
             const icon = mobileMenuToggle.querySelector('i');
-            if (sidebar.classList.contains('active')) {
-                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        }
+        if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', toggleSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        function handleLogout() {
+            showLoading(true);
+            auth.signOut().then(() => {
+                window.location.href = '../auth/login-noivos.html';
+            }).catch(error => {
+                console.error("Erro ao fazer logout:", error);
+                alert("Erro ao sair.");
+                showLoading(false);
+            });
+        }
+        if (logoutBtnSidebar) logoutBtnSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+        if (logoutBtnHeader) logoutBtnHeader.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+
+        function populateHeader(coupleNames) {
+            if (coupleNames && coupleNames.length > 0) {
+                const name1 = coupleNames[0] || "";
+                const name2 = coupleNames[1] || "";
+                userNameElement.textContent = `Olá, ${name1} & ${name2}!`;
+                userAvatarElement.textContent = `${name1.charAt(0)}${name2.charAt(0)}`.toUpperCase();
             } else {
-                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
+                userNameElement.textContent = 'Olá, Noivos!';
+                userAvatarElement.textContent = 'N';
             }
         }
-        if (mobileMenuToggle && sidebar && sidebarOverlay) {
-            mobileMenuToggle.addEventListener('click', toggleSidebarFn);
-            sidebarOverlay.addEventListener('click', toggleSidebarFn);
+
+        // --- Lógica do Firebase ---
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                showLoading(true);
+                try {
+                    const userRef = db.ref(`users/${user.uid}`);
+                    const userSnapshot = await userRef.once('value');
+                    if (!userSnapshot.exists() || !userSnapshot.val().managingWeddingId) {
+                        alert("Dados do casamento não encontrados. Faça login novamente.");
+                        handleLogout();
+                        return;
+                    }
+                    currentWeddingId = userSnapshot.val().managingWeddingId;
+
+                    const weddingRef = db.ref(`weddings/${currentWeddingId}`);
+                    const weddingSnapshot = await weddingRef.once('value');
+                    if (!weddingSnapshot.exists()) {
+                        alert("Detalhes do casamento não encontrados.");
+                        showLoading(false);
+                        return;
+                    }
+                    const weddingData = weddingSnapshot.val();
+                    populateHeader(weddingData.coupleNames);
+                    if (weddingData.financialManagement && weddingData.financialManagement.categories) {
+                        financialCategories = weddingData.financialManagement.categories;
+                    }
+                    loadFinancialData(); // Carrega dados financeiros e observa mudanças
+                } catch (error) {
+                    console.error("Erro ao carregar dados iniciais:", error);
+                    alert("Erro ao carregar informações. Tente recarregar a página.");
+                    showLoading(false);
+                }
+            } else {
+                window.location.href = '../auth/login-noivos.html';
+            }
+        });
+
+        function loadFinancialData() {
+            if (!currentWeddingId) return;
+            const expensesRef = db.ref(`weddings/${currentWeddingId}/financialManagement/expenses`);
+            
+            expensesRef.on('value', (snapshot) => {
+                allExpensesData = snapshot.val() || {};
+                renderExpenses();
+                updateSummary();
+                updateCostsChart();
+                populateCategoryFilters();
+                updateUpcomingPayments();
+                updatePaymentOutlookChart(); // NOVA CHAMADA
+                showLoading(false);
+            }, (error) => {
+                console.error("Erro ao carregar despesas:", error);
+                alert("Erro ao carregar despesas.");
+                showLoading(false);
+            });
         }
-        const userNameElement = document.getElementById('userName');
-        const userAvatarElement = document.getElementById('userAvatar');
-        const currentUserFinance = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
-        if (currentUserFinance && userNameElement && userAvatarElement) {
-            userNameElement.textContent = `Olá, ${currentUserFinance.name}!`;
-            userAvatarElement.textContent = currentUserFinance.initials;
+
+        function renderExpenses() {
+            expenseTableBody.innerHTML = '';
+            const expensesArray = Object.entries(allExpensesData).map(([id, data]) => ({ id, ...data }));
+            
+            // Aplicar filtros
+            const categoryFilter = filterCategorySelect.value;
+            const paymentStatusFilter = filterPaymentStatusSelect.value;
+
+            const filteredExpenses = expensesArray.filter(expense => {
+                const categoryMatch = categoryFilter === 'all' || expense.category === categoryFilter;
+                
+                let paymentStatusMatch = true;
+                if (paymentStatusFilter !== 'all') {
+                    const { totalPaid, actualCost } = calculateExpensePaymentProgress(expense);
+                    const effectiveActualCost = expense.actualCost > 0 ? expense.actualCost : expense.estimatedCost > 0 ? expense.estimatedCost : 0;
+
+                    if (paymentStatusFilter === 'pago_total') {
+                        paymentStatusMatch = effectiveActualCost > 0 && totalPaid >= effectiveActualCost;
+                    } else if (paymentStatusFilter === 'parcial') {
+                        paymentStatusMatch = totalPaid > 0 && totalPaid < effectiveActualCost;
+                    } else if (paymentStatusFilter === 'pendente') {
+                        paymentStatusMatch = totalPaid === 0 || (effectiveActualCost > 0 && totalPaid < effectiveActualCost && totalPaid === 0);
+                    }
+                }
+                return categoryMatch && paymentStatusMatch;
+            });
+
+
+            if (filteredExpenses.length === 0) {
+                noExpensesMessage.style.display = 'block';
+                expenseTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhuma despesa encontrada com os filtros atuais.</td></tr>';
+                return;
+            }
+            noExpensesMessage.style.display = 'none';
+
+            filteredExpenses.forEach(expense => {
+                const { totalPaid, percentagePaid, actualCost } = calculateExpensePaymentProgress(expense);
+                const effectiveActualCost = expense.actualCost > 0 ? expense.actualCost : expense.estimatedCost;
+
+                const row = expenseTableBody.insertRow();
+                row.innerHTML = `
+                    <td>${expense.name}</td>
+                    <td>${expense.category}</td>
+                    <td>${formatCurrency(expense.estimatedCost)}</td>
+                    <td>${formatCurrency(expense.actualCost)}</td>
+                    <td>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${percentagePaid}%; background-color: ${percentagePaid >= 100 ? '#27ae60' : (percentagePaid > 0 ? '#f39c12' : '#e74c3c')};"></div>
+                        </div>
+                        <span class="progress-bar-text">${formatCurrency(totalPaid)} / ${formatCurrency(effectiveActualCost)} (${percentagePaid.toFixed(0)}%)</span>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="btn btn-secondary btn-sm btn-view-expense" data-id="${expense.id}" title="Detalhes"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-secondary btn-sm btn-edit-expense" data-id="${expense.id}" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger btn-sm btn-delete-expense" data-id="${expense.id}" title="Excluir"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+            });
+            attachTableActionListeners();
         }
-        // Fim do script da Sidebar/Header
+        
+        function attachTableActionListeners() {
+            document.querySelectorAll('.btn-edit-expense').forEach(btn => btn.onclick = () => handleEditExpense(btn.dataset.id));
+            document.querySelectorAll('.btn-delete-expense').forEach(btn => btn.onclick = () => handleDeleteExpense(btn.dataset.id));
+             document.querySelectorAll('.btn-view-expense').forEach(btn => btn.onclick = () => handleViewExpense(btn.dataset.id)); // Implementar handleViewExpense se necessário
+        }
 
-        // Script específico da página Financeiro
-        document.addEventListener('DOMContentLoaded', () => {
-            const openBtn = document.getElementById('open-expense-dialog-btn');
-            const dialog = document.getElementById('expense-dialog');
-            const cancelBtn = document.getElementById('cancel-expense-dialog-btn');
-
-            if (openBtn) openBtn.addEventListener('click', () => dialog.classList.add('active'));
-            if (cancelBtn) cancelBtn.addEventListener('click', () => dialog.classList.remove('active'));
-            if (dialog) dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('active'); });
-
-            const addSupplierBtn = document.getElementById('add-supplier-btn');
-            const suppliersContainer = document.getElementById('suppliers-container');
-            const supplierTemplate = document.getElementById('supplier-template');
-            if (addSupplierBtn && suppliersContainer && supplierTemplate) {
-                addSupplierBtn.addEventListener('click', () => {
-                    const clone = supplierTemplate.content.cloneNode(true);
-                    suppliersContainer.appendChild(clone);
-                });
-                suppliersContainer.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('remove-supplier-btn') || e.target.closest('.remove-supplier-btn')) {
-                        (e.target.closest('.remove-supplier-btn') || e.target).closest('.supplier-entry').remove();
+        function calculateExpensePaymentProgress(expense) {
+            let totalPaid = 0;
+            if (expense.paymentSchedule) {
+                Object.values(expense.paymentSchedule).forEach(payment => {
+                    if (payment.status === 'pago') {
+                        totalPaid += parseFloat(payment.amount || 0);
                     }
                 });
             }
+            const costToConsider = parseFloat(expense.actualCost || 0) > 0 ? parseFloat(expense.actualCost) : parseFloat(expense.estimatedCost || 0);
+            const percentagePaid = costToConsider > 0 ? (totalPaid / costToConsider) * 100 : 0;
+            return { totalPaid, percentagePaid: Math.min(100, percentagePaid), actualCost: costToConsider };
+        }
 
-            const addPaymentBtn = document.getElementById('add-payment-schedule-btn');
-            const paymentsContainer = document.getElementById('payments-container');
-            const paymentTemplate = document.getElementById('payment-schedule-template');
-            if (addPaymentBtn && paymentsContainer && paymentTemplate) {
-                addPaymentBtn.addEventListener('click', () => {
-                    const clone = paymentTemplate.content.cloneNode(true);
-                    paymentsContainer.appendChild(clone);
-                });
-                paymentsContainer.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('remove-payment-btn') || e.target.closest('.remove-payment-btn')) {
-                         (e.target.closest('.remove-payment-btn') || e.target).closest('.payment-entry').remove();
-                    }
-                    if (e.target.classList.contains('payment-paid-by-select')) {
-                        const selectedValue = e.target.value;
-                        const parentEntry = e.target.closest('.payment-entry');
-                        const externalPayerGroup = parentEntry.querySelector('.external-payer-name-group');
-                        if (externalPayerGroup) {
-                            externalPayerGroup.style.display = selectedValue === 'externo' ? 'block' : 'none';
+        function updateSummary() {
+            let totalEstimado = 0;
+            let totalPagoGlobal = 0;
+            let totalRealGlobal = 0;
+
+            Object.values(allExpensesData).forEach(expense => {
+                totalEstimado += parseFloat(expense.estimatedCost || 0);
+                totalRealGlobal += parseFloat(expense.actualCost || 0) > 0 ? parseFloat(expense.actualCost) : parseFloat(expense.estimatedCost || 0);
+                
+                if (expense.paymentSchedule) {
+                    Object.values(expense.paymentSchedule).forEach(payment => {
+                        if (payment.status === 'pago') {
+                            totalPagoGlobal += parseFloat(payment.amount || 0);
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
 
-            // Exemplo Gráfico Chart.js
-            const ctx = document.getElementById('costsChart');
-            if (ctx) {
-                new Chart(ctx, {
-                    type: 'doughnut', // ou 'pie'
+            totalEstimadoEl.textContent = formatCurrency(totalEstimado);
+            totalPagoEl.textContent = formatCurrency(totalPagoGlobal);
+            totalRestanteEl.textContent = formatCurrency(totalRealGlobal - totalPagoGlobal);
+        }
+
+        function updateCostsChart() {
+            const categoriesSummary = {};
+            financialCategories.forEach(cat => categoriesSummary[cat] = 0); // Inicializa com categorias do DB
+
+            Object.values(allExpensesData).forEach(expense => {
+                const category = expense.category;
+                const cost = parseFloat(expense.actualCost || 0) > 0 ? parseFloat(expense.actualCost) : parseFloat(expense.estimatedCost || 0);
+                if (category) {
+                    categoriesSummary[category] = (categoriesSummary[category] || 0) + cost;
+                    if (!financialCategories.includes(category)) { // Adiciona se for nova
+                         financialCategories.push(category);
+                    }
+                }
+            });
+            
+            const labels = Object.keys(categoriesSummary).filter(cat => categoriesSummary[cat] > 0);
+            const data = labels.map(label => categoriesSummary[label]);
+
+            const chartColors = [ '#AA336A', '#D4AF37', '#2980B9', '#27AE60', '#8E44AD', '#7F8C8D', '#F39C12', '#C0392B', '#16A085', '#34495E'];
+            const backgroundColors = labels.map((_, i) => chartColors[i % chartColors.length] + 'B3'); // Add alpha
+            const borderColors = labels.map((_, i) => chartColors[i % chartColors.length]);
+
+
+            if (costsChartInstance) {
+                costsChartInstance.data.labels = labels;
+                costsChartInstance.data.datasets[0].data = data;
+                costsChartInstance.data.datasets[0].backgroundColor = backgroundColors;
+                costsChartInstance.data.datasets[0].borderColor = borderColors;
+                costsChartInstance.update();
+            } else if (costsChartCanvas && labels.length > 0) {
+                costsChartInstance = new Chart(costsChartCanvas, {
+                    type: 'doughnut',
                     data: {
-                        labels: ['Buffet', 'Decoração', 'Foto/Vídeo', 'Música', 'Trajes', 'Outros'],
+                        labels: labels,
                         datasets: [{
                             label: 'Custos por Categoria',
-                            data: [12000, 8000, 5000, 3000, 4000, 2000], // Dados de exemplo
-                            backgroundColor: [
-                                'rgba(170, 51, 106, 0.7)', // --primary-color
-                                'rgba(212, 175, 55, 0.7)', // Dourado
-                                'rgba(41, 128, 185, 0.7)', // Azul
-                                'rgba(39, 174, 96, 0.7)',  // Verde
-                                'rgba(142, 68, 173, 0.7)', // Roxo
-                                'rgba(127, 140, 141, 0.7)' // Cinza
-                            ],
-                            borderColor: [
-                                'rgba(170, 51, 106, 1)',
-                                'rgba(212, 175, 55, 1)',
-                                'rgba(41, 128, 185, 1)',
-                                'rgba(39, 174, 96, 1)',
-                                'rgba(142, 68, 173, 1)',
-                                'rgba(127, 140, 141, 1)'
-                            ],
+                            data: data,
+                            backgroundColor: backgroundColors,
+                            borderColor: borderColors,
                             borderWidth: 1
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom', labels: { padding: 15 } }
-                        }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15 } } } }
                 });
+            } else if (costsChartCanvas && labels.length === 0) {
+                 costsChartCanvas.getContext('2d').clearRect(0, 0, costsChartCanvas.width, costsChartCanvas.height); // Clear canvas
+                 if(costsChartInstance) costsChartInstance.destroy();
+                 costsChartInstance = null;
+                 costsChartCanvas.parentElement.innerHTML = '<canvas id="costsChart" style="max-height: 300px;"></canvas><p style="text-align:center; padding-top:20px;">Sem dados de custos para exibir no gráfico.</p>'; // Re-add canvas
+            }
+        }
+        
+        function populateCategoryFilters() {
+            const existingOptions = Array.from(filterCategorySelect.options).map(opt => opt.value);
+            financialCategories.forEach(cat => {
+                if (cat && !existingOptions.includes(cat)) {
+                    const option = new Option(cat, cat);
+                    filterCategorySelect.add(option);
+                }
+            });
+             const dialogCatSelect = expenseCategoryDialogSelect;
+             const existingDialogOptions = Array.from(dialogCatSelect.options).map(opt => opt.value);
+             financialCategories.forEach(cat => {
+                if(cat && !existingDialogOptions.includes(cat)){
+                    const option = new Option(cat, cat);
+                    dialogCatSelect.add(option.cloneNode(true));
+                }
+             });
+             // Adicionar opção "Outra (digitar)" se não existir
+             if (!existingDialogOptions.includes('__NEW__')) {
+                 dialogCatSelect.add(new Option("Outra (digitar nova)", "__NEW__"));
+             }
+        }
+
+        filterCategorySelect.addEventListener('change', renderExpenses);
+        filterPaymentStatusSelect.addEventListener('change', renderExpenses);
+
+        // --- Dialog de Despesa ---
+        expenseCategoryDialogSelect.addEventListener('change', function() {
+            expenseCategoryNewInput.style.display = this.value === '__NEW__' ? 'block' : 'none';
+            if (this.value === '__NEW__') expenseCategoryNewInput.required = true;
+            else expenseCategoryNewInput.required = false;
+        });
+
+        function openExpenseDialog(expenseData = null) {
+            expenseForm.reset();
+            suppliersContainer.innerHTML = '';
+            paymentsContainer.innerHTML = '';
+            expenseCategoryNewInput.style.display = 'none';
+            expenseCategoryNewInput.value = '';
+            expenseCategoryDialogSelect.value = ''; // Reset select
+
+            populateCategoryFilters(); // Garante que as opções estão atualizadas no dialog
+
+            if (expenseData) { // Editando
+                expenseDialogTitle.textContent = 'Editar Despesa';
+                expenseIdInput.value = expenseData.id;
+                expenseNameInput.value = expenseData.name;
+
+                if (financialCategories.includes(expenseData.category) || expenseCategoryDialogSelect.querySelector(`option[value="${expenseData.category}"]`)) {
+                    expenseCategoryDialogSelect.value = expenseData.category;
+                } else if (expenseData.category) { // Categoria não padrão
+                    expenseCategoryDialogSelect.value = '__NEW__';
+                    expenseCategoryNewInput.value = expenseData.category;
+                    expenseCategoryNewInput.style.display = 'block';
+                }
+
+                expenseEstimatedCostInput.value = expenseData.estimatedCost || '';
+                expenseActualCostInput.value = expenseData.actualCost || '';
+                expenseNotesInput.value = expenseData.notes || '';
+
+                if (expenseData.suppliers) {
+                    Object.values(expenseData.suppliers).forEach(addSupplierToForm);
+                }
+                if (expenseData.paymentSchedule) {
+                    Object.values(expenseData.paymentSchedule).forEach(addPaymentToForm);
+                }
+            } else { // Adicionando
+                expenseDialogTitle.textContent = 'Adicionar Nova Despesa';
+                expenseIdInput.value = ''; // Limpa ID para nova despesa
+            }
+            expenseDialog.classList.remove('hidden');
+        }
+
+        if (openExpenseDialogBtn) openExpenseDialogBtn.addEventListener('click', () => openExpenseDialog());
+        if (cancelExpenseDialogBtn) cancelExpenseDialogBtn.addEventListener('click', () => expenseDialog.classList.add('hidden'));
+        if (expenseDialog) expenseDialog.addEventListener('click', (e) => { if (e.target === expenseDialog) expenseDialog.classList.add('hidden'); });
+
+        expenseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading(true);
+
+            const expenseId = expenseIdInput.value;
+            let categoryValue = expenseCategoryDialogSelect.value;
+            if (categoryValue === '__NEW__') {
+                categoryValue = expenseCategoryNewInput.value.trim();
+                if (!categoryValue) {
+                    alert("Por favor, insira um nome para a nova categoria.");
+                    showLoading(false);
+                    return;
+                }
+                if (!financialCategories.includes(categoryValue)) {
+                    financialCategories.push(categoryValue);
+                    // Salvar a nova lista de categorias no DB
+                    await db.ref(`weddings/${currentWeddingId}/financialManagement/categories`).set(financialCategories);
+                    populateCategoryFilters(); // Atualiza os filtros com a nova categoria
+                }
+            }
+
+            const data = {
+                name: expenseNameInput.value.trim(),
+                category: categoryValue,
+                estimatedCost: parseFloat(expenseEstimatedCostInput.value) || 0,
+                actualCost: parseFloat(expenseActualCostInput.value) || 0,
+                notes: expenseNotesInput.value.trim(),
+                suppliers: {},
+                paymentSchedule: {}
+            };
+
+            document.querySelectorAll('#suppliers-container .supplier-entry').forEach(entry => {
+                const supplierId = db.ref().push().key; // Gera ID único para fornecedor
+                data.suppliers[supplierId] = {
+                    name: entry.querySelector('.supplier_name').value.trim(),
+                    contact: entry.querySelector('.supplier_contact').value.trim(),
+                    price: parseFloat(entry.querySelector('.supplier_price').value) || 0,
+                    observation: entry.querySelector('.supplier_observation').value.trim()
+                };
+            });
+
+            document.querySelectorAll('#payments-container .payment-entry').forEach(entry => {
+                const paymentId = db.ref().push().key; // Gera ID único para pagamento
+                data.paymentSchedule[paymentId] = {
+                    title: entry.querySelector('.payment_title').value.trim(),
+                    dueDate: entry.querySelector('.payment_due_date').value,
+                    amount: parseFloat(entry.querySelector('.payment_amount').value) || 0,
+                    status: entry.querySelector('.payment_status').value,
+                    paidBy: entry.querySelector('.payment_paid_by').value,
+                    externalPayerName: entry.querySelector('.payment_paid_by').value === 'externo' ? entry.querySelector('.payment_external_payer_name').value.trim() : null,
+                };
+            });
+            
+            try {
+                const expenseRefPath = `weddings/${currentWeddingId}/financialManagement/expenses`;
+                if (expenseId) { // Editando
+                    await db.ref(`${expenseRefPath}/${expenseId}`).update(data);
+                } else { // Novo
+                    await db.ref(expenseRefPath).push(data);
+                }
+                expenseDialog.classList.add('hidden');
+            } catch (error) {
+                console.error("Erro ao salvar despesa:", error);
+                alert("Erro ao salvar despesa.");
+            } finally {
+                showLoading(false); // Escondido no .on('value') listener
             }
         });
+
+        function handleEditExpense(id) {
+            const expenseToEdit = allExpensesData[id];
+            if (expenseToEdit) {
+                openExpenseDialog({ id, ...expenseToEdit });
+            }
+        }
+        
+        async function handleDeleteExpense(id) {
+            if (confirm("Tem certeza que deseja excluir esta despesa e todos os seus dados associados?")) {
+                showLoading(true);
+                try {
+                    await db.ref(`weddings/${currentWeddingId}/financialManagement/expenses/${id}`).remove();
+                    // A UI será atualizada pelo listener .on('value')
+                } catch (error) {
+                    console.error("Erro ao excluir despesa:", error);
+                    alert("Erro ao excluir despesa.");
+                } finally {
+                    showLoading(false); // Escondido pelo listener
+                }
+            }
+        }
+
+        function handleViewExpense(id) {
+            const expense = allExpensesData[id];
+            if (!expense) return;
+
+            let detailsHtml = `<h3>Detalhes da Despesa: ${expense.name}</h3>
+                <p><strong>Categoria:</strong> ${expense.category}</p>
+                <p><strong>Custo Estimado:</strong> ${formatCurrency(expense.estimatedCost)}</p>
+                <p><strong>Custo Real:</strong> ${formatCurrency(expense.actualCost)}</p>
+                <p><strong>Observações:</strong> ${expense.notes || '-'}</p>`;
+
+            if (expense.suppliers && Object.keys(expense.suppliers).length > 0) {
+                detailsHtml += '<h4>Fornecedores:</h4><ul>';
+                Object.values(expense.suppliers).forEach(s => {
+                    detailsHtml += `<li>${s.name} (${s.contact || 'N/A'}) - ${formatCurrency(s.price)} (${s.observation || '-'})</li>`;
+                });
+                detailsHtml += '</ul>';
+            }
+
+            if (expense.paymentSchedule && Object.keys(expense.paymentSchedule).length > 0) {
+                detailsHtml += '<h4>Pagamentos:</h4><ul>';
+                Object.values(expense.paymentSchedule).forEach(p => {
+                    detailsHtml += `<li>${p.title}: ${formatCurrency(p.amount)} em ${formatDate(p.dueDate)} (Status: ${p.status}, Pago por: ${p.paidBy}${p.paidBy === 'externo' ? ' - ' + p.externalPayerName : ''})</li>`;
+                });
+                detailsHtml += '</ul>';
+            }
+            // Para exibir isso, você precisaria de um modal genérico de visualização.
+            // Por simplicidade, vamos usar um alert por enquanto.
+            alert(detailsHtml.replace(/<[^>]*>/g, '\n').replace(/\n\s*\n/g, '\n')); // Remove HTML para alert
+        }
+
+        // --- Manipulação de Fornecedores e Pagamentos no Dialog ---
+        addSupplierBtn.addEventListener('click', () => addSupplierToForm());
+        suppliersContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-supplier-btn') || e.target.closest('.remove-supplier-btn')) {
+                (e.target.closest('.remove-supplier-btn') || e.target).closest('.supplier-entry').remove();
+            }
+        });
+        function addSupplierToForm(supplierData = {}) {
+            const clone = supplierTemplate.content.cloneNode(true);
+            if (supplierData.name) clone.querySelector('.supplier_name').value = supplierData.name;
+            if (supplierData.contact) clone.querySelector('.supplier_contact').value = supplierData.contact;
+            if (supplierData.price) clone.querySelector('.supplier_price').value = supplierData.price;
+            if (supplierData.observation) clone.querySelector('.supplier_observation').value = supplierData.observation;
+            suppliersContainer.appendChild(clone);
+        }
+
+        addPaymentBtn.addEventListener('click', () => addPaymentToForm());
+        paymentsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-payment-btn') || e.target.closest('.remove-payment-btn')) {
+                (e.target.closest('.remove-payment-btn') || e.target).closest('.payment-entry').remove();
+            }
+            if (e.target.classList.contains('payment-paid-by-select')) {
+                const parentEntry = e.target.closest('.payment-entry');
+                const externalPayerGroup = parentEntry.querySelector('.external-payer-name-group');
+                externalPayerGroup.style.display = e.target.value === 'externo' ? 'block' : 'none';
+            }
+        });
+        function addPaymentToForm(paymentData = {}) {
+            const clone = paymentTemplate.content.cloneNode(true);
+            if (paymentData.title) clone.querySelector('.payment_title').value = paymentData.title;
+            if (paymentData.dueDate) clone.querySelector('.payment_due_date').value = paymentData.dueDate;
+            if (paymentData.amount) clone.querySelector('.payment_amount').value = paymentData.amount;
+            if (paymentData.status) clone.querySelector('.payment_status').value = paymentData.status;
+            if (paymentData.paidBy) {
+                 clone.querySelector('.payment_paid_by').value = paymentData.paidBy;
+                 if(paymentData.paidBy === 'externo'){
+                    clone.querySelector('.external-payer-name-group').style.display = 'block';
+                    if(paymentData.externalPayerName) clone.querySelector('.payment_external_payer_name').value = paymentData.externalPayerName;
+                 }
+            }
+            paymentsContainer.appendChild(clone);
+        }
+        
+        function updateUpcomingPayments() {
+            upcomingPaymentsList.innerHTML = '';
+            noUpcomingPaymentsMessage.style.display = 'none'; // Esconde por padrão
+            const payments = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normaliza para o início do dia
+
+            Object.values(allExpensesData).forEach(expense => {
+                if (expense.paymentSchedule) {
+                    Object.values(expense.paymentSchedule).forEach(p => {
+                        if (p.status === 'pendente' || p.status === 'atrasado') {
+                            if (p.dueDate) { // Garante que há uma data de vencimento
+                                payments.push({ ...p, expenseName: expense.name });
+                            }
+                        }
+                    });
+                }
+            });
+
+            payments.sort((a, b) => {
+                const dateA = new Date(a.dueDate.split('-').join('/')); // Formato MM/DD/YYYY para construtor Date
+                const dateB = new Date(b.dueDate.split('-').join('/'));
+                return dateA - dateB;
+            });
+
+            if (payments.length === 0) {
+                noUpcomingPaymentsMessage.style.display = 'block';
+                upcomingPaymentsList.innerHTML = ''; // Garante que a lista está vazia
+                return;
+            }
+
+            const maxItemsToShow = 7; // Mostrar os próximos 7 pagamentos, por exemplo
+            payments.slice(0, maxItemsToShow).forEach(p => {
+                const li = document.createElement('li');
+                const dueDate = new Date(p.dueDate.split('-').join('/')); // Ajuste para YYYY/MM/DD
+                dueDate.setMinutes(dueDate.getMinutes() + dueDate.getTimezoneOffset()); // Ajusta para UTC se necessário, dependendo de como a data é salva
+
+                let paymentText = `<strong>${formatDate(p.dueDate)}</strong> - ${formatCurrency(p.amount)} <br><small>(${p.title} para ${p.expenseName})</small>`;
+                
+                if (p.status === 'atrasado' || (dueDate < today && p.status === 'pendente')) {
+                    li.style.color = '#c0392b'; // Vermelho para atrasado
+                    li.style.fontWeight = 'bold';
+                    paymentText += ` <small style="color: #c0392b; font-weight:normal;">(Atrasado)</small>`;
+                } else if (dueDate.getTime() === today.getTime()) {
+                    li.style.color = '#e67e22'; // Laranja para hoje
+                    li.style.fontWeight = 'bold';
+                    paymentText += ` <small style="color: #e67e22; font-weight:normal;">(Vence Hoje!)</small>`;
+                }
+                li.innerHTML = paymentText;
+                upcomingPaymentsList.appendChild(li);
+            });
+        }
+
+        // --- NOVA FUNÇÃO: updatePaymentOutlookChart ---
+        function updatePaymentOutlookChart() {
+            noPaymentOutlookDataMessage.style.display = 'none';
+            if (paymentOutlookChartInstance) {
+                paymentOutlookChartInstance.destroy();
+                paymentOutlookChartInstance = null;
+            }
+
+            const monthlyTotals = {};
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const currentMonth = today.getFullYear() * 100 + today.getMonth(); // YYYYMM para comparação
+
+            Object.values(allExpensesData).forEach(expense => {
+                if (expense.paymentSchedule) {
+                    Object.values(expense.paymentSchedule).forEach(p => {
+                        if ((p.status === 'pendente' || p.status === 'atrasado') && p.dueDate && p.amount > 0) {
+                            const [year, monthStr, day] = p.dueDate.split('-');
+                            const paymentDate = new Date(parseInt(year), parseInt(monthStr) - 1, parseInt(day));
+                            paymentDate.setHours(0,0,0,0);
+
+                            // Considerar apenas pagamentos futuros ou do mês atual para o gráfico de previsão
+                            if (paymentDate.getFullYear() * 100 + paymentDate.getMonth() >= currentMonth) {
+                                const monthKey = `${year}-${monthStr}`; // YYYY-MM
+                                monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + parseFloat(p.amount);
+                            }
+                        }
+                    });
+                }
+            });
+
+            const sortedMonths = Object.keys(monthlyTotals).sort();
+            
+            // Limitar aos próximos 12 meses para o gráfico, por exemplo
+            const maxMonthsInChart = 12;
+            const chartLabels = [];
+            const chartData = [];
+
+            let count = 0;
+            for (const monthKey of sortedMonths) {
+                if(count >= maxMonthsInChart) break;
+                
+                const [year, month] = monthKey.split('-');
+                chartLabels.push(`${month}/${year.slice(2)}`); // Formato MM/YY
+                chartData.push(monthlyTotals[monthKey]);
+                count++;
+            }
+
+            if (chartLabels.length === 0) {
+                noPaymentOutlookDataMessage.style.display = 'block';
+                if (paymentOutlookChartCanvas.getContext('2d')) {
+                    paymentOutlookChartCanvas.getContext('2d').clearRect(0, 0, paymentOutlookChartCanvas.width, paymentOutlookChartCanvas.height);
+                }
+                return;
+            }
+
+            const chartColors = ['#2980B9', '#27AE60', '#8E44AD', '#F39C12', '#C0392B', '#16A085', '#34495E', '#7F8C8D', '#D35400', '#BDC3C7'];
+            const backgroundColors = chartLabels.map((_, i) => chartColors[i % chartColors.length] + 'B3'); // Com alpha
+            const borderColors = chartLabels.map((_, i) => chartColors[i % chartColors.length]);
+
+
+            paymentOutlookChartInstance = new Chart(paymentOutlookChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Total a Pagar (R$)',
+                        data: chartData,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { // yAxes para Chart.js v2, y para v3+
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return formatCurrency(value); }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false // O label do dataset já é suficiente
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    });
     </script>
 </body>
 </html>

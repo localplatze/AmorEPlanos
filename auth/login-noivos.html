@@ -5,38 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Noivos - NuptialLink</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/auth-moderno.css"> <!-- Ajuste o caminho se necessário -->
+    <link rel="stylesheet" href="../assets/css/auth-moderno.css">
 </head>
 <body>
-
-    <div class="auth-container login-container"> <!-- Adicionada classe login-container -->
-        <!-- <div class="auth-logo"> <img src="link-para-seu-logo.png" alt="NuptialLink Logo"> </div> -->
+    <div class="auth-container">
         <h1>Login dos Noivos</h1>
         <p class="subtitle">Acesse sua conta para gerenciar seu casamento.</p>
 
         <form id="login-noivos-form">
-            <div id="login-error-message" class="error-message" style="display: none;"></div>
+            <div id="login-message" class="message-area" style="display: none;"></div>
 
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <label for="email-login">Email:</label>
+                <input type="email" id="email-login" name="email-login" required>
             </div>
 
             <div class="form-group">
-                <label for="password">Senha:</label>
-                <input type="password" id="password" name="password" required>
+                <label for="password-login">Senha:</label>
+                <input type="password" id="password-login" name="password-login" required>
             </div>
 
-            <button type="submit">Entrar</button>
+            <button type="submit" id="login-submit-button">Entrar</button>
         </form>
 
         <div class="auth-links">
-            <p>Ainda não tem uma conta? <a href="cadastro-noivos.html">Cadastre-se aqui</a></p>
-            <p><a href="recuperar-senha.html">Esqueceu sua senha?</a></p> <!-- MODIFICADO AQUI -->
+            <p><a href="recuperar-senha.html">Esqueceu sua senha?</a></p>
+            <p>Não tem uma conta? <a href="cadastro-noivos.html">Cadastre-se aqui</a></p>
             <p><a href="../index.html">Voltar para a Home</a></p>
         </div>
     </div>
 
     <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const loginForm = document.getElementById('login-noivos-form');
+        const messageDiv = document.getElementById('login-message');
+        const submitButton = document.getElementById('login-submit-button');
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                messageDiv.style.display = 'none';
+                messageDiv.textContent = '';
+                messageDiv.className = 'message-area';
+                submitButton.disabled = true;
+                submitButton.textContent = 'Entrando...';
+
+                const email = document.getElementById('email-login').value.trim();
+                const password = document.getElementById('password-login').value;
+
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    // Login bem-sucedido
+                    showMessage('Login realizado com sucesso! Redirecionando...', 'success');
+                    // Redirecionar para o painel do noivo
+                    setTimeout(() => {
+                        window.location.href = '../app-noivos/dashboard.html'; // Crie esta página
+                    }, 1500);
+
+                } catch (error) {
+                    console.error("Erro no login:", error);
+                    let friendlyMessage = "Erro ao tentar fazer login. Verifique seu e-mail e senha.";
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                        friendlyMessage = "E-mail ou senha inválidos.";
+                    } else if (error.code === 'auth/invalid-email') {
+                        friendlyMessage = "O formato do e-mail é inválido.";
+                    }
+                    showMessage(friendlyMessage, 'error');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Entrar';
+                }
+            });
+        }
+
+        function showMessage(message, type = 'info') {
+            messageDiv.textContent = message;
+            messageDiv.className = `message-area ${type}-message`;
+            messageDiv.style.display = 'block';
+        }
+    });
+    </script>
 </body>
 </html>

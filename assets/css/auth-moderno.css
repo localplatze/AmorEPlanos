@@ -243,3 +243,29 @@ button[type="submit"]:active {
         font-size: 1rem;
     }
 }
+
+.message-area {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    text-align: left;
+}
+.message-area:empty {
+    display: none;
+}
+.error-message { /* Você já tem, mas garanta que está estilizado */
+    color: #D8000C; /* Vermelho escuro */
+    background-color: #FFD2D2; /* Vermelho claro */
+    border: 1px solid #D8000C;
+}
+.success-message {
+    color: #27ae60; /* Verde */
+    background-color: #e9f7ef;
+    border: 1px solid #27ae60;
+}
+.info-message {
+    color: #00529B; /* Azul */
+    background-color: #BDE5F8;
+    border: 1px solid #00529B;
+}

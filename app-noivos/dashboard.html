@@ -5,16 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - NuptialLink Noivos</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Adicione Font Awesome (Exemplo via CDN) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css"> <!-- Link para o novo CSS -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/noivos-dashboard.css">
+    <style>
+        .card-icon .material-icons {
+            font-size: 36px;
+            color: #AA336A;
+        }
+        /* Adicionado para feedback de carregamento */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            font-size: 1.5rem;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
+    <!-- Adicionado para feedback de carregamento -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        Carregando dados...
+    </div>
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="noivos-app">
         <aside class="noivos-sidebar" id="noivosSidebar">
+            <!-- ... (conteúdo da sidebar inalterado) ... -->
             <div class="logo">
-                <!-- <img src="../assets/images/logo-placeholder-light.png" alt="NuptialLink Logo"> ou -->
                 <a href="dashboard.html" class="logo-text">NuptialLink</a>
             </div>
             <nav>
@@ -47,28 +73,23 @@
                     <h1>Dashboard</h1>
                 </div>
                 <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">N</div> <!-- Placeholder para avatar ou iniciais -->
-                    <span id="userName">Olá, Noiva(o)!</span>
-                    <a href="#" id="logout-btn-header" class="logout-link" style="display: none;">Sair</a> <!-- Oculto por padrão, pode ser usado com dropdown -->
+                    <div class="user-avatar" id="userAvatar">--</div>
+                    <span id="userName">Carregando...</span>
+                    <!-- O botão de logout no header pode ser útil em telas maiores -->
+                    <a href="#" id="logout-btn-header" class="logout-link" title="Sair"><i class="fas fa-sign-out-alt"></i></a>
                 </div>
             </header>
 
             <main class="noivos-main-content" id="dashboard-page">
                 <section class="countdown-simple" id="countdown-display">
-                    <!-- Conteúdo será gerado por JS -->
-                    <span class="days">-- dias</span>
-                    <span class="time">--:--:--</span>
-                    para o grande dia!
-                    <!-- Se não houver data:
-                    <p style="margin-top: 10px; font-size: 1rem;">Ainda não definiu a data do seu casamento?</p>
-                    <a href="linha-do-tempo.html" class="btn-set-date">Definir Data Agora</a>
-                    -->
+                    Carregando contagem...
                 </section>
 
                 <section class="management-cards-container">
+                    <!-- ... (cards inalterados) ... -->
                     <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/finance.svg" alt="Ícone Finanças"></div>
+                            <div class="card-icon"><i class="material-icons">account_balance_wallet</i></div>
                             <h3>Gerenciamento Financeiro</h3>
                         </div>
                         <p>Controle despesas, pagamentos e orçamentos para não estourar o limite.</p>
@@ -76,7 +97,7 @@
                     </div>
                     <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/guests.svg" alt="Ícone Convidados"></div>
+                            <div class="card-icon"><i class="material-icons">group</i></div>
                             <h3>Gestão de Convidados</h3>
                         </div>
                         <p>Cadastre, importe, organize sua lista e acompanhe confirmações (RSVP).</p>
@@ -84,7 +105,7 @@
                     </div>
                     <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/savethedate.svg" alt="Ícone Save the Date"></div>
+                            <div class="card-icon"><i class="material-icons">camera_alt</i></div>
                             <h3>Pré Wedding/Save The Date</h3>
                         </div>
                         <p>Crie e envie o Save The Date para seus convidados e acompanhe as respostas.</p>
@@ -92,7 +113,7 @@
                     </div>
                     <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/invitation.svg" alt="Ícone Convites"></div>
+                            <div class="card-icon"><i class="material-icons">mail</i></div>
                             <h3>Convites/Check-In</h3>
                         </div>
                         <p>Gerencie o envio de convites digitais e facilite o check-in no dia do evento.</p>
@@ -100,7 +121,7 @@
                     </div>
                     <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/roles.svg" alt="Ícone Papéis"></div>
+                            <div class="card-icon"><i class="material-icons">people_outline</i></div>
                             <h3>Divisão de Papéis</h3>
                         </div>
                         <p>Defina padrinhos, madrinhas, daminhas, pajens e suas funções especiais.</p>
@@ -108,15 +129,15 @@
                     </div>
                     <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/tables.svg" alt="Ícone Mesas"></div>
+                            <div class="card-icon"><i class="material-icons">event_seat</i></div>
                             <h3>Organização de Mesas</h3>
                         </div>
                         <p>Planeje a disposição dos seus convidados nas mesas de forma intuitiva.</p>
                         <a href="organizacao-mesas.html" class="btn">Organizar Mesas</a>
                     </div>
-                     <div class="management-card">
+                    <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/gifts.svg" alt="Ícone Presentes"></div>
+                            <div class="card-icon"><i class="material-icons">card_giftcard</i></div>
                             <h3>Lista de Presentes</h3>
                         </div>
                         <p>Crie e personalize sua lista de presentes online ou adicione cotas para lua de mel.</p>
@@ -124,16 +145,15 @@
                     </div>
                     <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/messages.svg" alt="Ícone Mensagens"></div>
+                            <div class="card-icon"><i class="material-icons">chat</i></div>
                             <h3>Mensagens dos Convidados</h3>
                         </div>
                         <p>Leia as mensagens carinhosas e os votos de felicidade dos seus convidados.</p>
                         <a href="mensagens-noivos.html" class="btn">Ver Mensagens</a>
                     </div>
-                    <!-- Adicione os outros cards seguindo o mesmo padrão -->
-                     <div class="management-card">
+                    <div class="management-card">
                         <div class="card-header">
-                            <div class="card-icon"><img src="../assets/icons/timeline.svg" alt="Ícone Linha do Tempo"></div>
+                            <div class="card-icon"><i class="material-icons">timeline</i></div>
                             <h3>Linha do Tempo</h3>
                         </div>
                         <p>Crie marcos, defina a data do casamento e acompanhe o progresso.</p>
@@ -144,116 +164,203 @@
         </div>
     </div>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <!-- Seu arquivo de configuração do Firebase -->
+    <script src="../assets/js/firebase-config.js"></script> <!-- Ajuste o caminho se necessário -->
+
+    <!-- Script da Dashboard -->
     <script>
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const sidebar = document.getElementById('noivosSidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const contentWrapper = document.querySelector('.noivos-content-wrapper');
+        // assets/js/noivos-dashboard.js
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('noivosSidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const userNameElement = document.getElementById('userName');
+            const userAvatarElement = document.getElementById('userAvatar');
+            const countdownDisplay = document.getElementById('countdown-display');
+            const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
+            const logoutBtnHeader = document.getElementById('logout-btn-header');
+            const loadingOverlay = document.getElementById('loadingOverlay');
 
-        function toggleSidebar() {
-            sidebar.classList.toggle('active');
-            sidebarOverlay.classList.toggle('active');
-            // Alternar ícone do menu
-            const icon = mobileMenuToggle.querySelector('i');
-            if (sidebar.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-                mobileMenuToggle.setAttribute('aria-label', 'Fechar menu');
-                mobileMenuToggle.setAttribute('aria-expanded', 'true');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-                mobileMenuToggle.setAttribute('aria-label', 'Abrir menu');
-                mobileMenuToggle.setAttribute('aria-expanded', 'false');
-            }
-        }
+            let countdownInterval; // Para poder limpar o intervalo depois
 
-        if (mobileMenuToggle && sidebar && sidebarOverlay) {
-            mobileMenuToggle.addEventListener('click', toggleSidebar);
-            sidebarOverlay.addEventListener('click', toggleSidebar); // Fecha ao clicar no overlay
-        }
-
-        // Exemplo de como carregar dados do usuário (simulado)
-        const userNameElement = document.getElementById('userName');
-        const userAvatarElement = document.getElementById('userAvatar');
-        // No seu app real, você pegaria isso do Firebase Auth
-        const currentUser = { name: "Ana & Bruno", initials: "AB" }; // Exemplo
-
-        if (currentUser && userNameElement && userAvatarElement) {
-            userNameElement.textContent = `Olá, ${currentUser.name}!`;
-            userAvatarElement.textContent = currentUser.initials;
-        }
-
-        // Exemplo de contagem regressiva (simulado)
-        const countdownDisplay = document.getElementById('countdown-display');
-        function updateCountdown(weddingDateStr) {
-            if (!countdownDisplay) return;
-
-            if (!weddingDateStr) {
-                 countdownDisplay.innerHTML = `
-                    <p style="font-size: 1.1rem; margin-bottom:10px;">Ainda não definiu a data do seu casamento?</p>
-                    <a href="linha-do-tempo.html" class="btn-set-date">Definir Data Agora</a>
-                `;
-                return;
+            // --- Funções da Interface (Sidebar, etc.) ---
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (sidebar.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                    mobileMenuToggle.setAttribute('aria-label', 'Fechar menu');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'true');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    mobileMenuToggle.setAttribute('aria-label', 'Abrir menu');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                }
             }
 
-            const weddingDate = new Date(weddingDateStr).getTime();
-            const now = new Date().getTime();
-            const distance = weddingDate - now;
-
-            if (distance < 0) {
-                countdownDisplay.innerHTML = `<span class="days" style="font-size: 1.5rem;">O grande dia já passou! Parabéns!</span>`;
-                return;
+            if (mobileMenuToggle && sidebar && sidebarOverlay) {
+                mobileMenuToggle.addEventListener('click', toggleSidebar);
+                sidebarOverlay.addEventListener('click', toggleSidebar);
             }
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // --- Funções do Firebase ---
+            function showLoading(show) {
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = show ? 'flex' : 'none';
+                }
+            }
 
-            countdownDisplay.innerHTML = `
-                <span class="days">${days} dia${days !== 1 ? 's' : ''}</span>
-                <span class="time">${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}</span>
-                para o grande dia!
-            `;
-        }
+            function handleLogout() {
+                showLoading(true);
+                auth.signOut().then(() => {
+                    console.log("Usuário deslogado com sucesso.");
+                    // Limpar qualquer dado de sessão se necessário
+                    sessionStorage.clear(); // Exemplo
+                    window.location.href = '../auth/login-noivos.html'; // Redireciona para a página de login dos noivos
+                }).catch((error) => {
+                    console.error("Erro ao fazer logout:", error);
+                    alert("Erro ao tentar sair. Tente novamente.");
+                    showLoading(false);
+                });
+            }
 
-        // Simule a data do casamento (você pegaria isso do Firebase)
-        // const userWeddingDate = "2024-12-25T17:00:00"; // Exemplo com data
-        const userWeddingDate = null; // Exemplo sem data
-        
-        if(userWeddingDate) {
-            updateCountdown(userWeddingDate);
-            setInterval(() => updateCountdown(userWeddingDate), 1000);
-        } else {
-            updateCountdown(null);
-        }
+            if (logoutBtnSidebar) {
+                logoutBtnSidebar.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleLogout();
+                });
+            }
+            if (logoutBtnHeader) {
+                logoutBtnHeader.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleLogout();
+                });
+            }
 
 
-        // Logout (exemplo básico)
-        const logoutBtnSidebar = document.getElementById('logout-btn-sidebar');
-        // const logoutBtnHeader = document.getElementById('logout-btn-header'); // Se usar no header
+            function updateCountdown(weddingDateStr) {
+                if (!countdownDisplay) return;
+                if (countdownInterval) clearInterval(countdownInterval); // Limpa intervalo anterior
 
-        function handleLogout() {
-            // Aqui você chamaria firebase.auth().signOut()
-            console.log("Usuário deslogado (simulação)");
-            alert("Você foi desconectado.");
-            window.location.href = '../index.html'; // Redireciona para a home, por exemplo
-        }
+                if (!weddingDateStr) {
+                    countdownDisplay.innerHTML = `
+                        <p style="font-size: 1.1rem; margin-bottom:10px;">Ainda não definiu a data do seu casamento?</p>
+                        <a href="linha-do-tempo.html" class="btn btn-primary">Definir Data Agora</a>
+                    `;
+                    // Adicione a classe btn-primary ao seu CSS se não existir:
+                    // .btn-primary { background-color: #AA336A; color: white; border: none; }
+                    // .btn-primary:hover { background-color: #8c2a57; }
+                    return;
+                }
 
-        if (logoutBtnSidebar) {
-            logoutBtnSidebar.addEventListener('click', (e) => {
-                e.preventDefault();
-                handleLogout();
+                const weddingDate = new Date(weddingDateStr).getTime();
+
+                function calculate() {
+                    const now = new Date().getTime();
+                    const distance = weddingDate - now;
+
+                    if (distance < 0) {
+                        countdownDisplay.innerHTML = `<span class="days" style="font-size: 1.5rem;">O grande dia já passou! Parabéns!</span>`;
+                        clearInterval(countdownInterval);
+                        return;
+                    }
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    countdownDisplay.innerHTML = `
+                        <span class="days">${days} dia${days !== 1 ? 's' : ''}</span>
+                        <span class="time">${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}</span>
+                        para o grande dia!
+                    `;
+                }
+                calculate(); // Chamada imediata
+                countdownInterval = setInterval(calculate, 1000);
+            }
+
+            function populateUserData(coupleNamesArray) {
+                if (userNameElement && userAvatarElement && coupleNamesArray && coupleNamesArray.length > 0) {
+                    const name1 = coupleNamesArray[0] || "Noivo(a) 1";
+                    const name2 = coupleNamesArray[1] || "Noivo(a) 2";
+                    const displayCoupleName = `${name1} & ${name2}`;
+                    userNameElement.textContent = `Olá, ${displayCoupleName}!`;
+
+                    const initials1 = name1.charAt(0).toUpperCase();
+                    const initials2 = name2.charAt(0).toUpperCase();
+                    userAvatarElement.textContent = `${initials1}${initials2}`;
+                } else {
+                    userNameElement.textContent = 'Olá, Noivos!';
+                    userAvatarElement.textContent = 'N';
+                }
+            }
+
+            // --- Lógica Principal de Autenticação e Carregamento de Dados ---
+            auth.onAuthStateChanged(async (user) => {
+                showLoading(true);
+                if (user) {
+                    // Usuário está logado
+                    const uid = user.uid;
+                    try {
+                        // 1. Buscar o managingWeddingId do nó /users/{uid}
+                        const userRef = db.ref(`users/${uid}`);
+                        const userSnapshot = await userRef.once('value');
+
+                        if (!userSnapshot.exists() || !userSnapshot.val().managingWeddingId) {
+                            console.error("Dados do usuário ou managingWeddingId não encontrados no DB.");
+                            alert("Erro ao carregar dados do casamento. Tente fazer login novamente.");
+                            handleLogout(); // Força logout se dados cruciais faltarem
+                            return;
+                        }
+                        const weddingId = userSnapshot.val().managingWeddingId;
+
+                        // 2. Buscar os dados do casamento do nó /weddings/{weddingId}
+                        const weddingRef = db.ref(`weddings/${weddingId}`);
+                        const weddingSnapshot = await weddingRef.once('value');
+
+                        if (!weddingSnapshot.exists()) {
+                            console.error("Dados do casamento não encontrados para o ID:", weddingId);
+                            alert("Não foi possível carregar os detalhes do seu casamento.");
+                            // Talvez não precise de logout aqui, mas o dashboard ficará vazio
+                            populateUserData(["?", "?"]); // Nomes padrão
+                            updateCountdown(null);        // Sem data
+                            showLoading(false);
+                            return;
+                        }
+                        const weddingData = weddingSnapshot.val();
+
+                        // 3. Popular a UI
+                        populateUserData(weddingData.coupleNames);
+                        updateCountdown(weddingData.weddingDate); // weddingDate deve estar no formato ISOString
+
+                    } catch (error) {
+                        console.error("Erro ao buscar dados do Firebase:", error);
+                        alert("Ocorreu um erro ao carregar suas informações. Tente novamente mais tarde.");
+                        populateUserData(["?", "?"]);
+                        updateCountdown(null);
+                    } finally {
+                        showLoading(false);
+                    }
+
+                } else {
+                    // Usuário não está logado
+                    console.log("Nenhum usuário logado. Redirecionando para login.");
+                    // Limpar qualquer dado de sessão
+                    sessionStorage.clear();
+                    window.location.href = '../auth/login-noivos.html';
+                }
             });
-        }
-        // if (logoutBtnHeader) {
-        //     logoutBtnHeader.addEventListener('click', (e) => {
-        //         e.preventDefault();
-        //         handleLogout();
-        //     });
-        // }
-
+        });
     </script>
+
 </body>
 </html>
